@@ -1,0 +1,1 @@
+/Users/lu/可点office/libreoffice-core/configure.ac
