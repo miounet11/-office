@@ -1,2 +1,2 @@
-module_directory:=/Users/lu/可点office/libreoffice-core/connectivity/
+module_directory:=/Users/lu/kdoffice-src/connectivity/
 include $(module_directory)/../solenv/gbuild/partial_build.mk

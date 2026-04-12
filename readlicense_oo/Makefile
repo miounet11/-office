@@ -1,2 +1,2 @@
-module_directory:=/Users/lu/可点office/libreoffice-core/readlicense_oo/
+module_directory:=/Users/lu/kdoffice-src/readlicense_oo/
 include $(module_directory)/../solenv/gbuild/partial_build.mk

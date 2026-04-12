@@ -1,2 +1,2 @@
-module_directory:=/Users/lu/可点office/libreoffice-core/emfio/
+module_directory:=/Users/lu/kdoffice-src/emfio/
 include $(module_directory)/../solenv/gbuild/partial_build.mk

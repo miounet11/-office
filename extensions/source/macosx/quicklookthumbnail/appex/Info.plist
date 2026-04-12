@@ -12,15 +12,15 @@
     <key>CFBundleDevelopmentRegion</key>
     <string>en</string>
     <key>CFBundleDisplayName</key>
-    <string>可圈offie Quick Look Thumbnail</string>
+    <string>可圈office 缩略图</string>
     <key>CFBundleExecutable</key>
     <string>QuickLookThumbnail</string>
     <key>CFBundleIdentifier</key>
-    <string>org.libreoffice.script.quicklookthumbnail</string>
+    <string>com.kdoffice.app.quicklookthumbnail</string>
     <key>CFBundleInfoDictionaryVersion</key>
     <string>6.0</string>
     <key>CFBundleName</key>
-    <string>可圈offieQuickLookThumbnail</string>
+    <string>可圈officeQuickLookThumbnail</string>
     <key>CFBundlePackageType</key>
     <string>XPC!</string>
     <key>CFBundleShortVersionString</key>

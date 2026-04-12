@@ -1,2 +1,2 @@
-module_directory:=/Users/lu/可点office/libreoffice-core/sot/
+module_directory:=/Users/lu/kdoffice-src/sot/
 include $(module_directory)/../solenv/gbuild/partial_build.mk

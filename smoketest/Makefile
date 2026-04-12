@@ -1,2 +1,2 @@
-module_directory:=/Users/lu/可点office/libreoffice-core/smoketest/
+module_directory:=/Users/lu/kdoffice-src/smoketest/
 include $(module_directory)/../solenv/gbuild/partial_build.mk

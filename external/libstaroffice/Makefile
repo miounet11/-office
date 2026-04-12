@@ -1,2 +1,2 @@
-module_directory:=/Users/lu/可点office/libreoffice-core/external/libstaroffice/
+module_directory:=/Users/lu/kdoffice-src/external/libstaroffice/
 include $(module_directory)/../../solenv/gbuild/partial_build.mk

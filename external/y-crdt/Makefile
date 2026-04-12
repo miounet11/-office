@@ -1,2 +1,2 @@
-module_directory:=/Users/lu/可点office/libreoffice-core/external/y-crdt/
+module_directory:=/Users/lu/kdoffice-src/external/y-crdt/
 include $(module_directory)/../../solenv/gbuild/partial_build.mk

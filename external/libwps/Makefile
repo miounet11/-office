@@ -1,2 +1,2 @@
-module_directory:=/Users/lu/可点office/libreoffice-core/external/libwps/
+module_directory:=/Users/lu/kdoffice-src/external/libwps/
 include $(module_directory)/../../solenv/gbuild/partial_build.mk

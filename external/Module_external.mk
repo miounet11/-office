@@ -1,1 +1,1 @@
-/Users/lu/可点office/libreoffice-core/external/Module_external.mk
+/Users/lu/kdoffice-src/external/Module_external.mk

@@ -16,7 +16,7 @@ build_goal:=$(if $(filter build uicheck,$(MAKECMDGOALS)),build)\
  $(if $(filter check,$(MAKECMDGOALS)),unitcheck slowcheck subsequentcheck $(if $(filter Linux, $(shell uname)), uicheck))\
  $(filter build-l10n-only build-non-l10n-only debugrun help showmodules translations $(gb_Top_MODULE_CHECK_TARGETS) check packageinfo gbuildtojson,$(MAKECMDGOALS))
 
-SRCDIR := /Users/lu/可点office/libreoffice-core
+SRCDIR := /Users/lu/kdoffice-src
 BUILDDIR := /Users/lu/可点office
 COMPILER_PLUGINS := 
 GIT_BUILD := $(if $(wildcard $(SRCDIR)/.git),T)

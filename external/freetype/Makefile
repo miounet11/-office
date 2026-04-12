@@ -1,2 +1,2 @@
-module_directory:=/Users/lu/可点office/libreoffice-core/external/freetype/
+module_directory:=/Users/lu/kdoffice-src/external/freetype/
 include $(module_directory)/../../solenv/gbuild/partial_build.mk

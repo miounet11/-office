@@ -1,2 +1,2 @@
-module_directory:=/Users/lu/可点office/libreoffice-core/filter/
+module_directory:=/Users/lu/kdoffice-src/filter/
 include $(module_directory)/../solenv/gbuild/partial_build.mk

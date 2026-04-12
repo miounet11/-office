@@ -8,8 +8,8 @@ Globals
             UREPACKAGEVERSION 26.8.0.0.alpha0
             URELAYERVERSION 1
             REFERENCEOOOMAJORMINOR 4.1
-            WINDOWSBASISROOTNAME 可圈offie
-            UNIXBASISROOTNAME kequanoffie26.8
+            WINDOWSBASISROOTNAME 可圈office
+            UNIXBASISROOTNAME kequanoffice26.8
             HIDELICENSEDIALOG 1
             PACKAGEPREFIX
             BASISPACKAGEPREFIX libobasis
@@ -37,17 +37,17 @@ Globals
     }
 }
 
-LibreOffice
+可圈office
 {
     Settings
     {
         variables
         {
-            PRODUCTNAME 可圈offie
+            PRODUCTNAME 可圈office
             PRODUCTVERSION 26.8
             PRODUCTEXTENSION .0.0.alpha0
             POSTVERSIONEXTENSION
-            BUNDLEIDENTIFIER org.libreoffice.script
+            BUNDLEIDENTIFIER com.kdoffice.app
             BRANDPACKAGEVERSION 26.8
             USERDIRPRODUCTVERSION 4
             BASEPRODUCTVERSION 26.8
@@ -66,9 +66,9 @@ LibreOffice
         active          1
         compression     5
         script          setup_osl
-        downloadname    可圈offie_{productversion}_{os}_install_{languages}
-        langpackdownloadname    可圈offie_{productversion}_languagepack_{os}_install_{languages}
-        helppackdownloadname    可圈offie_{productversion}_helppack_{os}_install_{languages}
+        downloadname    可圈office_{productversion}_{os}_install_{languages}
+        langpackdownloadname    可圈office_{productversion}_languagepack_{os}_install_{languages}
+        helppackdownloadname    可圈office_{productversion}_helppack_{os}_install_{languages}
         include         {installscriptdir},{customtargetpath}/readlicense_oo/readme,{customtargetpath}/sysui/{pkgtype},{customtargetpath}/setup_native,{filelistpath}/PackageSet,{filelistpath}/GeneratedPackage,{filelistpath}/Package,{filelistpath}/ExtensionPackage,{filelistpath}/CustomTarget/helpcontent2/help3xsl/filelists,{extensionsdir},{licensepath},{packinfopath}
     }
 }
@@ -85,7 +85,7 @@ LibreOfficeDev
             WINDOWSBASISROOTNAME LibreOfficeDev 26
             UNIXBASISROOTNAME libreofficedev26.8
             POSTVERSIONEXTENSION
-            BUNDLEIDENTIFIER org.libreoffice.script
+            BUNDLEIDENTIFIER com.kdoffice.app
             BRANDPACKAGEVERSION 26.8
             USERDIRPRODUCTVERSION 4
             BASEPRODUCTVERSION 26.8
@@ -118,18 +118,18 @@ LibreOfficeDev
     }
 }
 
-LibreOffice_SDK
+可圈office_SDK
 {
     Settings
     {
         downloadname LibreOffice-SDK_{packageversion}_{os}_install_{languages}
         variables
         {
-            PRODUCTNAME 可圈offie
+            PRODUCTNAME 可圈office
             PRODUCTVERSION 26.8
             PRODUCTEXTENSION .0.0.alpha0
             POSTVERSIONEXTENSION SDK
-            BUNDLEIDENTIFIER org.libreoffice.script.SDK
+            BUNDLEIDENTIFIER com.kdoffice.app.SDK
             BRANDPACKAGEVERSION 26.8
             PACKAGEVERSION 26.8.0.0.alpha0
             PACKAGEREVISION {buildid}
@@ -165,7 +165,7 @@ LibreOfficeDev_SDK
             WINDOWSBASISROOTNAME LibreOfficeDev 26
             UNIXBASISROOTNAME libreofficedev26.8
             POSTVERSIONEXTENSION SDK
-            BUNDLEIDENTIFIER org.libreoffice.script.SDK
+            BUNDLEIDENTIFIER com.kdoffice.app.SDK
             BRANDPACKAGEVERSION 26.8
             PACKAGEVERSION 26.8.0.0.alpha0
             PACKAGEREVISION {buildid}

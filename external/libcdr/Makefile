@@ -1,2 +1,2 @@
-module_directory:=/Users/lu/可点office/libreoffice-core/external/libcdr/
+module_directory:=/Users/lu/kdoffice-src/external/libcdr/
 include $(module_directory)/../../solenv/gbuild/partial_build.mk

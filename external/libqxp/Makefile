@@ -1,2 +1,2 @@
-module_directory:=/Users/lu/可点office/libreoffice-core/external/libqxp/
+module_directory:=/Users/lu/kdoffice-src/external/libqxp/
 include $(module_directory)/../../solenv/gbuild/partial_build.mk

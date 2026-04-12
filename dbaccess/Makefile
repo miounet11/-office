@@ -1,2 +1,2 @@
-module_directory:=/Users/lu/可点office/libreoffice-core/dbaccess/
+module_directory:=/Users/lu/kdoffice-src/dbaccess/
 include $(module_directory)/../solenv/gbuild/partial_build.mk

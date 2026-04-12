@@ -12,9 +12,9 @@
 <dict>
 <!-- require the parent process to be LibreOffice -->
     <key>signing-identifier</key>
-    <string>org.libreoffice.script</string>
+    <string>com.kdoffice.app</string>
     <key>team-identifier</key>
-    <string></string>
+    <string>2B7JZ4N26U</string>
 </dict>
 </plist>
 <!-- vim:set shiftwidth=4 softtabstop=4 expandtab: -->

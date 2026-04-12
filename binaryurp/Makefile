@@ -1,2 +1,2 @@
-module_directory:=/Users/lu/可点office/libreoffice-core/binaryurp/
+module_directory:=/Users/lu/kdoffice-src/binaryurp/
 include $(module_directory)/../solenv/gbuild/partial_build.mk

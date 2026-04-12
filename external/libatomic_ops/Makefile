@@ -1,2 +1,2 @@
-module_directory:=/Users/lu/可点office/libreoffice-core/external/libatomic_ops/
+module_directory:=/Users/lu/kdoffice-src/external/libatomic_ops/
 include $(module_directory)/../../solenv/gbuild/partial_build.mk

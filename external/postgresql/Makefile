@@ -1,2 +1,2 @@
-module_directory:=/Users/lu/可点office/libreoffice-core/external/postgresql/
+module_directory:=/Users/lu/kdoffice-src/external/postgresql/
 include $(module_directory)/../../solenv/gbuild/partial_build.mk
