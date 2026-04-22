@@ -153,6 +153,44 @@ lane_targets() {
     esac
 }
 
+sample_dir_name() {
+    python3 - "$1" "$2" <<'PY'
+from pathlib import Path
+import hashlib
+import sys
+
+lane = sys.argv[1]
+rel = sys.argv[2]
+path = Path(rel)
+stem = path.stem.replace(' ', '_')
+digest = hashlib.sha1(rel.encode('utf-8')).hexdigest()[:10]
+print(f"{lane}-{stem}-{digest}")
+PY
+}
+
+find_single_output_file() {
+    local dir_path="$1"
+    local expected_ext="$2"
+    local count
+    count="$(find "$dir_path" -maxdepth 1 -type f | wc -l | tr -d ' ')"
+    if [[ "$count" == "1" ]]; then
+        find "$dir_path" -maxdepth 1 -type f
+        return 0
+    fi
+
+    python3 - "$dir_path" "$expected_ext" <<'PY'
+from pathlib import Path
+import sys
+
+root = Path(sys.argv[1])
+expected_ext = sys.argv[2].lower()
+files = sorted(path for path in root.iterdir() if path.is_file())
+matches = [path for path in files if path.suffix.lower() == f'.{expected_ext}']
+if len(matches) == 1:
+    print(matches[0])
+PY
+}
+
 summarize_log_tail() {
     local log_path="$1"
     local summary_path="$2"
@@ -170,11 +208,10 @@ PY
 }
 
 run_validator() {
-    local name="$1"
-    local validator_bin="$2"
-    local target_file="$3"
-    local log_path="$4"
-    local status_path="$5"
+    local validator_bin="$1"
+    local target_file="$2"
+    local log_path="$3"
+    local status_path="$4"
 
     if [[ ! -x "$validator_bin" ]]; then
         printf 'skipped:not-executable\n' > "$status_path"
@@ -226,9 +263,7 @@ while IFS=$'\t' read -r lane rel; do
     read -r first_target second_target <<< "$(lane_targets "$lane")"
 
     sample_name="$(basename "$rel")"
-    sample_stem="${sample_name%.*}"
-    safe_stem="${sample_stem// /_}"
-    sample_dir="$run_dir/$lane-$safe_stem"
+    sample_dir="$run_dir/$(sample_dir_name "$lane" "$rel")"
     mkdir -p "$sample_dir/step1" "$sample_dir/step2" "$sample_dir/validators"
     cp "$src_root/$rel" "$sample_dir/"
     input_file="$sample_dir/$sample_name"
@@ -255,10 +290,10 @@ while IFS=$'\t' read -r lane rel; do
         fi
 
         if [[ "$result" == "success" ]]; then
-            step1_file="$(find "$sample_dir/step1" -maxdepth 1 -type f | head -n 1)"
+            step1_file="$(find_single_output_file "$sample_dir/step1" "$first_target")"
             if [[ -z "$step1_file" ]]; then
                 result="failure"
-                notes+=("step1 output missing")
+                notes+=("step1 output missing or ambiguous")
             fi
         fi
 
@@ -271,10 +306,10 @@ while IFS=$'\t' read -r lane rel; do
         fi
 
         if [[ "$result" == "success" ]]; then
-            step2_file="$(find "$sample_dir/step2" -maxdepth 1 -type f | head -n 1)"
+            step2_file="$(find_single_output_file "$sample_dir/step2" "$second_target")"
             if [[ -z "$step2_file" ]]; then
                 result="failure"
-                notes+=("step2 output missing")
+                notes+=("step2 output missing or ambiguous")
             fi
         fi
 
@@ -307,13 +342,13 @@ while IFS=$'\t' read -r lane rel; do
     if [[ -n "$validator_target" ]]; then
         case "${validator_target##*.}" in
             odt|ods|odp)
-                run_validator odf "$odf_validator" "$validator_target" "$sample_dir/validators/odfvalidator.log" "$sample_dir/validators/odfvalidator.status"
-                run_validator officeotron "$officeotron_validator" "$validator_target" "$sample_dir/validators/officeotron.log" "$sample_dir/validators/officeotron.status"
+                run_validator "$odf_validator" "$validator_target" "$sample_dir/validators/odfvalidator.log" "$sample_dir/validators/odfvalidator.status"
+                run_validator "$officeotron_validator" "$validator_target" "$sample_dir/validators/officeotron.log" "$sample_dir/validators/officeotron.status"
                 odf_status="$(get_status "$sample_dir/validators/odfvalidator.status")"
                 officeotron_status="$(get_status "$sample_dir/validators/officeotron.status")"
                 ;;
             pdf)
-                run_validator verapdf "$verapdf_validator" "$validator_target" "$sample_dir/validators/verapdf.log" "$sample_dir/validators/verapdf.status"
+                run_validator "$verapdf_validator" "$validator_target" "$sample_dir/validators/verapdf.log" "$sample_dir/validators/verapdf.status"
                 verapdf_status="$(get_status "$sample_dir/validators/verapdf.status")"
                 ;;
         esac
