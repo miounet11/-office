@@ -1,1 +1,19 @@
 .worktrees/
+
+# Local build/install outputs from configured LibreOffice-style trees
+/workdir/
+/instdir/
+/test-install/
+/tmp/
+/autom4te.cache/
+/config.log
+/config.status
+/config_host.mk
+/config_host/
+/autogen.lastrun
+/autogen.lastrun.bak
+
+# Local platform/interpreter noise
+.DS_Store
+__pycache__/
+*.pyc

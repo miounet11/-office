@@ -2106,3 +2106,160 @@ What Round 43 Does Not Solve:
 
 - The remaining matches in `shared/main0103.html`, `shared/01/guides.html`, `shared/01/03170000.html`, `smath/01/03070000.html`, `simpress/01/03090000.html`, `simpress/guide/arrange_slides.html`, `simpress/guide/keyboard.html`, and `sdraw/main0213.html` are now shortcut or modifier literals intentionally preserved, such as `Esc`, `Ctrl`, `Command`, `Tab`, `Shift+F5`, `Alt`, `Option`, `Enter`, or `F9`.
 - Round 43 substantially improves the Chinese help surface for the main View hub and its linked child pages, but it does not claim that the entire help corpus is fully localized; longer-tail guide pages and deep shortcut reference tables still need additional sweep rounds outside this hotspot chain.
+
+## Round 44
+
+Goal: establish a repeatable product-quality baseline before continuing deeper development, and separate source candidates from generated build/install noise in the current configured tree.
+
+Changes:
+
+- Added local ignore rules for generated configured-tree outputs so future `git status` review is not dominated by `workdir/`, `instdir/`, `test-install/`, `tmp/`, autoconf cache/config outputs, Python bytecode, and macOS `.DS_Store` noise.
+- Produced a non-destructive source/generated boundary report at `tmp/source-generated-boundary.md`, explicitly classifying likely source candidates, generated/local outputs, and high-risk manual-review files.
+- Verified the three quality scaffold scripts are present, executable, and shell-syntax clean:
+  - `bin/quality-baseline.sh`
+  - `bin/compatibility-lab.sh`
+  - `bin/compatibility-roundtrip.sh`
+- Generated the first current-tree quality baseline report at `tmp/world-class-quality-baseline.md`.
+- Generated the compatibility lab inventory at `tmp/compatibility-lab-baseline.md`.
+- Ran the first smoke compatibility round-trip against the packaged app with `bin/compatibility-roundtrip.sh --format smoke --limit 1 --run-name baseline-smoke-20260424`.
+
+Verification:
+
+- `bash -n bin/quality-baseline.sh bin/compatibility-lab.sh bin/compatibility-roundtrip.sh` passed.
+- `make -C /Users/lu/可点office help` passed and showed the expected gbuild target inventory.
+- `bin/quality-baseline.sh tmp/world-class-quality-baseline.md` passed.
+- `bin/compatibility-lab.sh tmp/compatibility-lab-baseline.md` passed.
+- `bin/compatibility-roundtrip.sh --format smoke --limit 1 --run-name baseline-smoke-20260424` passed with 3 samples, 3 successes, and 0 failures:
+  - DOCX: `chart2/qa/extras/data/docx/3d-bar-label.docx` -> ODT -> DOCX
+  - XLSX: `chart2/qa/extras/chart2dump/data/tdf118150.xlsx` -> ODS -> XLSX
+  - PPTX: `chart2/qa/extras/chart2dump/data/date-categories.pptx` -> ODP -> PPTX
+- Validator wrappers were invoked where applicable, but ODF validators reported `skipped:missing-asset`; therefore this round proves conversion smoke success, not full validator-backed conformance.
+
+What Round 44 Does Not Solve:
+
+- The working tree is still very dirty because many tracked build/install outputs are modified or deleted; this round does not clean, reset, or delete anything.
+- The baseline smoke pack is intentionally small and does not prove broad DOCX/XLSX/PPTX fidelity.
+- Full `make build`, `make test-install`, `make check`, Start Center runtime visual inspection, and the next Help hotspot sweep remain pending.
+
+## Round 45
+
+Goal: close the smallest visible Start Center identity inconsistency discovered during source inspection, without changing the task-first workbench flow.
+
+Changes:
+
+- Normalized the Start Center frame label from `可圈Office` to the product identity `可圈office` in `sfx2/uiconfig/ui/startcenter.ui`.
+- Kept the existing task-first `可圈办公工作台` layout and scenario buttons unchanged:
+  - 工作汇报
+  - 会议纪要
+  - 预算总览
+  - 项目排期
+  - PPT 初稿
+  - 商务路演 / 项目汇报 / 教学课件
+- Confirmed scenario buttons are backed by real packaged template filenames in `sfx2/source/dialog/backingwindow.cxx`, not fake workflows.
+
+Verification:
+
+- `xmllint --noout /Users/lu/kdoffice-src/sfx2/uiconfig/ui/startcenter.ui` passed.
+- `make -C /Users/lu/可点office sfx2.build` passed.
+- The `sfx2.build` UI sanitizer reported 5 existing accessibility warnings in unrelated SFX2 UI files and 0 new fatals.
+
+What Round 45 Does Not Solve:
+
+- This is source/build verification only; it does not replace runtime visual inspection of the packaged app.
+- The scenario cards still depend on the template inventory being present and correctly packaged in the installed app.
+- Broader Start Center spacing, card hierarchy, and first-run interaction polish still need runtime review.
+
+## Round 46
+
+Goal: make the high-frequency Print Help page Chinese-first in the installed Help output, including the visible embedded print-related topic links.
+
+Changes:
+
+- Localized the main Print dialog Help page at `helpcontent2/source/text/shared/01/01130000.xhp`, covering command access, preview, printer selection, page ranges, copies, page layout, booklet, and module-specific print options while preserving technical identifiers and keyboard shortcuts.
+- Localized the embedded print command access surface in `helpcontent2/source/text/shared/00/00000401.xhp` so the installed Print page no longer opens with English menu/toolbar guidance.
+- Localized the visible embedded topic titles for the Print page's Writer, Calc, Impress, and shared print links, including brochure printing, reverse order, paper trays, print ranges, sheet details, handouts/slides, reduced-data printing, black-and-white printing, and maximum printable area.
+- Fixed a mojibake typo in `print_selection.xhp` so its topic title and installed related-topic link render as `选择要打印的内容`.
+
+Verification:
+
+- `xmllint --noout` passed for the touched Print Help XML set: `shared/01/01130000.xhp`, `shared/00/00000401.xhp`, six Writer print guide pages, five Calc print guide pages, two Impress print guide pages, and three shared print guide pages.
+- `make -C /Users/lu/可点office helpcontent2.build postprocess.build` passed after the main page edit and again after the embedded-title sweep.
+- Inspected `/Users/lu/可点office/instdir/可圈office.app/Contents/Resources/help/en-US/text/shared/01/01130000.html`; the main body and embedded print-topic link cluster now render Chinese-first.
+- A targeted installed-output scan for common English print-help phrases (`Choose`, `Click`, `Print`, `Printing`, `Defining`, `Page`, `Sheet`, `Brochure`, `Presentations`, and related terms) found no remaining user-visible sentence/link matches on the Print page; remaining ASCII tokens are structural HTML/CSS/JS, keyboard literals such as `Ctrl`/`Command`, product/module names, or metadata identifiers.
+
+What Round 46 Does Not Solve:
+
+- This round does not fully localize every linked child Help page body; it prioritizes the installed Print page and the embedded visible surfaces users see from that page.
+- The installed Help language path remains `en-US` because this build is using the current configured Help packaging layout; this round improves the visible Chinese-first content inside that output, not the locale-packaging architecture.
+- Longer-tail Help pages for advanced printing, printer drivers, Calc page-break editing, and full Help index/search metadata still need additional hotspot sweeps.
+
+## Round 47
+
+Goal: identify the release-grade build/install verification gap without changing keychain state, signing configuration, or generated build outputs destructively.
+
+Findings:
+
+- The configured tree is a release macOS build with app signing enabled: `config_host.mk` exports `ENABLE_RELEASE_BUILD=TRUE`, `MACOSX_CODESIGNING_IDENTITY=0CD938B3F72F1B00C73F30E5F27FA2C6358588CD`, and an empty `MACOSX_PACKAGE_SIGNING_IDENTITY`.
+- The active keychain cannot satisfy that configured app-signing identity: `security find-identity -p codesigning -v` reported `0 valid identities found`.
+- The real signed `make -C /Users/lu/可点office test-install` reached installer/DMG packaging but failed at `macosx-codesign-app-bundle` with repeated `The specified item could not be found in the keychain`; the following `hdiutil create ... .dmg` command succeeded, but the installer still failed because the signing error was recorded in the packaging log.
+- Source inspection confirms the blocker is expected for this environment: `solenv/bin/modules/installer/simplepackage.pm` runs `macosx-codesign-app-bundle` for the main app when `MACOSX_CODESIGNING_IDENTITY` is set, while the top-level `test-install` target also signs the test app when that variable is non-empty.
+- A dry-run of the local unsigned override (`PKGFORMAT= MACOSX_CODESIGNING_IDENTITY= test-install`) showed the safe verification path: no DMG package format and no app-bundle signing invocation remained in the final install steps.
+
+Verification:
+
+- `env -u MAKEFLAGS -u MFLAGS -u MAKELEVEL MAKE="/opt/homebrew/bin/gmake" /opt/homebrew/bin/gmake -C /Users/lu/可点office PKGFORMAT= MACOSX_CODESIGNING_IDENTITY= test-install` passed as a local unsigned verification path.
+- The unsigned run reported blank `Package format:`, `Successful packaging process!`, `Installer finished`, and `Test Installation finished`; it produced `/Users/lu/可点office/test-install/可圈office.app`.
+- `/Users/lu/可点office/test-install/可圈office.app/Contents/MacOS/soffice --headless --version` ran successfully and reported `可圈office 26.8.0.0.alpha0 75333b0de5e041261c9cd3468bcb677af01d37a0`.
+- `codesign --verify --deep --strict /Users/lu/可点office/test-install/可圈office.app` failed, as expected for this unsigned local path; this confirms the path is useful for local runtime/build verification only and is not a release-signing substitute.
+
+What Round 47 Does Not Solve:
+
+- Release-grade signed DMG packaging remains blocked until the configured Developer ID/Application signing identity is available in the active keychain or the build is reconfigured intentionally.
+- This round did not import certificates, modify keychains, delete generated outputs, or bypass signing in a release artifact; the unsigned override was used only to prove a local install/runtime verification path.
+- Full `make check` remains unresolved: a `gmake -n check` probe reached the generated gbuild check path and stopped at a missing `workdir/LinkTarget/CppunitTest/libtest_chart2_common_functors.dylib.objectlist` evaluation dependency, so broader unit/subsequent checks still need a separate cleanup-free investigation.
+
+## Round 48
+
+Goal: answer whether 可圈office can be built on GitHub, and define a safe first CI path for a Windows MSI without pretending a release artifact already exists.
+
+Findings:
+
+- GitHub Actions is feasible in principle for Windows builds, but there is no existing build workflow baseline to extend: `/Users/lu/可点office` has no local `.github/workflows`, while `/Users/lu/kdoffice-src/.github/workflows` contains only upstream LibreOffice's `lockdown.yml` mirror-management workflow.
+- The wrapper build tree at `/Users/lu/可点office` has no configured git remote in the local checkout, while the source tree at `/Users/lu/kdoffice-src` tracks upstream `https://github.com/LibreOffice/core.git` on `master`; neither is clearly the private 可圈office GitHub repository target.
+- The local build tree is macOS-configured and cannot directly produce a Windows MSI; Windows needs a separate Cygwin/Visual Studio configuration, not a mutation of the current macOS `autogen.lastrun`.
+- Existing upstream Windows config points are available: `distro-configs/LibreOfficeWin64.conf` sets `--host=x86_64-pc-cygwin` and `--with-package-format=msi`, while `distro-configs/Jenkins/windows_wsl_common.conf` documents Visual Studio 2022 plus external dependency paths used by Windows automation.
+
+Recommended first GitHub path:
+
+- Add a manual-only `workflow_dispatch` Windows MSI workflow in the actual private 可圈office source repository, not in the local macOS wrapper tree unless that wrapper is the repository pushed to GitHub.
+- Start unsigned: disable release signing and upload the resulting MSI/logs as artifacts only. Add Windows code signing later when a certificate, password, and `signtool` path are explicitly available as GitHub secrets.
+- Prefer a self-hosted Windows runner for reliable full builds. A hosted `windows-latest` runner can be tried for a smoke/build probe, but LibreOffice-scale disk/time/cache pressure makes it a risk for release builds.
+
+What Round 48 Does Not Solve:
+
+- No workflow file was written because the GitHub target repository is ambiguous: wrapper `/Users/lu/可点office` has no remote, and source `/Users/lu/kdoffice-src` points at upstream LibreOffice rather than the private 可圈office remote; its only current workflow is the upstream read-only mirror lockdown workflow, not a build workflow.
+- No Windows MSI was produced or verified in this environment.
+- No signing secrets, certificates, or release publishing steps were added.
+
+## Round 49
+
+Goal: turn the confirmed GitHub target `https://github.com/miounet11/-office` into a concrete manual installer-build CI entry for both macOS and Windows.
+
+Changes:
+
+- Set the wrapper repository remote to `origin https://github.com/miounet11/-office`.
+- Added `.github/workflows/build-installers.yml` as a manual-only GitHub Actions workflow with `workflow_dispatch` input for `both`, `macos`, or `windows`.
+- Added a macOS job on `macos-14` that configures an unsigned 可圈office build, runs `make build`, then runs `make PKGFORMAT=dmg MACOSX_CODESIGNING_IDENTITY= MACOSX_PACKAGE_SIGNING_IDENTITY= test-install` and uploads DMG/PKG/log artifacts.
+- Added a Windows job on `windows-2022` that installs Cygwin packages, configures a Visual Studio 2022 x86_64 Cygwin MSI build with `--with-package-format=msi`, runs `make build` and `make test-install`, then uploads MSI/CAB/EXE/log artifacts.
+- The workflow uses `downstream-branding` only if that directory is present in the pushed repository, so the CI file can run before the branding asset layout is finalized in Git.
+
+Verification:
+
+- Confirmed `origin` now points to `https://github.com/miounet11/-office` for `/Users/lu/可点office`.
+- Static workflow checks passed locally for the required installer jobs, manual trigger, artifact upload, unsigned macOS override, and Windows MSI configure flag.
+
+What Round 49 Does Not Solve:
+
+- The workflow has not yet run on GitHub, so hosted-runner dependency completeness, disk pressure, timeout behavior, and installer artifact paths still need real CI validation.
+- The workflow intentionally builds unsigned artifacts only; release signing still needs explicit macOS Developer ID / Windows code-signing secret handling.
+- No push was performed in this round. The new workflow must be committed and pushed to `miounet11/-office` before GitHub can run it.
