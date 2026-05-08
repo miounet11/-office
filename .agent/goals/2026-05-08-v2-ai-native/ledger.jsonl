@@ -1,3 +1,4 @@
 {"ts":"2026-05-08T13:40:00+0800","event":"created","goal_id":"plan","notes":"V2 plan created with 7 goals; first ready goal G1 (master plan)"}
 {"ts":"2026-05-08T13:45:00+0800","event":"completed","goal_id":"G1","notes":"docs/product/v2-master-plan.md written"}
 {"ts":"2026-05-08T13:55:00+0800","event":"completed","goal_id":"G2-G6","notes":"All 5 wave specs written: W1 provider-runtime, W2 cmd-palette, W3 writer-apply-runtime, W4 select-to-act, W5 async-cowork. Total ~14000 words across 6 files."}
+{"ts":"2026-05-08T14:00:00+0800","event":"completed","goal_id":"G7","notes":"Commit 31ff1aada landed. V2 plan complete. All 7 goals closed. Plan status -> completed."}

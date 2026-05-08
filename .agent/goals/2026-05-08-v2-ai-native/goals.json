@@ -1,7 +1,7 @@
 {
   "version": 1,
   "id": "2026-05-08-v2-ai-native",
-  "status": "ready",
+  "status": "completed",
   "runtime": "claude-code",
   "goals": [
     {
@@ -139,7 +139,7 @@
     {
       "id": "G7",
       "title": "Commit V2 plan + 更新 milestone doc 衔接",
-      "status": "ready",
+      "status": "completed",
       "depends_on": [
         "G2",
         "G3",
@@ -153,7 +153,10 @@
         "docs/product/v1.5-completion-milestone.md 末尾追加 V2 起点引用",
         "git log 显示新 commit"
       ],
-      "evidence": []
+      "evidence": [
+        "BUILDDIR commit 31ff1aada (V2 plan: AI-native office complete spec)",
+        "V1.5 milestone updated with V2 doc links"
+      ]
     }
   ]
 }
