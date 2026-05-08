@@ -1,0 +1,20 @@
+{
+  "id": "ppt",
+  "title_zh": "",
+  "language": "zh-CN",
+  "source_module": "writer",
+  "slides": [
+    {
+      "id": "s1",
+      "title_zh": "风险页",
+      "layout": "auto-generated-picture",
+      "placeholders": [
+        {
+          "id": "x",
+          "intent": "flattened-image",
+          "editable": false
+        }
+      ]
+    }
+  ]
+}

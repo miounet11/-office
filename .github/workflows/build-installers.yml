@@ -32,6 +32,8 @@ jobs:
     runs-on: macos-14
     timeout-minutes: 720
     env:
+      MAKE: gmake
+      GNUMAKE: gmake
       MAKEFLAGS: -j3
       KDOFFICE_PRODUCT_NAME: 可圈office
     steps:
@@ -59,6 +61,7 @@ jobs:
             --without-java
             --enable-release-build
             --with-product-name="$KDOFFICE_PRODUCT_NAME"
+            --with-package-format=dmg
             --enable-bogus-pkg-config
           )
           if [ -d "$PWD/downstream-branding" ]; then
@@ -68,15 +71,39 @@ jobs:
 
       - name: Build macOS installer
         run: |
-          make build
-          make PKGFORMAT=dmg MACOSX_CODESIGNING_IDENTITY= MACOSX_PACKAGE_SIGNING_IDENTITY= test-install
+          gmake build
+          gmake PKGFORMAT=dmg MACOSX_CODESIGNING_IDENTITY= MACOSX_PACKAGE_SIGNING_IDENTITY= instsetoo_native
 
       - name: Collect macOS installers
         if: always()
         run: |
-          mkdir -p artifacts/macos logs/macos
-          find instdir workdir -type f \( -name '*.dmg' -o -name '*.pkg' -o -name '*.tar.gz' \) -print -exec cp {} artifacts/macos/ \; 2>/dev/null || true
-          find workdir -type f \( -name '*.log' -o -name '*.err' \) -print -exec cp {} logs/macos/ \; 2>/dev/null || true
+          mkdir -p artifacts/macos
+          if [ "${{ inputs.upload_logs }}" = "true" ]; then
+            mkdir -p logs/macos
+          fi
+          if [ -d workdir/installation ]; then
+            find workdir/installation -type f \( -name '*.dmg' -o -name '*.pkg' \) -print | while IFS= read -r artifact; do
+              target="artifacts/macos/${artifact#workdir/installation/}"
+              mkdir -p "$(dirname "$target")"
+              cp "$artifact" "$target"
+            done
+          fi
+          if [ "${{ inputs.upload_logs }}" = "true" ] && [ -d workdir ]; then
+            find workdir -type f \( -name '*.log' -o -name '*.err' \) -print | while IFS= read -r log_file; do
+              target="logs/macos/${log_file#workdir/}"
+              mkdir -p "$(dirname "$target")"
+              cp "$log_file" "$target"
+            done 2>/dev/null || true
+          fi
+
+      - name: Verify macOS installers were collected
+        run: |
+          installer_count="$(find artifacts/macos -type f \( -name '*.dmg' -o -name '*.pkg' \) | wc -l | tr -d ' ')"
+          if [ "$installer_count" -eq 0 ]; then
+            echo "::error::No macOS DMG/PKG installers were collected from workdir/installation. Check the instsetoo_native build log."
+            exit 1
+          fi
+          find artifacts/macos -type f -print
 
       - name: Upload macOS installers
         uses: actions/upload-artifact@v4
@@ -169,9 +196,34 @@ jobs:
         if: always()
         run: |
           cd "$(cygpath -u "$GITHUB_WORKSPACE")"
-          mkdir -p artifacts/windows logs/windows
-          find instdir workdir -type f \( -name '*.msi' -o -name '*.cab' -o -name '*.exe' \) -print -exec cp {} artifacts/windows/ \; 2>/dev/null || true
-          find workdir -type f \( -name '*.log' -o -name '*.err' \) -print -exec cp {} logs/windows/ \; 2>/dev/null || true
+          mkdir -p artifacts/windows
+          if [ "${{ inputs.upload_logs }}" = "true" ]; then
+            mkdir -p logs/windows
+          fi
+          if [ -d workdir/installation ]; then
+            find workdir/installation -type f \( -name '*.msi' -o -name '*.cab' -o -name '*.exe' \) -print | while IFS= read -r artifact; do
+              target="artifacts/windows/${artifact#workdir/installation/}"
+              mkdir -p "$(dirname "$target")"
+              cp "$artifact" "$target"
+            done
+          fi
+          if [ "${{ inputs.upload_logs }}" = "true" ] && [ -d workdir ]; then
+            find workdir -type f \( -name '*.log' -o -name '*.err' \) -print | while IFS= read -r log_file; do
+              target="logs/windows/${log_file#workdir/}"
+              mkdir -p "$(dirname "$target")"
+              cp "$log_file" "$target"
+            done 2>/dev/null || true
+          fi
+
+      - name: Verify Windows installers were collected
+        run: |
+          cd "$(cygpath -u "$GITHUB_WORKSPACE")"
+          installer_count="$(find artifacts/windows -type f \( -name '*.msi' -o -name '*.exe' \) | wc -l | tr -d ' ')"
+          if [ "$installer_count" -eq 0 ]; then
+            echo "::error::No Windows MSI/EXE installers were collected from workdir/installation. Check the instsetoo_native build log."
+            exit 1
+          fi
+          find artifacts/windows -type f -print
 
       - name: Upload Windows installers
         uses: actions/upload-artifact@v4

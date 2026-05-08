@@ -1,0 +1,33 @@
+{
+  "id": "local-formatting-pack",
+  "name_zh": "本地排版助手",
+  "version": "0.1.0",
+  "description_zh": "离线运行的中文文档排版和诊断插件。",
+  "capabilities": [
+    "formatting",
+    "diagnostics"
+  ],
+  "modules": [
+    "writer",
+    "shared"
+  ],
+  "network": "offline",
+  "privacy": {
+    "requires_user_consent": true,
+    "context_scope_zh": "仅读取当前文档的样式和段落结构。",
+    "stores_document_content": false
+  },
+  "entrypoints": [
+    {
+      "id": "writer-formatting-diagnostics",
+      "label_zh": "检查文档排版",
+      "command": ".uno:KqOfficeWriterFormattingDiagnostics",
+      "placement": "panel"
+    }
+  ],
+  "failure_behavior": {
+    "document_mutation_on_failure": "none",
+    "output_mode": "diagnostic-only",
+    "message_zh": "插件失败时不会修改当前文档。"
+  }
+}

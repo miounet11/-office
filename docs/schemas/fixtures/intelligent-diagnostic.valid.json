@@ -1,0 +1,29 @@
+{
+  "id": "writer.mixed-fonts",
+  "module": "writer",
+  "severity": "warning",
+  "title_zh": "正文存在混用字体",
+  "message_zh": "文档正文中出现多组中西文字体，可能导致导出或协作时版式不一致。",
+  "location": {
+    "kind": "paragraph",
+    "label_zh": "第 3 段",
+    "path": "body/paragraph[3]"
+  },
+  "actions": [
+    {
+      "id": "normalize-body-font",
+      "label_zh": "预览统一正文字体",
+      "mode": "preview",
+      "undo_group": "writer-formatting-preview"
+    },
+    {
+      "id": "view-details",
+      "label_zh": "查看详情",
+      "mode": "details"
+    }
+  ],
+  "evidence": {
+    "source": "analyzer",
+    "summary_zh": "检测到 3 种正文中文字体。"
+  }
+}

@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kqoffice.local/schemas/capability-registry-entry.schema.json",
+  "title": "KQOffice Engine Capability Registry Entry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "capability_id",
+    "module_scope",
+    "availability_state",
+    "service_mode",
+    "network_mode",
+    "preview_support",
+    "apply_support",
+    "trust_level",
+    "budget",
+    "blocked_reason_zh",
+    "source_kind"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "m3-02"
+    },
+    "capability_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9.-]{2,80}$"
+    },
+    "module_scope": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "enum": ["writer", "calc", "impress", "draw", "shared"]
+      },
+      "uniqueItems": true
+    },
+    "availability_state": {
+      "type": "string",
+      "enum": ["available", "preview-only", "blocked-by-policy", "needs-document", "beta-disabled", "requires-compatibility-proof", "provider-unavailable", "plugin-runtime-disabled", "budget-exceeded", "unsupported-content"]
+    },
+    "service_mode": {
+      "type": "string",
+      "enum": ["offline", "local", "private", "cloud"]
+    },
+    "network_mode": {
+      "type": "string",
+      "enum": ["none", "loopback", "private-network", "cloud"]
+    },
+    "preview_support": {
+      "type": "boolean"
+    },
+    "apply_support": {
+      "type": "boolean"
+    },
+    "trust_level": {
+      "type": "string",
+      "enum": ["built-in", "signed-disabled", "admin-allowed", "untrusted-blocked"]
+    },
+    "budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "status"],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": ["none", "time", "token", "document-size"]
+        },
+        "status": {
+          "type": "string",
+          "enum": ["not-required", "within-budget", "exceeded", "unknown"]
+        }
+      }
+    },
+    "blocked_reason_zh": {
+      "type": "string"
+    },
+    "source_kind": {
+      "type": "string",
+      "enum": ["built-in", "provider", "plugin"]
+    }
+  }
+}

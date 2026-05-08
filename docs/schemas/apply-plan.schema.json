@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kqoffice.local/schemas/apply-plan.schema.json",
+  "title": "KQOffice Engine Capability Apply Plan",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "id",
+    "preview_action_id",
+    "capability_id",
+    "revision_precondition",
+    "operation_summary_zh",
+    "deterministic",
+    "rollback_required",
+    "undo_group",
+    "failure_behavior",
+    "repeated_diagnostics_required"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "m3-02"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9.-]{2,80}$"
+    },
+    "preview_action_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9.-]{2,80}$"
+    },
+    "capability_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9.-]{2,80}$"
+    },
+    "revision_precondition": {
+      "type": "string",
+      "const": "document-revision-match"
+    },
+    "operation_summary_zh": {
+      "type": "string",
+      "minLength": 1
+    },
+    "deterministic": {
+      "type": "boolean",
+      "const": true
+    },
+    "rollback_required": {
+      "type": "boolean",
+      "const": true
+    },
+    "undo_group": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "label_zh"],
+      "properties": {
+        "mode": {
+          "type": "string",
+          "const": "one-user-action"
+        },
+        "label_zh": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "failure_behavior": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["document_mutation_on_failure", "message_zh"],
+      "properties": {
+        "document_mutation_on_failure": {
+          "type": "string",
+          "const": "none"
+        },
+        "message_zh": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "repeated_diagnostics_required": {
+      "type": "boolean",
+      "const": true
+    }
+  }
+}

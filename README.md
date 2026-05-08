@@ -13,9 +13,11 @@
    - `both`：同时生成 macOS 和 Windows 安装包
    - `macos`：只生成 macOS 安装包
    - `windows`：只生成 Windows 安装包
-5. 构建完成后，在 workflow run 的 **Artifacts** 中下载：
-   - `kdoffice-macos-installers`：macOS 安装包，主要是 `.dmg` / `.pkg`
-   - `kdoffice-windows-installers`：Windows 安装包，主要是 `.msi`
+5. （可选）保持 `upload_logs: true`，构建失败时也会上传日志，便于排查。
+6. 构建完成后，在 workflow run 的 **Artifacts** 中下载：
+   - `kdoffice-macos-installers`：macOS 安装包（`.dmg` / `.pkg`，可能附带构建归档）
+   - `kdoffice-windows-installers`：Windows 安装包（`.msi`，可能附带相关安装组件）
+   - `kdoffice-macos-logs` / `kdoffice-windows-logs`：构建日志（当 `upload_logs=true` 时）
 
 ## 当前平台状态
 

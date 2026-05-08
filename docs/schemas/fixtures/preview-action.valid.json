@@ -1,0 +1,26 @@
+{
+  "schema_version": "m3-02",
+  "id": "preview.writer.style-spacing",
+  "capability_id": "writer.diagnostics.style-spacing",
+  "module": "writer",
+  "affected_scope": {
+    "kind": "selection",
+    "summary_zh": "选区内三个段落的间距建议"
+  },
+  "before_summary_zh": "段前段后间距不一致",
+  "after_summary_zh": "预览显示统一后的段落间距",
+  "risk_level": "low",
+  "service_mode": "offline",
+  "apply_preconditions": [
+    "document-revision-match",
+    "preview-visible",
+    "user-accepted",
+    "undo-group-ready",
+    "policy-allowed"
+  ],
+  "undo_supported": true,
+  "unsupported_cases": [
+    "protected-content"
+  ],
+  "evidence_record_id": "evidence.writer.style-spacing"
+}

@@ -1,0 +1,116 @@
+{
+  "version": 1,
+  "id": "2026-05-08-v1.5-completion",
+  "status": "ready",
+  "runtime": "claude-code",
+  "goals": [
+    {
+      "id": "G1",
+      "title": "ASCII workdir watchdog → bin/build-zh-cn.sh 永久化",
+      "status": "completed",
+      "depends_on": [],
+      "acceptance": [
+        "bin/build-zh-cn.sh 存在且可执行",
+        "脚本内含 watchdog (后台扫 list 文件 ASCII path 替换) + gmake test-install + 自动 patch registry_zh-CN.xcd",
+        "脚本退出码 0 = 成功 build；非 0 = build 失败原因清晰",
+        "Dashboard 登记新脚本"
+      ],
+      "evidence": [
+        "bin/build-zh-cn.sh",
+        "bash -n syntax OK",
+        "dashboard entry registered"
+      ]
+    },
+    {
+      "id": "G2",
+      "title": "L10N pipeline 长治：修 registry_<lang>.list 自动包含 XcuResTarget",
+      "status": "completed",
+      "depends_on": [],
+      "acceptance": [
+        "solenv/gbuild/Configuration.mk 或 postprocess/CustomTarget_registry.mk 修改后,",
+        "新一次 clean build 不需要手补 registry_zh-CN.list",
+        "tmp/v1.5-l10n-pipeline-fix.md 记录改动 + 验证",
+        "改动通过 XML / make syntax 检查"
+      ],
+      "evidence": [
+        "solenv/gbuild/Configuration.mk:56",
+        "postprocess/CustomTarget_registry.mk:21",
+        "tmp/v1.5-l10n-pipeline-fix.md"
+      ]
+    },
+    {
+      "id": "G3",
+      "title": "Workbench Start Center 任务卡片 (.ui + .cxx)",
+      "status": "completed",
+      "depends_on": [
+        "G1"
+      ],
+      "acceptance": [
+        "startcenter.ui 加 11 个中文场景按钮 (Frame label='中文办公场景')",
+        "backingwindow.cxx 加 ScenarioTemplateHdl + 按钮 id → 模板 URL 映射",
+        "Build pass; soffice 启动正常",
+        "新截图显示 11 个按钮可见"
+      ],
+      "evidence": [
+        "sfx2/uiconfig/ui/startcenter.ui:525-825 (scenario_box + 11 buttons)",
+        "sfx2/source/dialog/backingwindow.cxx:193-204 (declarations)",
+        "cxx:380-384 (click handler bind)",
+        "cxx:923-947 (getScenarioTemplates with 11 entries)",
+        "cxx:970-980 (OpenScenarioHdl)",
+        "cxx:949-968 (openScenarioTemplate with fallback)"
+      ]
+    },
+    {
+      "id": "G4",
+      "title": "Re-build + screenshot 验证最终视觉",
+      "status": "completed",
+      "depends_on": [
+        "G1",
+        "G2",
+        "G3"
+      ],
+      "acceptance": [
+        "bin/build-zh-cn.sh 运行 0 退出码",
+        "tmp/product-completion/screenshots/*.png 5 张全部刷新",
+        "soffice 启动稳定 ≥10s",
+        "v2-beta-gates 仍 8/9 pass (workbench-live-accessibility 不变)"
+      ],
+      "evidence": [
+        "tmp/build-g4.log (wrapper DONE, 0 exit)",
+        "tmp/build-zh-cn-wrapper.log (547 lines)",
+        "5/5 screenshots refreshed",
+        "tmp/v2-beta-gates/g4-final-2.md (8/9 pass)"
+      ]
+    },
+    {
+      "id": "G5",
+      "title": "全部改动 stage + commit",
+      "status": "ready",
+      "depends_on": [
+        "G4"
+      ],
+      "acceptance": [
+        "BUILDDIR 改动 commit (autogen.lastrun, .gitignore, smoke-manifest.tsv, bin/* 修改/新增, docs/* 新增, .agent/*)",
+        "SRCDIR 改动 commit (Configuration.mk, VCL.xcu, Common.xcu, Sidebar.xcu, startcenter.ui, backingwindow.cxx)",
+        "git log 显示新 commit (合理 message)",
+        "git status 干净 (除 generated/build outputs)"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "G6",
+      "title": "V1.5 milestone 文档",
+      "status": "ready",
+      "depends_on": [
+        "G5"
+      ],
+      "acceptance": [
+        "docs/product/v1.5-completion-milestone.md 存在",
+        "记录 V1 + V1.5 全部交付物清单",
+        "记录已知遗留问题 (workbench-live-accessibility, signing, build hack 等)",
+        "记录 V2 起点 (AI 编辑功能)"
+      ],
+      "evidence": []
+    }
+  ]
+}

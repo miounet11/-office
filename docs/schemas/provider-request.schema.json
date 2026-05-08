@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kqoffice.local/schemas/provider-request.schema.json",
+  "title": "KQOffice Engine Capability Provider Request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "id",
+    "provider_mode",
+    "capability_id",
+    "explicit_user_action",
+    "visible_context_summary_zh",
+    "scoped_payload",
+    "timeout_policy",
+    "consent",
+    "result_mode",
+    "document_mutation_allowed"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "m3-02"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9.-]{2,80}$"
+    },
+    "provider_mode": {
+      "type": "string",
+      "enum": ["offline", "local", "private", "cloud"]
+    },
+    "capability_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9.-]{2,80}$"
+    },
+    "explicit_user_action": {
+      "type": "boolean",
+      "const": true
+    },
+    "visible_context_summary_zh": {
+      "type": "string",
+      "minLength": 1
+    },
+    "scoped_payload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["scope", "includes_document_content", "redaction_mode"],
+      "properties": {
+        "scope": {
+          "type": "string",
+          "enum": ["metadata-only", "selected-range", "selected-slide", "diagnostic-summary"]
+        },
+        "includes_document_content": {
+          "type": "boolean",
+          "const": false
+        },
+        "redaction_mode": {
+          "type": "string",
+          "enum": ["metadata-only", "selected-context", "redacted-summary"]
+        }
+      }
+    },
+    "timeout_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["timeout_ms", "cancellable"],
+      "properties": {
+        "timeout_ms": {
+          "type": "integer"
+        },
+        "cancellable": {
+          "type": "boolean",
+          "const": true
+        }
+      }
+    },
+    "consent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["required", "consent_id"],
+      "properties": {
+        "required": {
+          "type": "boolean"
+        },
+        "consent_id": {
+          "type": "string"
+        }
+      }
+    },
+    "result_mode": {
+      "type": "string",
+      "const": "preview-only"
+    },
+    "document_mutation_allowed": {
+      "type": "boolean",
+      "const": false
+    }
+  }
+}

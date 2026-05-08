@@ -1,0 +1,29 @@
+{
+  "id": "cloud-ai-writer",
+  "name_zh": "云端写作助手",
+  "version": "1",
+  "capabilities": [
+    "ai-writing",
+    "ai-writing"
+  ],
+  "modules": [
+    "writer"
+  ],
+  "network": "internet",
+  "privacy": {
+    "requires_user_consent": false,
+    "context_scope_zh": "读取全文。"
+  },
+  "entrypoints": [
+    {
+      "id": "ai",
+      "label_zh": "生成",
+      "command": ".uno:KqOfficeCloudWriter",
+      "placement": "sidebar"
+    }
+  ],
+  "failure_behavior": {
+    "document_mutation_on_failure": "partial",
+    "output_mode": "replace-document"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "schema_version": "m3-02",
+  "capability_id": "writer.diagnostics.style-spacing",
+  "module_scope": ["writer", "writer"],
+  "availability_state": "preview-only",
+  "service_mode": "offline",
+  "network_mode": "none",
+  "preview_support": true,
+  "apply_support": false,
+  "trust_level": "built-in",
+  "budget": {
+    "kind": "document-size",
+    "status": "within-budget"
+  },
+  "blocked_reason_zh": "M3-02 仅提供预览契约，暂不启用应用修改",
+  "source_kind": "built-in"
+}

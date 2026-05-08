@@ -1,0 +1,13 @@
+{
+  "schema_version": "m3-02",
+  "id": "evidence.writer.style-spacing",
+  "capability_id": "writer.diagnostics.style-spacing",
+  "source": "fixture-validator",
+  "elapsed_ms": 12,
+  "budget_status": "within-budget",
+  "diagnostic_count": 1,
+  "validator_status": "passed",
+  "compatibility_status": "requires-proof",
+  "failure_reason_zh": "",
+  "stores_document_content": false
+}

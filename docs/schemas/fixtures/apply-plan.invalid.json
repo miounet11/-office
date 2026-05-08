@@ -1,0 +1,19 @@
+{
+  "schema_version": "m3-02",
+  "id": "apply.writer.style-spacing",
+  "preview_action_id": "preview.writer.style-spacing",
+  "capability_id": "writer.diagnostics.style-spacing",
+  "revision_precondition": "document-revision-match",
+  "operation_summary_zh": "在用户确认后按预览结果调整段落间距",
+  "deterministic": true,
+  "rollback_required": true,
+  "undo_group": {
+    "mode": "one-user-action",
+    "label_zh": "应用段落间距建议"
+  },
+  "failure_behavior": {
+    "document_mutation_on_failure": "partial",
+    "message_zh": "应用失败时可能保留部分修改"
+  },
+  "repeated_diagnostics_required": true
+}

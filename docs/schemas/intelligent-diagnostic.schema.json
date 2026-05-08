@@ -1,0 +1,97 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kqoffice.local/schemas/intelligent-diagnostic.schema.json",
+  "title": "KQOffice Intelligent Diagnostic",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "module",
+    "severity",
+    "title_zh",
+    "message_zh",
+    "location",
+    "actions"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z]+\\.[a-z0-9.-]+$"
+    },
+    "module": {
+      "type": "string",
+      "enum": ["writer", "calc", "impress", "shared"]
+    },
+    "severity": {
+      "type": "string",
+      "enum": ["tip", "suggestion", "warning", "blocking"]
+    },
+    "title_zh": {
+      "type": "string",
+      "minLength": 1
+    },
+    "message_zh": {
+      "type": "string",
+      "minLength": 1
+    },
+    "location": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "label_zh"],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": ["document", "page", "slide", "sheet", "paragraph", "cell-range", "object"]
+        },
+        "label_zh": {
+          "type": "string",
+          "minLength": 1
+        },
+        "path": {
+          "type": "string"
+        }
+      }
+    },
+    "actions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "label_zh", "mode"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9.-]{2,80}$"
+          },
+          "label_zh": {
+            "type": "string",
+            "minLength": 1
+          },
+          "mode": {
+            "type": "string",
+            "enum": ["preview", "apply", "ignore", "details"]
+          },
+          "undo_group": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "source": {
+          "type": "string",
+          "enum": ["analyzer", "roundtrip", "validator", "user"]
+        },
+        "path": {
+          "type": "string"
+        },
+        "summary_zh": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,135 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kqoffice.local/schemas/presentation-outline.schema.json",
+  "title": "KQOffice Normalized Presentation Outline",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "title_zh",
+    "language",
+    "source_module",
+    "slides"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9.-]{2,80}$"
+    },
+    "title_zh": {
+      "type": "string",
+      "minLength": 1
+    },
+    "language": {
+      "type": "string",
+      "enum": ["zh-CN", "zh-Hans", "en"]
+    },
+    "source_module": {
+      "type": "string",
+      "enum": ["writer", "impress", "shared"]
+    },
+    "source_refs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "path"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9.-]{2,80}$"
+          },
+          "kind": {
+            "type": "string",
+            "enum": ["document", "heading", "paragraph", "table", "image", "range"]
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "label_zh": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "uniqueItems": true
+    },
+    "slides": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "title_zh", "layout", "placeholders"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9.-]{2,80}$"
+          },
+          "section_zh": {
+            "type": "string"
+          },
+          "title_zh": {
+            "type": "string",
+            "minLength": 1
+          },
+          "layout": {
+            "type": "string",
+            "enum": ["title", "title-body", "two-column", "table", "image-later", "closing"]
+          },
+          "bullets": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["text_zh"],
+              "properties": {
+                "text_zh": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "level": {
+                  "type": "integer"
+                },
+                "source_ref": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "notes_zh": {
+            "type": "string"
+          },
+          "placeholders": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["id", "intent", "editable"],
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9][a-z0-9.-]{2,80}$"
+                },
+                "intent": {
+                  "type": "string",
+                  "enum": ["title", "body", "two-column-left", "two-column-right", "table", "image-later", "speaker-notes"]
+                },
+                "editable": {
+                  "type": "boolean",
+                  "const": true
+                },
+                "source_ref": {
+                  "type": "string"
+                }
+              }
+            },
+            "uniqueItems": true
+          }
+        }
+      }
+    }
+  }
+}

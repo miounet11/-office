@@ -1,0 +1,30 @@
+# Curated P0 compatibility smoke manifest.
+# Columns: format<TAB>source-relative-path<TAB>scenario note
+# Keep this deterministic. Do not include samples from paths marked /fail/.
+docx	sw/qa/core/attr/data/attr-set.docx	Writer attributes
+docx	sw/qa/core/data/ooxml/pass/fdo63164-1.docx	Writer OOXML pass sample
+docx	sw/qa/core/data/ooxml/pass/fdo64256.docx	Writer OOXML pass sample
+docx	sw/qa/core/data/ooxml/pass/fdo73608-1.docx	Writer OOXML pass sample
+docx	sw/qa/core/data/ooxml/pass/fdo73608-2.docx	Writer OOXML pass sample
+docx	sw/qa/core/data/ooxml/pass/fdo78885.docx	Writer OOXML pass sample
+docx	sw/qa/core/data/ooxml/pass/fdo78904_fileHang.docx	Writer file-hang regression sample
+docx	sw/qa/core/data/ooxml/pass/fdo78906.docx	Writer OOXML pass sample
+docx	sw/qa/core/data/ooxml/pass/fdo79129.docx	Writer OOXML pass sample
+xlsx	sc/qa/extras/testdocuments/forcepoint97.xlsx	Calc import/export sample
+xlsx	sc/qa/uitest/data/autofilter/tdf116818.xlsx	Calc autofilter sample
+xlsx	sc/qa/uitest/data/autofilter/tdf137626.xlsx	Calc autofilter sample
+xlsx	sc/qa/uitest/data/autofilter/tdf140469.xlsx	Calc autofilter sample
+xlsx	sc/qa/uitest/data/autofilter/tdf140968.xlsx	Calc autofilter sample
+xlsx	sc/qa/uitest/data/autofilter/tdf142579.xlsx	Calc autofilter sample
+xlsx	sc/qa/uitest/data/autofilter/tdf142580.xlsx	Calc autofilter sample
+xlsx	sc/qa/uitest/data/autofilter/time_value.xlsx	Calc autofilter time value sample
+xlsx	sc/qa/uitest/data/hashIncompatible.xlsx	Calc hash compatibility sample
+pptx	sd/qa/filter/eppt/data/custom-shape-bitmap-fill.pptx	Impress custom shape fill sample
+pptx	sd/qa/filter/eppt/data/video-loop.pptx	Impress media loop sample
+pptx	sd/qa/uitest/data/embedded.pptx	Impress embedded object sample
+pptx	sd/qa/uitest/data/tdf144943.pptx	Impress UI regression sample
+pptx	sd/qa/unit/data/BoldonseFontEmbedded.pptx	Impress embedded font sample
+pptx	sd/qa/unit/data/TextDistancesInsets1.pptx	Impress text distance sample
+pptx	sd/qa/unit/data/TextDistancesInsets2.pptx	Impress text distance sample [alpha-known-defect: fo:padding-bottom serialization regex mismatch in odp roundtrip; tracked under sd serialization]
+pptx	sd/qa/unit/data/TextDistancesInsets3.pptx	Impress text distance sample
+pptx	sd/qa/unit/data/TextFittingComparisonWithMSO_1.pptx	Impress MSO text fitting sample

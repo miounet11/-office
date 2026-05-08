@@ -1,0 +1,120 @@
+{
+  "id": "weekly-report-outline",
+  "title_zh": "周报汇报草稿",
+  "language": "zh-CN",
+  "source_module": "writer",
+  "source_refs": [
+    {
+      "id": "doc-root",
+      "kind": "document",
+      "path": "writer/document",
+      "label_zh": "当前 Writer 文档"
+    },
+    {
+      "id": "heading-progress",
+      "kind": "heading",
+      "path": "writer/outline/1",
+      "label_zh": "本周进展"
+    },
+    {
+      "id": "table-risk",
+      "kind": "table",
+      "path": "writer/table/1",
+      "label_zh": "风险表"
+    }
+  ],
+  "slides": [
+    {
+      "id": "slide-title",
+      "section_zh": "封面",
+      "title_zh": "周报汇报草稿",
+      "layout": "title",
+      "notes_zh": "保留为可编辑标题页。",
+      "placeholders": [
+        {
+          "id": "ph-title",
+          "intent": "title",
+          "editable": true,
+          "source_ref": "doc-root"
+        }
+      ]
+    },
+    {
+      "id": "slide-progress",
+      "section_zh": "进展",
+      "title_zh": "本周进展",
+      "layout": "title-body",
+      "bullets": [
+        {
+          "text_zh": "完成兼容性冒烟验证",
+          "level": 1,
+          "source_ref": "heading-progress"
+        },
+        {
+          "text_zh": "补充智能办公契约测试",
+          "level": 1,
+          "source_ref": "heading-progress"
+        }
+      ],
+      "notes_zh": "演讲备注来自 Writer 段落摘要。",
+      "placeholders": [
+        {
+          "id": "ph-progress-title",
+          "intent": "title",
+          "editable": true,
+          "source_ref": "heading-progress"
+        },
+        {
+          "id": "ph-progress-body",
+          "intent": "body",
+          "editable": true,
+          "source_ref": "heading-progress"
+        },
+        {
+          "id": "ph-progress-notes",
+          "intent": "speaker-notes",
+          "editable": true,
+          "source_ref": "heading-progress"
+        }
+      ]
+    },
+    {
+      "id": "slide-risk",
+      "section_zh": "风险",
+      "title_zh": "风险与下一步",
+      "layout": "two-column",
+      "bullets": [
+        {
+          "text_zh": "外部验证器资产仍缺失",
+          "level": 1,
+          "source_ref": "table-risk"
+        },
+        {
+          "text_zh": "下一步保持本地离线优先",
+          "level": 1,
+          "source_ref": "table-risk"
+        }
+      ],
+      "placeholders": [
+        {
+          "id": "ph-risk-title",
+          "intent": "title",
+          "editable": true,
+          "source_ref": "table-risk"
+        },
+        {
+          "id": "ph-risk-left",
+          "intent": "two-column-left",
+          "editable": true,
+          "source_ref": "table-risk"
+        },
+        {
+          "id": "ph-risk-right",
+          "intent": "two-column-right",
+          "editable": true,
+          "source_ref": "table-risk"
+        }
+      ]
+    }
+  ]
+}

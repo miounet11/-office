@@ -1,0 +1,131 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kqoffice.local/schemas/kqoffice-plugin.schema.json",
+  "title": "KQOffice Plugin Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "name_zh",
+    "version",
+    "capabilities",
+    "modules",
+    "network",
+    "privacy",
+    "entrypoints",
+    "failure_behavior"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9.-]{2,80}$"
+    },
+    "name_zh": {
+      "type": "string",
+      "minLength": 1
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:[-+][A-Za-z0-9.-]+)?$"
+    },
+    "description_zh": {
+      "type": "string"
+    },
+    "capabilities": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "enum": [
+          "formatting",
+          "diagnostics",
+          "translation",
+          "ai-writing",
+          "ai-table",
+          "ai-presentation",
+          "template-pack",
+          "connector"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "modules": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "enum": ["writer", "calc", "impress", "draw", "shared"]
+      },
+      "uniqueItems": true
+    },
+    "network": {
+      "type": "string",
+      "enum": ["offline", "local", "private", "cloud"]
+    },
+    "privacy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["requires_user_consent", "context_scope_zh"],
+      "properties": {
+        "requires_user_consent": {
+          "type": "boolean",
+          "const": true
+        },
+        "context_scope_zh": {
+          "type": "string",
+          "minLength": 1
+        },
+        "stores_document_content": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    },
+    "entrypoints": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "label_zh", "command", "placement"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9.-]{2,80}$"
+          },
+          "label_zh": {
+            "type": "string",
+            "minLength": 1
+          },
+          "command": {
+            "type": "string",
+            "minLength": 1
+          },
+          "placement": {
+            "type": "string",
+            "enum": ["workbench", "toolbar", "context-menu", "panel"]
+          }
+        }
+      }
+    },
+    "failure_behavior": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["document_mutation_on_failure", "output_mode", "message_zh"],
+      "properties": {
+        "document_mutation_on_failure": {
+          "type": "string",
+          "const": "none"
+        },
+        "output_mode": {
+          "type": "string",
+          "enum": ["preview", "editable-insertion", "diagnostic-only"]
+        },
+        "message_zh": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

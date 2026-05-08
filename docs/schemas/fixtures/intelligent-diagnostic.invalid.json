@@ -1,0 +1,18 @@
+{
+  "id": "mixed-fonts",
+  "module": "writer",
+  "severity": "critical",
+  "title_zh": "正文存在混用字体",
+  "message_zh": "这条示例应当失败，因为 id 和 severity 不符合契约。",
+  "location": {
+    "kind": "paragraph",
+    "label_zh": "第 3 段"
+  },
+  "actions": [
+    {
+      "id": "x",
+      "label_zh": "修复",
+      "mode": "apply"
+    }
+  ]
+}

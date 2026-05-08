@@ -1,0 +1,24 @@
+{
+  "schema_version": "m3-02",
+  "id": "doc.snapshot.writer-preview",
+  "module": "writer",
+  "scope": {
+    "kind": "selection",
+    "summary_zh": "当前选区的只读摘要",
+    "path": "writer.selection"
+  },
+  "revision_token": "writer-rev-42",
+  "locale": "zh-CN",
+  "redaction_mode": "redacted-summary",
+  "size_limit": {
+    "max_chars": 1200,
+    "max_objects": 20
+  },
+  "content_included": false,
+  "unsupported_content": [
+    {
+      "kind": "macro",
+      "summary_zh": "宏内容不进入能力请求"
+    }
+  ]
+}

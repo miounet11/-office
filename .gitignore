@@ -1,4 +1,6 @@
 .worktrees/
+.clavue/
+.superpowers/
 
 # Local build/install outputs from configured LibreOffice-style trees
 /workdir/

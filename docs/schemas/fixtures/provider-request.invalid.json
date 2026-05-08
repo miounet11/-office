@@ -1,0 +1,23 @@
+{
+  "schema_version": "m3-02",
+  "id": "provider.request.cloud-preview",
+  "provider_mode": "cloud",
+  "capability_id": "writer.diagnostics.style-spacing",
+  "explicit_user_action": true,
+  "visible_context_summary_zh": "发送全文给云端服务",
+  "scoped_payload": {
+    "scope": "selected-range",
+    "includes_document_content": true,
+    "redaction_mode": "selected-context"
+  },
+  "timeout_policy": {
+    "timeout_ms": 5000,
+    "cancellable": true
+  },
+  "consent": {
+    "required": true,
+    "consent_id": "consent.cloud.demo"
+  },
+  "result_mode": "preview-only",
+  "document_mutation_allowed": false
+}

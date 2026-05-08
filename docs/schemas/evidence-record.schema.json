@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kqoffice.local/schemas/evidence-record.schema.json",
+  "title": "KQOffice Engine Capability Evidence Record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "id",
+    "capability_id",
+    "source",
+    "elapsed_ms",
+    "budget_status",
+    "diagnostic_count",
+    "validator_status",
+    "compatibility_status",
+    "failure_reason_zh",
+    "stores_document_content"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "m3-02"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9.-]{2,80}$"
+    },
+    "capability_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9.-]{2,80}$"
+    },
+    "source": {
+      "type": "string",
+      "enum": ["analyzer", "registry", "fixture-validator", "roundtrip", "provider", "plugin"]
+    },
+    "elapsed_ms": {
+      "type": "integer"
+    },
+    "budget_status": {
+      "type": "string",
+      "enum": ["not-required", "within-budget", "exceeded", "unknown"]
+    },
+    "diagnostic_count": {
+      "type": "integer"
+    },
+    "validator_status": {
+      "type": "string",
+      "enum": ["passed", "failed", "not-run"]
+    },
+    "compatibility_status": {
+      "type": "string",
+      "enum": ["passed", "failed", "not-run", "requires-proof"]
+    },
+    "failure_reason_zh": {
+      "type": "string"
+    },
+    "stores_document_content": {
+      "type": "boolean",
+      "const": false
+    }
+  }
+}
