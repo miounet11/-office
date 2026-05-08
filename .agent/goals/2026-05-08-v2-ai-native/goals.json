@@ -1,0 +1,159 @@
+{
+  "version": 1,
+  "id": "2026-05-08-v2-ai-native",
+  "status": "ready",
+  "runtime": "claude-code",
+  "goals": [
+    {
+      "id": "G1",
+      "title": "V2 master plan: 总体架构 / 时间线 / 风险 / wave 拓扑",
+      "status": "completed",
+      "depends_on": [],
+      "acceptance": [
+        "docs/product/v2-master-plan.md 存在 ≥ 3000 字",
+        "含 V2 north-star + 5 wave 概要 + 依赖拓扑 + 风险登记 + V1.5 衔接说明",
+        "引用现有 docs/architecture/*.md 与 docs/schemas/*",
+        "明确不在 V2 范围内的事项 (Non-goals)"
+      ],
+      "evidence": [
+        "docs/product/v2-master-plan.md (G1)",
+        "docs/product/v2/w1-provider-runtime-spec.md (G2)",
+        "docs/product/v2/w2-cmd-palette-spec.md (G3)",
+        "docs/product/v2/w3-writer-apply-runtime-spec.md (G4)",
+        "docs/product/v2/w4-select-to-act-spec.md (G5)",
+        "docs/product/v2/w5-async-cowork-spec.md (G6)"
+      ]
+    },
+    {
+      "id": "G2",
+      "title": "W1 Spec: Provider Runtime (本地 Ollama 优先 + 安全沙箱)",
+      "status": "completed",
+      "depends_on": [
+        "G1"
+      ],
+      "acceptance": [
+        "docs/product/v2/w1-provider-runtime-spec.md 存在",
+        "scope / file map / UNO 接口 / provider-request.schema 复用 / sandbox policy",
+        "含本地/私有/云三档 service mode 策略",
+        "≤ 4000 字"
+      ],
+      "evidence": [
+        "docs/product/v2-master-plan.md (G1)",
+        "docs/product/v2/w1-provider-runtime-spec.md (G2)",
+        "docs/product/v2/w2-cmd-palette-spec.md (G3)",
+        "docs/product/v2/w3-writer-apply-runtime-spec.md (G4)",
+        "docs/product/v2/w4-select-to-act-spec.md (G5)",
+        "docs/product/v2/w5-async-cowork-spec.md (G6)"
+      ]
+    },
+    {
+      "id": "G3",
+      "title": "W2 Spec: Cmd+K 命令调色板 (自然语言 → SfxDispatcher)",
+      "status": "completed",
+      "depends_on": [
+        "G1"
+      ],
+      "acceptance": [
+        "docs/product/v2/w2-cmd-palette-spec.md 存在",
+        "v0 fuzzy match (无 LLM) + v1 LLM 增强 两阶段",
+        "file map (cui/source/dialogs/commandpalette/) + sfx2 dispatch 集成",
+        "≤ 4000 字"
+      ],
+      "evidence": [
+        "docs/product/v2-master-plan.md (G1)",
+        "docs/product/v2/w1-provider-runtime-spec.md (G2)",
+        "docs/product/v2/w2-cmd-palette-spec.md (G3)",
+        "docs/product/v2/w3-writer-apply-runtime-spec.md (G4)",
+        "docs/product/v2/w4-select-to-act-spec.md (G5)",
+        "docs/product/v2/w5-async-cowork-spec.md (G6)"
+      ]
+    },
+    {
+      "id": "G4",
+      "title": "W3 Spec: Writer Apply Runtime (preview → diff → apply)",
+      "status": "completed",
+      "depends_on": [
+        "G1"
+      ],
+      "acceptance": [
+        "docs/product/v2/w3-writer-apply-runtime-spec.md 存在",
+        "从 IntelligentWriterAnalyzer preview-only 升级为 apply",
+        "Apply Plan schema 复用 + 段落级回滚 + evidence 记录",
+        "guardrail 引用现有 engine-capability-writer-apply-guardrail-m3-04.md",
+        "≤ 4000 字"
+      ],
+      "evidence": [
+        "docs/product/v2-master-plan.md (G1)",
+        "docs/product/v2/w1-provider-runtime-spec.md (G2)",
+        "docs/product/v2/w2-cmd-palette-spec.md (G3)",
+        "docs/product/v2/w3-writer-apply-runtime-spec.md (G4)",
+        "docs/product/v2/w4-select-to-act-spec.md (G5)",
+        "docs/product/v2/w5-async-cowork-spec.md (G6)"
+      ]
+    },
+    {
+      "id": "G5",
+      "title": "W4 Spec: Select-to-Act 浮窗 + Diff 审批视图",
+      "status": "completed",
+      "depends_on": [
+        "G1"
+      ],
+      "acceptance": [
+        "docs/product/v2/w4-select-to-act-spec.md 存在",
+        "vcl 上下文菜单基础 + sfx2 sidebar 容器 + Writer/Calc/Impress 三粒度",
+        "Diff 视图组件 schema (复用 Writer preview 数据结构)",
+        "≤ 4000 字"
+      ],
+      "evidence": [
+        "docs/product/v2-master-plan.md (G1)",
+        "docs/product/v2/w1-provider-runtime-spec.md (G2)",
+        "docs/product/v2/w2-cmd-palette-spec.md (G3)",
+        "docs/product/v2/w3-writer-apply-runtime-spec.md (G4)",
+        "docs/product/v2/w4-select-to-act-spec.md (G5)",
+        "docs/product/v2/w5-async-cowork-spec.md (G6)"
+      ]
+    },
+    {
+      "id": "G6",
+      "title": "W5 Spec: 异步任务管理器 (Cowork 风格委托)",
+      "status": "completed",
+      "depends_on": [
+        "G1"
+      ],
+      "acceptance": [
+        "docs/product/v2/w5-async-cowork-spec.md 存在",
+        "任务队列 + scheduler + cross-device hand-off (移动端 companion 限定审批，不编辑)",
+        "前期场景：周报 / PPT 提纲 / 合同审阅 / 数据整理",
+        "evidence + 撤销机制",
+        "≤ 4000 字"
+      ],
+      "evidence": [
+        "docs/product/v2-master-plan.md (G1)",
+        "docs/product/v2/w1-provider-runtime-spec.md (G2)",
+        "docs/product/v2/w2-cmd-palette-spec.md (G3)",
+        "docs/product/v2/w3-writer-apply-runtime-spec.md (G4)",
+        "docs/product/v2/w4-select-to-act-spec.md (G5)",
+        "docs/product/v2/w5-async-cowork-spec.md (G6)"
+      ]
+    },
+    {
+      "id": "G7",
+      "title": "Commit V2 plan + 更新 milestone doc 衔接",
+      "status": "ready",
+      "depends_on": [
+        "G2",
+        "G3",
+        "G4",
+        "G5",
+        "G6"
+      ],
+      "acceptance": [
+        "git add docs/product/v2*.md docs/product/v2/ .agent/",
+        "Commit message 清晰列出 7 个 spec 文档",
+        "docs/product/v1.5-completion-milestone.md 末尾追加 V2 起点引用",
+        "git log 显示新 commit"
+      ],
+      "evidence": []
+    }
+  ]
+}
