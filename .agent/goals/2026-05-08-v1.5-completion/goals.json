@@ -85,7 +85,7 @@
     {
       "id": "G5",
       "title": "全部改动 stage + commit",
-      "status": "ready",
+      "status": "completed",
       "depends_on": [
         "G4"
       ],
@@ -95,7 +95,10 @@
         "git log 显示新 commit (合理 message)",
         "git status 干净 (除 generated/build outputs)"
       ],
-      "evidence": []
+      "evidence": [
+        "BUILDDIR commit 712ef5d72",
+        "SRCDIR commit 515e1f2b2"
+      ]
     },
     {
       "id": "G6",
