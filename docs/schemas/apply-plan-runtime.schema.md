@@ -1,5 +1,12 @@
 # `apply-plan-runtime.schema.json` 人工解读手册
 
+<!-- schema-coherence
+schema: docs/schemas/apply-plan-runtime.schema.json
+schema_version_const: v2-w3-runtime-1
+required_count: 6
+total_props: 6
+-->
+
 > Reader's guide for the V2 W3 runtime ApplyPlan envelope. The schema
 > itself is the single source of truth
 > (`docs/schemas/apply-plan-runtime.schema.json`, JSON Schema 2020-12,

@@ -1,5 +1,12 @@
 # `inline-action-request.schema.json` 人工解读手册
 
+<!-- schema-coherence
+schema: docs/schemas/inline-action-request.schema.json
+schema_version_const: v2-w4-1
+required_count: 7
+total_props: 9
+-->
+
 > Reader's guide for the V2 W4 inline-action-request envelope. The
 > schema itself is the single source of truth
 > (`docs/schemas/inline-action-request.schema.json`, JSON Schema 2020-12,

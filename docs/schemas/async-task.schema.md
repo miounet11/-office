@@ -1,5 +1,12 @@
 # `async-task.schema.json` 人工解读手册
 
+<!-- schema-coherence
+schema: docs/schemas/async-task.schema.json
+schema_version_const: 1
+required_count: 11
+total_props: 14
+-->
+
 > Reader's guide for the V2 W5 async-task envelope. The schema itself
 > is the single source of truth (`docs/schemas/async-task.schema.json`,
 > JSON Schema 2020-12, 14 props / 11 required / `additionalProperties:false`,
