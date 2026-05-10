@@ -58,6 +58,7 @@
 | Day-1f | ✅ | `docs/schemas/provider-evidence.schema.json` + 3 fixtures | L13 | JSON Schema 2020-12; 17-token enum |
 | Day-1g | ✅ | Multi-codepoint UTF-8 boundary fixtures | L12 | +5 cppunit cases (emoji, fullwidth, escaped quotes); schema-level extended-naming fixture `apply-plan-runtime.utf8.json` (L44) covers ZWJ family emoji + RTL mix + CJK ext-B + nested escape — round-trip verified by canonical fixture validator |
 | Day-1h | ✅ | `tests/v2-provider-evidence-schema-test.sh` | L14 | Programmatic schema↔C++ drift lock |
+| Schema lock H7 | ✅ partial | `tests/v2-apply-plan-runtime-schema-test.sh` (3 fixtures) | L55 | Schema kind enum order ↔ W3 spec §"Patch Kinds（v1）" table; `additionalProperties:false` envelope guard; `schema_version="v2-w3-runtime-1"` const guard. Auto-promotes to full-enforce when `${KDOFFICE_SRC_ROOT}/sw/source/uibase/inline-actions/SwUndoApplyPatch*.hxx` (aggregator OR ≥1 subclass) lands. |
 
 ## W4 — Select-to-act
 
@@ -109,7 +110,7 @@ exists.
 ## Authoritative artifacts
 
 - **Goals** (status snapshot): `.agent/goals/2026-05-08-v2-ai-native/goals.json`
-- **Ledger** (append-only timeline): `.agent/goals/2026-05-08-v2-ai-native/ledger.jsonl` (54 entries)
+- **Ledger** (append-only timeline): `.agent/goals/2026-05-08-v2-ai-native/ledger.jsonl` (55 entries)
 - **Narratives**:
   - `docs/product/v2/day0-skeleton-landed.md` — Day-0 skeleton landing
   - `docs/product/v2/day1-progress.md` — Day-1{a..h} per-step rationale
@@ -135,6 +136,7 @@ exists.
 | `applyPlanValidationStatus` distinct-per-code | `testApplyPlanStatusDistinctPerCode` | 2026-05-09 |
 | `applyPlanValidationMessage` distinct-per-code | `testApplyPlanMessageDistinctPerCode` | 2026-05-09 |
 | W5 async-task schema enum order = token-lock table order (partial-enforce until W5 Day-0 C++ lands) | `tests/v2-async-task-schema-test.sh` | 2026-05-10 (partial) |
+| W3 apply-plan-runtime schema kind enum order = W3 spec §"Patch Kinds（v1）" table order (partial-enforce until SwUndoApplyPatch*.hxx land) | `tests/v2-apply-plan-runtime-schema-test.sh` | 2026-05-11 (partial) |
 | W4 inline-action-request schema oneOf 3-branch action enum order = W4 spec §"Action enum lock" table order (partial-enforce until W4 Day-0 C++ lands) | `tests/v2-inline-action-request-schema-test.sh` | 2026-05-11 (partial) |
 | W4 + W5 specs carry `## Day-0 Entry-Point Plan` section | `tests/v2-plan-baseline-test.sh` (check 7) | 2026-05-10 |
 | W4 spec carries `### Action enum lock` subsection (L37) | `tests/v2-plan-baseline-test.sh` (check 8) | 2026-05-10 |
