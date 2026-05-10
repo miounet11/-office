@@ -36,12 +36,16 @@ fail() {
 }
 
 pass_count=0
-manuals=(
-    "docs/schemas/async-task.schema.md"
-    "docs/schemas/inline-action-request.schema.md"
-    "docs/schemas/apply-plan-runtime.schema.md"
-    "docs/schemas/provider-evidence.schema.md"
-)
+# Glob-discovered manual roster: every docs/schemas/*.schema.md MUST
+# carry a fact-block. Symmetric to H2 check 10 (which locks the
+# manual ↔ lane-status reference). New manual files auto-enroll;
+# the H2 lock then forces the lane-status mirror in the same PR.
+shopt -s nullglob
+manuals=( docs/schemas/*.schema.md )
+shopt -u nullglob
+if (( ${#manuals[@]} == 0 )); then
+    fail "no docs/schemas/*.schema.md reader's manuals found"
+fi
 
 for manual in "${manuals[@]}"; do
     [[ -f "$manual" ]] || fail "missing manual $manual"
@@ -163,4 +167,7 @@ done
 
 printf 'Status: passed\n'
 printf 'Checks: %d\n' "$pass_count"
-printf 'Manuals locked: %d (W1 provider-evidence + W3 apply-plan-runtime + W4 inline-action-request + W5 async-task)\n' "${#manuals[@]}"
+printf 'Manuals locked: %d (glob-discovered docs/schemas/*.schema.md)\n' "${#manuals[@]}"
+for m in "${manuals[@]}"; do
+    printf '  - %s\n' "$m"
+done
