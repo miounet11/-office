@@ -22,7 +22,7 @@
 | W2  | Cmd+K palette                                  | Day-1a + RecentStore + Controller (incl. controller cppunit) | Day-1b (.uno: dispatch + popover GUI), Day-1c (pinyin) | 33 (8 idx + 8 fuzzy + 10 recent + 7 controller) |
 | W3  | Writer apply-runtime + ApplyPlan validator     | Day-1a/c/d/e/f/g/h   | Day-1b (SwDocShell wiring) | 51 (counted in W1 binary) |
 | W4  | Select-to-act (Writer/Calc/Impress action bubble) | spec + Day-0 entry-point plan + enum lock + schema + 5 fixtures + H5 partial-enforce | Day-0 C++ gated (needs scope auth for `sw/source/uibase/inline-actions/`, `sc/source/ui/inline-actions/`, `sd/source/ui/inline-actions/`, `svx/source/sidebar/diff-review/`) | 0 |
-| W5  | Async cowork (long-running tasks + diff review)   | schema + 4 fixtures (valid/invalid + terminal-failed + cancelled boundaries) + reader's manual + H4 partial-enforce | Day-0 C++ gated (needs scope auth for `kqoffice/source/ai/cowork/**`, `kqoffice/qa/cppunit/test_cowork*`); H4 in partial-enforce until C++ lands | 0 |
+| W5  | Async cowork (long-running tasks + diff review)   | schema + 7 fixtures (valid/invalid + pending/running/applied/cancelled/terminal-failed boundaries) + reader's manual + H4 partial-enforce | Day-0 C++ gated (needs scope auth for `kqoffice/source/ai/cowork/**`, `kqoffice/qa/cppunit/test_cowork*`); H4 in partial-enforce until C++ lands | 0 |
 
 **ai-native cppunit suite total**: 84 cases claimed (51 provider + 33 cui = 8 idx + 8 fuzzy + 10 recent + 7 controller). Workdir logs on this BUILDDIR HEAD verify 77 (controller binary unbuilt). L75 (2026-05-11) attempted upgrade — `make CppunitTest_cui_commandpalette_controller` FAILED at harfbuzz meson with `UnicodeDecodeError byte 0xe5 in position 13` (non-ASCII path `可点office` in BUILDDIR root). OK(84) upgrade is **blocked on B2** (build environment), see handoff §State at handoff for full evidence pointer.
 
@@ -86,7 +86,7 @@ required-ness to action token, exercised at fixture layer.
 Spec + Day-0 entry-point plan + token lock + schema + fixtures
 (`docs/product/v2/w5-async-cowork-spec.md` §"Day-0 Entry-Point Plan"
 → §"Token lock"; `docs/schemas/async-task.schema.json` +
-`docs/schemas/fixtures/async-task.{valid,invalid,terminal-failed,cancelled}.json`;
+`docs/schemas/fixtures/async-task.{valid,invalid,pending,running,applied,terminal-failed,cancelled}.json`;
 harness `tests/v2-async-task-schema-test.sh` in **partial-enforce** mode).
 No production code yet. Day-0 C++ is gated on confirmation that the
 V2 allow-list extends from `kqoffice/source/ai/provider/` to
