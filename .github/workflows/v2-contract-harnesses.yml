@@ -1,0 +1,69 @@
+name: V2 contract harnesses
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/schemas/**'
+      - 'docs/product/v2/**'
+      - 'docs/CLAUDE-NOTES.md'
+      - 'kqoffice/source/ai/provider/**'
+      - 'tests/v2-*.sh'
+      - 'bin/intelligent-contract-fixtures.sh'
+      - '.github/workflows/v2-contract-harnesses.yml'
+  pull_request:
+    paths:
+      - 'docs/schemas/**'
+      - 'docs/product/v2/**'
+      - 'docs/CLAUDE-NOTES.md'
+      - 'kqoffice/source/ai/provider/**'
+      - 'tests/v2-*.sh'
+      - 'bin/intelligent-contract-fixtures.sh'
+      - '.github/workflows/v2-contract-harnesses.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: v2-contract-harnesses-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  harnesses:
+    name: V2 contract harnesses
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Show python3 version
+        run: python3 --version
+
+      - name: H1 — V2 Day-0 skeleton doc coherence
+        run: bash tests/v2-day0-skeleton-test.sh
+
+      - name: H2 — V2 plan baseline (specs + fixtures + goals)
+        run: bash tests/v2-plan-baseline-test.sh
+
+      - name: H3 — provider-evidence schema ↔ C++ drift lock
+        run: bash tests/v2-provider-evidence-schema-test.sh
+
+      - name: H4 — V1.5 m3-02 intelligent-contract fixtures (24/24)
+        run: |
+          bash bin/intelligent-contract-fixtures.sh
+          # Fail loudly if any fixture entry didn't pass.
+          fail_count="$(grep -c '| failed |' tmp/intelligent-contract-fixtures.md || true)"
+          pass_count="$(grep -c '| passed |' tmp/intelligent-contract-fixtures.md || true)"
+          echo "Fixture results: passed=${pass_count} failed=${fail_count}"
+          if [ "${fail_count}" != "0" ]; then
+            echo "::error::V1.5 m3-02 fixtures regressed (${fail_count} failed)"
+            exit 1
+          fi
+          if [ "${pass_count}" -lt 24 ]; then
+            echo "::error::Expected ≥24 fixtures to pass; got ${pass_count}"
+            exit 1
+          fi

@@ -1,0 +1,23 @@
+{
+  "schema_version": "m3-02",
+  "id": "provider.request.ok",
+  "provider_mode": "local",
+  "capability_id": "writer.diagnostics.style-spacing",
+  "explicit_user_action": true,
+  "visible_context_summary_zh": "本地预览：仅发送脱敏诊断摘要",
+  "scoped_payload": {
+    "scope": "diagnostic-summary",
+    "includes_document_content": false,
+    "redaction_mode": "redacted-summary"
+  },
+  "timeout_policy": {
+    "timeout_ms": 5000,
+    "cancellable": true
+  },
+  "consent": {
+    "required": false,
+    "consent_id": ""
+  },
+  "result_mode": "preview-only",
+  "document_mutation_allowed": false
+}

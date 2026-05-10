@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kqoffice.local/schemas/provider-evidence.schema.json",
+  "title": "KQOffice AI Provider Runtime Evidence Envelope",
+  "description": "Envelope written by kqoffice::ai::EvidenceRecorder for every Provider::call() invocation. Distinct from evidence-record.schema.json (which is the m3-02 capability/diagnostic fixture-validator record). The provider-runtime envelope is per-call audit trail covering: which service mode handled the request, which provider/model, request/response sizes, duration, and the canonical status token (including the apply-plan-* tokens emitted when ApplyPlanValidator rejects a payload).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "evidence_id",
+    "timestamp",
+    "service_mode",
+    "provider",
+    "capability",
+    "status",
+    "request_size_bytes",
+    "response_size_bytes",
+    "duration_ms"
+  ],
+  "properties": {
+    "evidence_id": {
+      "type": "string",
+      "description": "Per-process unique id minted by EvidenceRecorder. Format: ev-<hex16> with timestamp + monotonic counter components.",
+      "pattern": "^ev-[0-9a-f]{16}$"
+    },
+    "timestamp": {
+      "type": "string",
+      "description": "ISO-8601 UTC timestamp with seconds precision and 'Z' suffix.",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+    },
+    "service_mode": {
+      "type": "string",
+      "description": "Active ServiceModePolicy mode at the time of the call.",
+      "enum": ["offline", "private", "cloud"]
+    },
+    "provider": {
+      "type": "string",
+      "description": "Backend identifier. 'stub' before any backend is wired (Day-0/Day-1a). 'ollama:<model>' once OllamaAdapter is in the call path. Future cloud entries use 'cloud:<vendor>:<model>'."
+    },
+    "capability": {
+      "type": "string",
+      "description": "Capability id requested by the caller. Empty when the request was rejected by IllegalArgumentException before reaching the policy gate."
+    },
+    "status": {
+      "type": "string",
+      "description": "Canonical outcome token. ASCII-kebab so audit grep is locale-independent. The apply-plan-* family is emitted by ApplyPlanValidator (via applyPlanValidationStatus) when an ApplyPlan payload is refused before any document mutation.",
+      "enum": [
+        "ok",
+        "provider-error",
+        "policy-denied",
+        "timeout",
+        "apply-plan-not-json",
+        "apply-plan-missing-field",
+        "apply-plan-schema-version-mismatch",
+        "apply-plan-id-pattern",
+        "apply-plan-revision-precondition",
+        "apply-plan-deterministic-false",
+        "apply-plan-rollback-false",
+        "apply-plan-undo-group-mode",
+        "apply-plan-undo-label-empty",
+        "apply-plan-failure-behavior",
+        "apply-plan-failure-message-empty",
+        "apply-plan-operation-summary-empty",
+        "apply-plan-repeated-diagnostics"
+      ]
+    },
+    "request_size_bytes": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "response_size_bytes": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "duration_ms": {
+      "type": "integer",
+      "minimum": 0
+    }
+  }
+}

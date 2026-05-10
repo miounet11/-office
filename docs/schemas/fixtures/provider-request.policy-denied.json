@@ -1,0 +1,23 @@
+{
+  "schema_version": "m3-02",
+  "id": "provider.request.policy-denied",
+  "provider_mode": "cloud",
+  "capability_id": "writer.diagnostics.style-spacing",
+  "explicit_user_action": true,
+  "visible_context_summary_zh": "云端模式在未授权时将被策略拒绝",
+  "scoped_payload": {
+    "scope": "diagnostic-summary",
+    "includes_document_content": false,
+    "redaction_mode": "redacted-summary"
+  },
+  "timeout_policy": {
+    "timeout_ms": 5000,
+    "cancellable": true
+  },
+  "consent": {
+    "required": false,
+    "consent_id": ""
+  },
+  "result_mode": "preview-only",
+  "document_mutation_allowed": false
+}

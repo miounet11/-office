@@ -1,0 +1,35 @@
+{
+  "schema_version": "v2-w3-runtime-1",
+  "plan_id": "ap-20260510-w3-fixture-001",
+  "source_diagnostic_id": "diag-20260510-style-spacing-007",
+  "doc_snapshot_hash": "sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+  "preview_only": false,
+  "patches": [
+    {
+      "patch_id": "p1",
+      "kind": "paragraph-replace",
+      "target": {"paragraph_id": "swpara-42"},
+      "severity": "minor",
+      "rationale": "去除冗余表述",
+      "before": "本段表述太啰嗦，重复说了好几遍。",
+      "after": "本段表述简洁，无重复。"
+    },
+    {
+      "patch_id": "p2",
+      "kind": "paragraph-format",
+      "target": {"paragraph_id": "swpara-43"},
+      "severity": "minor",
+      "rationale": "层级结构调整",
+      "format_changes": {"style": "Heading 2"}
+    },
+    {
+      "patch_id": "p3",
+      "kind": "text-format",
+      "target": {"paragraph_id": "swpara-44"},
+      "severity": "normal",
+      "rationale": "强调关键术语",
+      "range": {"start": 5, "length": 6},
+      "format_changes": {"bold": true}
+    }
+  ]
+}

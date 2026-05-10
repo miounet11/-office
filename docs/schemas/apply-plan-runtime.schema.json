@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kqoffice.local/schemas/apply-plan-runtime.schema.json",
+  "title": "KQOffice V2 W3 Writer Apply Runtime Plan",
+  "description": "Runtime ApplyPlan envelope consumed by SwDocShell::applyDiagnosticsPlan. Distinct from apply-plan.schema.json (V1.5 m3-02 capability descriptor). Per-kind patch internal shape is intentionally NOT locked here — each SwUndoApplyPatch implementation (W3 Day-1b/c/d) will land its own per-kind validation. This envelope locks only what is stable across all patch kinds: patch_id, kind enum, target paragraph_id, severity.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "plan_id",
+    "source_diagnostic_id",
+    "doc_snapshot_hash",
+    "patches",
+    "preview_only"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "v2-w3-runtime-1"
+    },
+    "plan_id": {
+      "type": "string",
+      "pattern": "^ap-[a-z0-9-]{3,80}$"
+    },
+    "source_diagnostic_id": {
+      "type": "string",
+      "pattern": "^diag-[a-z0-9-]{3,80}$"
+    },
+    "doc_snapshot_hash": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "patches": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 256,
+      "items": {
+        "type": "object",
+        "required": ["patch_id", "kind", "target"],
+        "properties": {
+          "patch_id": {
+            "type": "string",
+            "pattern": "^p[0-9]+$"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "paragraph-replace",
+              "paragraph-insert-after",
+              "paragraph-delete",
+              "paragraph-format",
+              "paragraph-reformat",
+              "text-range-replace",
+              "text-format"
+            ]
+          },
+          "target": {
+            "type": "object",
+            "required": ["paragraph_id"],
+            "properties": {
+              "paragraph_id": {
+                "type": "string",
+                "pattern": "^swpara-[0-9]+$"
+              }
+            }
+          },
+          "severity": {
+            "type": "string",
+            "enum": ["minor", "normal", "major"]
+          },
+          "rationale": {
+            "type": "string",
+            "maxLength": 2000
+          }
+        }
+      }
+    },
+    "preview_only": {
+      "type": "boolean"
+    }
+  }
+}

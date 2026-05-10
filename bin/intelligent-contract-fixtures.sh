@@ -151,7 +151,7 @@ fixtures = sorted(fixture_dir.glob("*.json"))
 if not fixtures:
     raise SystemExit(f"No fixture JSON files found in {fixture_dir}")
 
-results: list[tuple[str, str, str, list[str]]] = []
+results: list[tuple[str, str, str, str, list[str]]] = []
 failed = False
 
 for fixture in fixtures:
@@ -163,13 +163,32 @@ for fixture in fixtures:
         schema_name = name.removesuffix(".invalid.json")
         expectation = "invalid"
     else:
-        results.append((name, "unknown", "failed", ["fixture must end with .valid.json or .invalid.json"]))
-        failed = True
-        continue
+        # Extended naming: <schema>.<status-token>.json (e.g.
+        # provider-request.ok.json, provider-evidence.apply-plan-failure.json).
+        # We treat the *first* dot-segment of the basename as the
+        # schema candidate. The fixture is implicitly expected to
+        # validate ("valid"); names that need to assert invalidity
+        # must continue using the <schema>.invalid.json form.
+        # Falls back to the strict error message if no
+        # <candidate>.schema.json exists, so unknown names still
+        # surface clearly.
+        stem = name.removesuffix(".json")
+        candidate = stem.split(".", 1)[0]
+        candidate_schema = schema_dir / f"{candidate}.schema.json"
+        if candidate_schema.exists():
+            schema_name = candidate
+            expectation = "valid"
+        else:
+            results.append((name, "<unresolved>", "unknown", "failed",
+                            ["fixture must end with .valid.json or "
+                             ".invalid.json, or use <schema>.<token>.json "
+                             "with a matching schema file"]))
+            failed = True
+            continue
 
     schema_path = schema_dir / f"{schema_name}.schema.json"
     if not schema_path.exists():
-        results.append((name, expectation, "failed", [f"missing schema {schema_path.name}"]))
+        results.append((name, schema_name, expectation, "failed", [f"missing schema {schema_path.name}"]))
         failed = True
         continue
 
@@ -181,7 +200,7 @@ for fixture in fixtures:
     status = "passed" if passed else "failed"
     if not passed:
         failed = True
-    results.append((name, expectation, status, errors))
+    results.append((name, schema_name, expectation, status, errors))
 
 created_at = subprocess.check_output(["date", "+%Y-%m-%d %H:%M:%S %z"], text=True).strip()
 
@@ -195,7 +214,8 @@ lines.append(f"Fixture dir: `{fixture_dir.relative_to(repo_root)}`")
 lines.append("")
 lines.append("## Summary")
 lines.append("")
-schema_names = sorted({name.removesuffix(".valid.json").removesuffix(".invalid.json") for name, _, _, _ in results})
+schema_names = sorted({schema_name for _, schema_name, _, _, _ in results
+                       if schema_name != "<unresolved>"})
 lines.append(f"- Fixtures checked: {len(results)}")
 lines.append(f"- Schemas covered: {len(schema_names)}")
 lines.append(f"- Status: **{'failed' if failed else 'passed'}**")
@@ -207,12 +227,12 @@ for schema_name in schema_names:
 lines.append("")
 lines.append("## Results")
 lines.append("")
-lines.append("| Fixture | Expected | Status |")
-lines.append("| --- | --- | --- |")
-for name, expectation, status, _ in results:
-    lines.append(f"| `{name}` | {expectation} | {status} |")
+lines.append("| Fixture | Schema | Expected | Status |")
+lines.append("| --- | --- | --- | --- |")
+for name, schema_name, expectation, status, _ in results:
+    lines.append(f"| `{name}` | `{schema_name}` | {expectation} | {status} |")
 
-details = [(name, errors) for name, _, status, errors in results if errors and status == "failed"]
+details = [(name, errors) for name, _, _, status, errors in results if errors and status == "failed"]
 if details:
     lines.append("")
     lines.append("## Failure Details")

@@ -1,0 +1,15 @@
+{
+  "schema_version": "v2-w3-runtime-1",
+  "plan_id": "BAD-PLAN-ID-FORMAT",
+  "source_diagnostic_id": "diag-20260510-test",
+  "doc_snapshot_hash": "not-a-sha256",
+  "preview_only": false,
+  "patches": [
+    {
+      "patch_id": "P_INVALID",
+      "kind": "paragraph-rewrite-bogus",
+      "target": {"paragraph_id": "para-no-prefix"},
+      "severity": "critical"
+    }
+  ]
+}
