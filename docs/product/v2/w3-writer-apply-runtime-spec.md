@@ -211,6 +211,28 @@ W3 不实现：
 2. paragraph_id 在 LO 内不稳定（增删段落后 ID 变化） → 改用 SwNodeIndex + text_hash
 3. EvidenceRecorder 阻塞主线程 → 改为 async queue（与 W1 一致）
 
+## Schema reader's manual
+
+The W3 runtime ApplyPlan envelope schema body lives at
+`docs/schemas/apply-plan-runtime.schema.json`. A 9-section
+human-derivation guide explaining *why* each envelope key exists,
+*why* `patches[]` items are intentionally schema-open (per-kind
+payload validation deferred to each `SwUndoApplyPatch` impl + C++
+`ApplyPlanValidator` 14-token enum), and what's locked vs deferred
+(cross-patch ordering, total-change size cap, per-patch evidence
+back-pointer) lives at `docs/schemas/apply-plan-runtime.schema.md`.
+Read the manual before hand-writing a new `SwUndoApplyPatch`
+subclass or a diagnostic-pass Plan generator — it captures the
+envelope/per-kind layering rationale that isn't recoverable from
+the schema body alone.
+
+Token-lock anchor: this spec's §"Patch Kinds（v1）" table (above)
+is the single source of truth the schema's 7-token `kind` enum
+mirrors, and the C++ ApplyPlanValidator's 14-token
+`ValidationCode` enum branches against. Drift is caught by H2
+(`tests/v2-plan-baseline-test.sh`) at fixture-validation level
+plus the H1 schema↔C++ runtime-token subset check.
+
 ## Dependencies
 
 - W1：provider runtime 必须就位（ApplyPlan 来源）
