@@ -292,17 +292,61 @@ TaskEvidence (W5)
 > to land the linkable surface so subsequent sub-steps can fan out
 > without colliding. No real backend, no scheduler, no companion sync.
 
+### Token lock (source-of-truth for Day-0 headers + schema)
+
+These are the exact ASCII kebab-case tokens W5 Day-0 will hard-code into
+the C++ enums, the JSON Schema enum lists, and the harness drift-lock
+asserts. Locked here so spec wording, header tokens, and schema enum
+strings can never disagree silently. `TaskState` mirrors the spec's
+existing state-machine diagram at §"状态机" (six states; `awaiting-review`
+is the standard term, **not** `needs-review`).
+
+**`enum class TaskKind` — 4 tokens (one per scenario at §"4 个前期场景"):**
+
+| Token | Scenario | Output target |
+|---|---|---|
+| `weekly-report`        | 场景 1 周报生成      | new Writer doc under `~/Documents/可圈office/周报/<date>.odt` |
+| `outline-to-slides`    | 场景 2 PPT 提纲 → PPT | new Impress doc |
+| `contract-review`      | 场景 3 合同审阅       | original Writer + N annotations + risk-summary Writer |
+| `data-cleanup`         | 场景 4 数据整理       | same Calc workbook (cleaned in place) |
+
+**`enum class TaskState` — 6 tokens (matches §"状态机" diagram exactly):**
+
+| Token | Meaning | Valid next states |
+|---|---|---|
+| `pending`          | task accepted, queued                | `running`, `cancelled` |
+| `running`          | provider/applier loop active         | `awaiting-review`, `failed`, `cancelled` |
+| `awaiting-review`  | apply-plan ready, user not yet acted | `running` (refine) , `applied`, `cancelled` |
+| `applied`          | apply-plan accepted + applied via W3 | terminal |
+| `failed`           | provider error / apply error / abort | terminal |
+| `cancelled`        | user-cancelled at any non-terminal   | terminal |
+
+**Naming rules (locked):**
+- Lowercase ASCII, kebab-case, no underscores.
+- Past-participle for terminals (`applied`, `cancelled`, `failed`),
+  present-participle / gerund for in-flight (`running`,
+  `awaiting-review`, `pending`).
+- TaskKind tokens never collide with W1 capability tokens; the
+  capability tokens (`extract-decisions`, `extract-todos`,
+  `assemble-report`, `outline-to-slides`, `contract-risk`,
+  `detect-column-types`) are *function-level* and may be called by
+  multiple TaskKinds. `outline-to-slides` is the one overlap and is
+  intentional — the TaskKind directly maps to the single capability.
+- Schema enum order matches the table order above; harness asserts
+  exact-position match to lock against silent re-ordering.
+
 ### What lands in Day-0
 
 1. **Task envelope contract (header-only)** — `kqoffice/source/ai/cowork/`
-   - `AsyncTask.hxx`: `TaskKind` enum (`weekly-report | translate-batch |
-     summarize-folder | format-sweep`), `TaskState` enum
-     (`pending | running | needs-review | applied | rejected | failed`),
-     `AsyncTaskEnvelope` struct (id / kind / state / created_at /
-     payload_hash / evidence_id).
-   - `TaskStateMachine.hxx`: header-only valid-transition table
-     (`pending → running → needs-review → {applied | rejected | failed}`,
-     no skip-states).
+   - `AsyncTask.hxx`: `TaskKind` enum (`weekly-report |
+     outline-to-slides | contract-review | data-cleanup`), `TaskState`
+     enum (`pending | running | awaiting-review | applied | failed |
+     cancelled`), `AsyncTaskEnvelope` struct (id / kind / state /
+     created_at / payload_hash / evidence_id).
+   - `TaskStateMachine.hxx`: header-only valid-transition table per the
+     6×N matrix above; `bool TaskStateMachine::canTransition(from, to)`
+     is the single point of truth used by both the C++ store and the
+     drift-lock harness.
 2. **Task store skeleton** — `kqoffice/source/ai/cowork/TaskStore.{hxx,cxx}`
    - JSON-on-disk persistence under
      `${UserInstallation}/ai-tasks/YYYY-MM/<task_id>.json`,
@@ -320,7 +364,8 @@ TaskEvidence (W5)
 5. **Drift lock harness** — extend
    `tests/v2-provider-evidence-schema-test.sh` (or a new
    `tests/v2-async-task-schema-test.sh`) to assert
-   `TaskKind` / `TaskState` enum subset ⊆ schema.
+   `TaskKind` / `TaskState` enum subset ⊆ schema, *and* schema enum
+   order = table order above (catches silent re-ordering).
 
 ### Out of scope for Day-0
 

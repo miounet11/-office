@@ -234,12 +234,63 @@ LO VCL 默认无"上下文浮窗"基础设施。两条路径：
 > contract-only fixture/test. Mirrors the W1/W2 Day-0 layout that
 > shipped 2026-05-08.
 
+### Action enum lock (source-of-truth for Day-0 headers)
+
+These are the exact ASCII kebab-case tokens that W4 Day-0 will hard-code
+into the action enums. Locked here in the spec so future drift between
+spec wording, enum names, and `apply-plan-runtime.schema.json` capability
+strings cannot happen silently. Any new action proposed in a later wave
+must add a row to this table *and* the matching `XCapability` enum *and*
+the schema enum in the same change.
+
+**W4-A Writer (`enum class ParagraphAction` — 7 tokens, matches the spec
+table at §"Writer 浮窗动作"):**
+
+| Token | UI label (zh-CN) | UI label (en-US) | W1 capability | Goes through Diff? |
+|---|---|---|---|---|
+| `rewrite`        | 改写              | Rewrite              | `rewrite`        | yes |
+| `expand`         | 扩写              | Expand               | `expand`         | yes |
+| `shorten`        | 简写              | Shorten              | `shorten`        | yes |
+| `translate-en`   | 翻译为英文         | Translate to English | `translate-en`   | yes |
+| `format-clean`   | 清理格式           | Clean Formatting     | n/a (local)      | yes |
+| `explain`        | 解释              | Explain              | `explain`        | **no** (popup-only) |
+| `custom`         | 自定义提示         | Custom Prompt        | `custom`         | yes |
+
+**W4-B Calc (`enum class CellAction` — 5 tokens, matches §"Calc 浮窗动作"):**
+
+| Token | UI label (zh-CN) | UI label (en-US) | Goes through Diff? |
+|---|---|---|---|
+| `explain-data`     | 解释这些数据  | Explain Data           | **no** (popup-only) |
+| `suggest-chart`    | 建议图表       | Suggest Chart           | yes |
+| `generate-formula` | 生成公式       | Generate Formula        | yes |
+| `format-clean`     | 清理格式       | Clean Formatting        | yes |
+| `format-change`    | 改格式         | Change Format           | yes (date/currency/%) |
+
+**W4-C Impress (`enum class SlideElementAction` — 4 tokens, matches §"Impress 浮窗动作"):**
+
+| Token | UI label (zh-CN) | UI label (en-US) | Goes through Diff? |
+|---|---|---|---|
+| `rewrite-text`   | 改写文字   | Rewrite Text       | yes |
+| `adjust-color`   | 调整配色   | Adjust Color       | yes |
+| `relayout`       | 重新排版   | Relayout           | yes |
+| `translate-text` | 翻译       | Translate Text     | yes |
+
+**Naming rules (locked):**
+- Lowercase ASCII, kebab-case, no underscores.
+- No verbs/nouns mixing — pick the imperative form (`rewrite`,
+  `suggest-chart`), not the participle (`rewriting`, `chart-suggestion`).
+- Tokens that span multiple surfaces (`format-clean`) reuse the same
+  string across enums — do not localize the token per surface.
+- "Goes through Diff?" column maps directly to whether Day-1 wires the
+  action through `Diff Review` sidebar; popup-only actions
+  (`explain`, `explain-data`) never produce an `ApplyPlan`.
+
 ### What lands in Day-0
 
 1. **W4-A Writer header skeleton** — `sw/source/uibase/inline-actions/`
    - `ParagraphActions.hxx` (new, header-only): action enum
-     (`rewrite | summarize | expand | shorten | translate | format-fix |
-     intent-to-uno`) + free-function signatures, no implementations.
+     (`rewrite | expand | shorten | translate-en | format-clean |
+     explain | custom`) + free-function signatures, no implementations.
    - `SelectToActPopover.hxx` (new, header-only): popover lifecycle
      interface (`open(rect, paragraph_id) / close() / dispatchSelected()`),
      no VCL dependency yet.
@@ -248,15 +299,15 @@ LO VCL 默认无"上下文浮窗"基础设施。两条路径：
      surface is stable for Day-1 popover wiring.
 2. **W4-B Calc header skeleton** — `sc/source/ui/inline-actions/`
    - `CellActions.hxx` (new, header-only): 5-action enum
-     (`fill-formula | summarize-range | format-suggest | trend-text |
-     intent-to-uno`) + free-function signatures.
+     (`explain-data | suggest-chart | generate-formula | format-clean |
+     format-change`) + free-function signatures.
    - `CellRangePopover.hxx` / `.cxx` (new, header + empty TU): same
      popover lifecycle shape as W4-A; empty TU compiled via
      `sc/Library_sc.mk`.
 3. **W4-C Impress header skeleton** — `sd/source/ui/inline-actions/`
    - `SlideElementActions.hxx` + `SlideElementPopover.{hxx,cxx}`
-     mirroring W4-A/B; 4-action enum (`rewrite-text | suggest-layout |
-     extract-outline | intent-to-uno`).
+     mirroring W4-A/B; 4-action enum (`rewrite-text | adjust-color |
+     relayout | translate-text`).
 4. **W4-D Diff sidebar skeleton** — `svx/source/sidebar/diff-review/`
    - `DiffReviewPanel.hxx` + empty `.cxx` registered as a sidebar deck
      factory entry only (`officecfg/.../Sidebar.xcu` deck node);
