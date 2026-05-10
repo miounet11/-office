@@ -347,6 +347,26 @@ without an explicit scope grant for `sw/source/uibase/inline-actions/`,
 `svx/source/sidebar/diff-review/`. The header-only nature of Day-0
 keeps the blast radius small once authorized.
 
+## Schema reader's manual
+
+The W4 inline-action-request envelope schema body lives at
+`docs/schemas/inline-action-request.schema.json`. A 10-section human
+guide explaining *why* each property exists, *why* the
+`oneOf`-on-`surface` shape rejects cross-surface drift at the schema
+layer, and what's intentionally not locked (cross-field
+`action=custom ⇒ user_prompt`, multi-target trigger, action chaining,
+result correlation, telemetry) lives at
+`docs/schemas/inline-action-request.schema.md`. Read the manual
+before hand-deriving `sw/source/uibase/inline-actions/ParagraphActions.hxx`
+or its Calc / Impress siblings — it captures intent that isn't
+recoverable from the schema body alone.
+
+Token-lock anchor: this spec's §"Action enum lock" subsection (above)
+is the single source of truth the schema oneOf branches mirror.
+Drift is caught by `tests/v2-inline-action-request-schema-test.sh`
+(H5 partial-enforce; auto-promotes to full-enforce when all three
+`*Actions.hxx` headers land in SRCDIR).
+
 ## Dependencies
 
 - W1：所有动作走 provider runtime

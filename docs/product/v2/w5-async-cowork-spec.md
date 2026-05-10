@@ -396,6 +396,26 @@ to `kqoffice/source/ai/cowork/**` and `kqoffice/qa/cppunit/test_cowork*`
 is needed before Day-0 begins. Schema + harness paths are
 documentation-tier and don't need new authorization.
 
+## Schema reader's manual
+
+The W5 async-task envelope schema body lives at
+`docs/schemas/async-task.schema.json`. A human-derivation guide
+explaining *why* each property exists, the `TaskKind` 4-token /
+`TaskState` 6-token enum rationale (note: state token is
+`awaiting-review`, **not** `needs-review`), and the
+failed-vs-cancelled distinction (failure_reason populated vs absent;
+evidence_ids non-empty vs empty) lives at
+`docs/schemas/async-task.schema.md`. Read the manual before
+hand-deriving `kqoffice/source/ai/cowork/AsyncTask.hxx` or
+implementing the cancel button on `TaskStore` — it captures the
+state-machine intent that isn't recoverable from the schema body
+alone.
+
+Token-lock anchor: this spec's §"Token lock" subsection (above) is
+the single source of truth the schema enums mirror. Drift is caught
+by `tests/v2-async-task-schema-test.sh` (H4 partial-enforce;
+auto-promotes to full-enforce when `AsyncTask.hxx` lands in SRCDIR).
+
 ## Dependencies
 
 - W1：所有 LLM 调用
