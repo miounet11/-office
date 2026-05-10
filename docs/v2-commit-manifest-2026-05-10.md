@@ -1,5 +1,34 @@
 # V2 Commit Manifest — 2026-05-10
 
+> **⚠ SUPERSEDED 2026-05-11 (post-L79)**: this manifest was a snapshot
+> of pending coordinator-reversible files awaiting commit-authorization
+> at the L21-L27 boundary. **All listed Tracked-modified and most
+> Untracked-new files have since been committed** (across L23-L79; full
+> per-commit attribution lives in `git log`). The "User decision
+> required: approve commit" framing below is obsolete — coordinator was
+> authorized for `docs/`, `tests/v2-*.sh`, `bin/intelligent-contract-fixtures.sh`,
+> `bin/v2-harness-sweep.sh`, `.github/workflows/v2-contract-harnesses.yml`,
+> ledger.jsonl, and goals.json without per-commit confirmation; this is
+> recorded in `docs/CLAUDE-NOTES.md §"When to ask the user vs. proceed"`
+> and off-repo memory `authorization_gates.md`.
+>
+> **For current state, read instead**:
+> - `docs/v2-coordinator-handoff-2026-05-10.md` (refreshed L77) —
+>   wait-state, blocker table, production-ready gate
+> - `docs/product/v2/STATUS-2026-05-11.md` §13 (added L79) —
+>   evening L47-L78 delta covering 7-harness sweep, H2 baseline 45,
+>   4-tier locking architecture, OK(84) cppunit honesty split
+> - `docs/product/v2/lane-status.md` — living roll-up
+>
+> **Open decisions table at file end is also superseded** by the
+> handoff doc's State-at-handoff table — D2 was resolved (L32
+> OllamaAdapter audit landed), D8/D9 added (L71), W4/W5 scope
+> authorization distinguished from D-series.
+>
+> Kept for historical reference; do not act on contents directly.
+
+---
+
 > Coordinator-reversible files accumulated across the multi-session V2
 > coordinator scope. **None of these are production C++**. All are
 > documentation, schemas, fixtures, harness scripts, CI, or ledger
