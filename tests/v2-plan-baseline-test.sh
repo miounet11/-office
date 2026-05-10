@@ -383,9 +383,12 @@ pass_count=$((pass_count + 1))
 # 17. L-anchor cross-doc cadence lock. Three sentinel docs each carry
 #     a current-state L-number anchor that, when out of sync, has
 #     repeatedly produced "where are we right now?" confusion (drift
-#     class fixed manually 4 times across L81/L82/L85/L86/L88 — see
-#     CLAUDE-NOTES §"V2 consistency locking architecture (post-L83)"
-#     once L88 is rolled in). Sentinels:
+#     class fixed manually multiple times across L81/L82/L85/L86/L88 —
+#     see CLAUDE-NOTES §"V2 consistency locking architecture"; that
+#     section header carries its own (post-L<N>) marker which moves
+#     with each tier-4 extension and is intentionally NOT cited here
+#     to avoid the meta-drift of a self-referential stale anchor in
+#     this very comment). Sentinels:
 #       (a) docs/v2-coordinator-handoff-2026-05-10.md title `(L<N>)`
 #       (b) docs/CLAUDE-NOTES.md handoff anchor `refreshed ... / L<N>`
 #       (c) docs/product/v2/STATUS-2026-05-11.md latest "## <N>." section
