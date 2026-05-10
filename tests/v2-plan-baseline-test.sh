@@ -231,6 +231,67 @@ if [[ -n "$shape_violations" ]]; then
 fi
 pass_count=$((pass_count + 1))
 
+# 13. Pass-count baseline cross-doc lock. The H_N=count string is
+#     replicated in 3 in-repo places (CLAUDE-NOTES = canonical,
+#     coordinator handoff doc, bin/v2-harness-sweep.sh header).
+#     L66 required touching all 3 for one H2 bump (41 -> 42); this
+#     check enforces the mutual consistency. Memory dir lives outside
+#     the repo and is excluded — keep it manually mirrored.
+baseline_violations=$(python3 - <<'PY'
+import re, sys
+
+def extract(path, pattern):
+    with open(path, encoding='utf-8') as f:
+        text = f.read()
+    m = re.search(pattern, text)
+    return m.group(1).strip() if m else None
+
+canonical_path = 'docs/CLAUDE-NOTES.md'
+# canonical line: "H1=26 / H2=42 / H3=26 / H4 partial / H5 partial / H6=39 / H7 partial."
+canonical = extract(
+    canonical_path,
+    r'(H1=\d+\s*/\s*H2=\d+\s*/\s*H3=\d+\s*/\s*H4 partial\s*/\s*H5 partial\s*/\s*H6=\d+\s*/\s*H7 partial)',
+)
+if not canonical:
+    print(f'canonical baseline not found in {canonical_path}')
+    sys.exit(0)
+
+# Normalize whitespace for comparison
+def norm(s):
+    return re.sub(r'\s+', ' ', s).strip()
+
+canonical_n = norm(canonical)
+
+mirrors = [
+    ('docs/v2-coordinator-handoff-2026-05-10.md',
+     r'(H1=\d+\s*/\s*H2=\d+\s*/\s*H3=\d+\s*/\s*H4 partial\s*/\s*H5 partial\s*/\s*H6=\d+\s*/\s*H7 partial)'),
+    ('bin/v2-harness-sweep.sh',
+     r'(H1=\d+\s+H2=\d+\s+H3=\d+\s+H4 partial\s+H5 partial\s+H6=\d+\s+H7 partial)'),
+]
+violations = []
+for path, pat in mirrors:
+    v = extract(path, pat)
+    if not v:
+        violations.append(f'{path}: baseline string not found')
+        continue
+    # sweep-script uses spaces, canonical uses ' / '; normalize separators
+    vn = re.sub(r'\s*/\s*', ' ', norm(v))
+    cn = re.sub(r'\s*/\s*', ' ', canonical_n)
+    if vn != cn:
+        violations.append(
+            f'{path}: baseline {v!r} != canonical {canonical!r}'
+        )
+for v in violations:
+    print(v)
+PY
+)
+if [[ -n "$baseline_violations" ]]; then
+    printf 'FAIL: pass-count baseline cross-doc drift:\n%s\n' \
+        "$baseline_violations" >&2
+    exit 1
+fi
+pass_count=$((pass_count + 1))
+
 printf 'Status: passed\n'
 printf 'Checks: %d\n' "$pass_count"
 printf 'Fixtures: 36 across 13 schemas\n'

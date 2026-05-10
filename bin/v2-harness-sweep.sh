@@ -33,8 +33,8 @@ Runs the 7 V2 contract harnesses in canonical order:
 With --with-fixtures the V1.5 + V2 fixture validator also runs:
   bin/intelligent-contract-fixtures.sh
 
-Pass-count baselines (post-L66):
-  H1=26  H2=42  H3=26  H4 partial  H5 partial  H6=39  H7 partial
+Pass-count baselines (post-L67):
+  H1=26  H2=43  H3=26  H4 partial  H5 partial  H6=39  H7 partial
   fixtures: 36 passed / 0 failed across 13 schemas
 EOF
 }
