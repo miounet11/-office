@@ -212,7 +212,7 @@ Before reading a task envelope:
 ## 10. Cross-references
 
 - Schema body: `docs/schemas/async-task.schema.json`
-- Fixtures: `docs/schemas/fixtures/async-task.{valid,invalid,terminal-failed}.json`
+- Fixtures: `docs/schemas/fixtures/async-task.{valid,invalid,pending,running,applied,terminal-failed,cancelled}.json`
 - Spec: `docs/product/v2/w5-async-cowork-spec.md`
 - Harness: `tests/v2-async-task-schema-test.sh`
 - Baseline regression lock: `tests/v2-plan-baseline-test.sh`
