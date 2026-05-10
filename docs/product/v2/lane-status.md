@@ -61,26 +61,36 @@
 
 ## W4 — Select-to-act
 
-Spec + Day-0 entry-point plan (`docs/product/v2/w4-select-to-act-spec.md`
-§"Day-0 Entry-Point Plan"). No production code yet. Day-0 is gated on
+Spec + Day-0 entry-point plan + enum lock
+(`docs/product/v2/w4-select-to-act-spec.md` §"Day-0 Entry-Point Plan"
+→ §"Action enum lock"). No production code yet. Day-0 is gated on
 scope auth for `sw/source/uibase/inline-actions/`,
 `sc/source/ui/inline-actions/`, `sd/source/ui/inline-actions/`, and
 `svx/source/sidebar/diff-review/` — header-only skeletons per the plan,
 ≥3 new pure-logic cppunit cases (enum-stability), no VCL bring-up.
+Enum tokens locked (L37): `ParagraphAction` 7-token, `CellAction`
+5-token, `SlideElementAction` 4-token — see spec §"Action enum lock"
+table for the canonical strings + UI labels + Diff-routing column.
 
 ## W5 — Async cowork
 
-Spec + Day-0 entry-point plan (`docs/product/v2/w5-async-cowork-spec.md`
-§"Day-0 Entry-Point Plan"). No production code yet. Day-0 is gated on
+Spec + Day-0 entry-point plan + token lock
+(`docs/product/v2/w5-async-cowork-spec.md` §"Day-0 Entry-Point Plan"
+→ §"Token lock"). No production code yet. Day-0 is gated on
 confirmation that the V2 allow-list extends from
 `kqoffice/source/ai/provider/` to `kqoffice/source/ai/cowork/**` plus
 `kqoffice/qa/cppunit/test_cowork*`. Adds one schema
 (`async-task.schema.json`) + 2 fixtures → baseline 26/11 → 28/12.
+Enum tokens locked (L37): `TaskKind` 4-token (one per scenario at
+spec §"4 个前期场景"), `TaskState` 6-token (matches §"状态机" diagram
+exactly: pending / running / awaiting-review / applied / failed /
+cancelled — `awaiting-review` is the standard, **not**
+`needs-review`).
 
 ## Authoritative artifacts
 
 - **Goals** (status snapshot): `.agent/goals/2026-05-08-v2-ai-native/goals.json`
-- **Ledger** (append-only timeline): `.agent/goals/2026-05-08-v2-ai-native/ledger.jsonl` (20 entries)
+- **Ledger** (append-only timeline): `.agent/goals/2026-05-08-v2-ai-native/ledger.jsonl` (38 entries)
 - **Narratives**:
   - `docs/product/v2/day0-skeleton-landed.md` — Day-0 skeleton landing
   - `docs/product/v2/day1-progress.md` — Day-1{a..h} per-step rationale
