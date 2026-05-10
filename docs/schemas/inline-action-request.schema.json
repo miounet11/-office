@@ -1,0 +1,152 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kqoffice.local/schemas/inline-action-request.schema.json",
+  "title": "KQOffice V2 W4 Select-to-Act Inline Action Request",
+  "description": "Per-trigger envelope written by the W4 popover when a user picks an action from the inline floating bubble (Writer paragraph / Calc cell / Impress slide-element). Distinct from apply-plan-runtime (the *output* of an action) and provider-evidence (the per-call audit). One JSON record per popover dispatch; the same record is replayable for testing. Locked by W4 spec §'Action enum lock' (ParagraphAction 7-token, CellAction 5-token, SlideElementAction 4-token).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "request_id",
+    "surface",
+    "action",
+    "target",
+    "service_mode",
+    "created_at"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "v2-w4-1",
+      "description": "Envelope schema version. Bumped only when a non-additive change lands. Day-0 ships v2-w4-1."
+    },
+    "request_id": {
+      "type": "string",
+      "pattern": "^iar-[0-9a-f]{16}$",
+      "description": "Per-trigger unique id. 16-hex like provider-evidence's evidence_id."
+    },
+    "surface": {
+      "type": "string",
+      "enum": ["writer-paragraph", "calc-cell", "impress-slide-element"],
+      "description": "Which W4 surface raised the popover. Order locked: matches W4-A/W4-B/W4-C section order in the spec."
+    },
+    "action": {
+      "type": "string",
+      "description": "ASCII kebab-case action token. Must be one of the per-surface enums; validity is asserted via the per-surface oneOf branches, not a single union enum here, so cross-surface drift fails informatively."
+    },
+    "target": {
+      "type": "object",
+      "description": "Surface-specific target identifier. Kept open in the envelope; the per-surface oneOf locks the shape.",
+      "additionalProperties": true
+    },
+    "service_mode": {
+      "type": "string",
+      "enum": ["offline", "private", "cloud"],
+      "description": "Active ServiceModePolicy mode at trigger time. Locked at request creation; no silent escalation per W5 spec §'安全'."
+    },
+    "created_at": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$",
+      "description": "ISO-8601 UTC timestamp at popover dispatch. Seconds precision, Z suffix."
+    },
+    "user_prompt": {
+      "type": "string",
+      "maxLength": 2000,
+      "description": "Optional free-form prompt. Required only when action == 'custom' (Writer) — schema-level cross-field rule deferred to Day-0 C++ side."
+    },
+    "expected_capability": {
+      "type": "string",
+      "description": "Optional W1 capability id the popover expects to dispatch through. Skipped for popup-only actions ('explain', 'explain-data')."
+    }
+  },
+  "oneOf": [
+    {
+      "title": "Writer paragraph branch",
+      "type": "object",
+      "properties": {
+        "surface": {"const": "writer-paragraph"},
+        "action": {
+          "type": "string",
+          "enum": [
+            "rewrite",
+            "expand",
+            "shorten",
+            "translate-en",
+            "format-clean",
+            "explain",
+            "custom"
+          ]
+        },
+        "target": {
+          "type": "object",
+          "required": ["paragraph_id"],
+          "properties": {
+            "paragraph_id": {
+              "type": "string",
+              "pattern": "^swpara-[0-9]+$"
+            }
+          }
+        }
+      },
+      "required": ["surface", "action", "target"]
+    },
+    {
+      "title": "Calc cell/range branch",
+      "type": "object",
+      "properties": {
+        "surface": {"const": "calc-cell"},
+        "action": {
+          "type": "string",
+          "enum": [
+            "explain-data",
+            "suggest-chart",
+            "generate-formula",
+            "format-clean",
+            "format-change"
+          ]
+        },
+        "target": {
+          "type": "object",
+          "required": ["sheet", "range"],
+          "properties": {
+            "sheet": {"type": "string", "minLength": 1},
+            "range": {
+              "type": "string",
+              "pattern": "^[A-Z]+[0-9]+(:[A-Z]+[0-9]+)?$",
+              "description": "A1-style cell or range reference."
+            }
+          }
+        }
+      },
+      "required": ["surface", "action", "target"]
+    },
+    {
+      "title": "Impress slide element branch",
+      "type": "object",
+      "properties": {
+        "surface": {"const": "impress-slide-element"},
+        "action": {
+          "type": "string",
+          "enum": [
+            "rewrite-text",
+            "adjust-color",
+            "relayout",
+            "translate-text"
+          ]
+        },
+        "target": {
+          "type": "object",
+          "required": ["slide_index", "element_id"],
+          "properties": {
+            "slide_index": {"type": "integer", "minimum": 0},
+            "element_id": {
+              "type": "string",
+              "pattern": "^sdobj-[0-9]+$"
+            }
+          }
+        }
+      },
+      "required": ["surface", "action", "target"]
+    }
+  ]
+}

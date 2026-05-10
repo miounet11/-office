@@ -21,7 +21,7 @@
 | W1  | Provider runtime (Ollama-first sandbox)        | step3 + Day-1a + Day-1b | Day-1c (i18n threading), Day-1d (cloud TLS) | 51 (kqoffice_provider) |
 | W2  | Cmd+K palette                                  | Day-1a + RecentStore + Controller (incl. controller cppunit) | Day-1b (.uno: dispatch + popover GUI), Day-1c (pinyin) | 33 (8 idx + 8 fuzzy + 10 recent + 7 controller) |
 | W3  | Writer apply-runtime + ApplyPlan validator     | Day-1a/c/d/e/f/g/h   | Day-1b (SwDocShell wiring) | 51 (counted in W1 binary) |
-| W4  | Select-to-act (Writer/Calc/Impress action bubble) | —                  | spec + Day-0 entry-point plan; implementation gated (needs scope auth for `sw/source/uibase/inline-actions/`, `sc/source/ui/inline-actions/`, `sd/source/ui/inline-actions/`, `svx/source/sidebar/diff-review/`) | 0 |
+| W4  | Select-to-act (Writer/Calc/Impress action bubble) | spec + Day-0 entry-point plan + enum lock + schema + 4 fixtures + H5 partial-enforce | Day-0 C++ gated (needs scope auth for `sw/source/uibase/inline-actions/`, `sc/source/ui/inline-actions/`, `sd/source/ui/inline-actions/`, `svx/source/sidebar/diff-review/`) | 0 |
 | W5  | Async cowork (long-running tasks + diff review)   | schema + fixtures (`async-task.schema.json` + 3 fixtures incl. terminal-failed boundary, baseline 28/12 → 29/12) | Day-0 C++ gated (needs scope auth for `kqoffice/source/ai/cowork/**`, `kqoffice/qa/cppunit/test_cowork*`); H4 in partial-enforce until C++ lands | 0 |
 
 **ai-native cppunit suite total**: 84 cases (51 provider + 33 cui).
@@ -61,16 +61,21 @@
 
 ## W4 — Select-to-act
 
-Spec + Day-0 entry-point plan + enum lock
-(`docs/product/v2/w4-select-to-act-spec.md` §"Day-0 Entry-Point Plan"
-→ §"Action enum lock"). No production code yet. Day-0 is gated on
-scope auth for `sw/source/uibase/inline-actions/`,
+Spec + Day-0 entry-point plan + enum lock + **schema + 4 fixtures + H5
+partial-enforce** (`docs/schemas/inline-action-request.schema.json`,
+oneOf 3 branches keyed on surface; `docs/schemas/fixtures/inline-action-request.{valid,invalid,calc-suggest-chart,impress-translate}.json`;
+`tests/v2-inline-action-request-schema-test.sh` in **partial-enforce**
+mode pending W4 Day-0 C++). No production code yet. Day-0 C++ is gated
+on scope auth for `sw/source/uibase/inline-actions/`,
 `sc/source/ui/inline-actions/`, `sd/source/ui/inline-actions/`, and
 `svx/source/sidebar/diff-review/` — header-only skeletons per the plan,
 ≥3 new pure-logic cppunit cases (enum-stability), no VCL bring-up.
 Enum tokens locked (L37): `ParagraphAction` 7-token, `CellAction`
 5-token, `SlideElementAction` 4-token — see spec §"Action enum lock"
 table for the canonical strings + UI labels + Diff-routing column.
+Schema oneOf branch enum order locked against the same spec table by
+H5 (auto-promotes to full-enforce when ParagraphActions.hxx +
+CellActions.hxx + SlideElementActions.hxx all land in SRCDIR).
 
 ## W5 — Async cowork
 
@@ -101,7 +106,7 @@ exists.
 ## Authoritative artifacts
 
 - **Goals** (status snapshot): `.agent/goals/2026-05-08-v2-ai-native/goals.json`
-- **Ledger** (append-only timeline): `.agent/goals/2026-05-08-v2-ai-native/ledger.jsonl` (45 entries)
+- **Ledger** (append-only timeline): `.agent/goals/2026-05-08-v2-ai-native/ledger.jsonl` (46 entries)
 - **Narratives**:
   - `docs/product/v2/day0-skeleton-landed.md` — Day-0 skeleton landing
   - `docs/product/v2/day1-progress.md` — Day-1{a..h} per-step rationale
@@ -110,6 +115,7 @@ exists.
   - `docs/schemas/provider-evidence.schema.json` — runtime audit envelope (W1 / W3 Day-1f)
   - `docs/schemas/apply-plan-runtime.schema.json` — W3 Day-1b runtime ApplyPlan envelope (envelope-only; per-kind patch shape lands with each `SwUndoApplyPatch` impl)
   - `docs/schemas/async-task.schema.json` — W5 per-task envelope (TaskKind 4-token / TaskState 6-token / 11-required-key envelope; landed L41 ahead of C++ Day-0). Reader's manual: `docs/schemas/async-task.schema.md` (L45).
+  - `docs/schemas/inline-action-request.schema.json` — W4 per-trigger inline-action envelope (3-branch oneOf keyed on surface; ParagraphAction 7-token / CellAction 5-token / SlideElementAction 4-token; landed L46 ahead of C++ Day-0)
 - **Schemas explicitly NOT touched**:
   - `docs/schemas/evidence-record.schema.json` — V1.5 m3-02 capability/diagnostic record (different fields, locked by 27/27 strict roundtrip baseline)
   - `docs/schemas/apply-plan.schema.json` — V1.5 m3-02 capability descriptor (per-capability metadata: id / undo_group / failure_behavior). Distinct from V2 `apply-plan-runtime.schema.json` per V2 invariants memory rule #5; do not collapse.
@@ -126,6 +132,7 @@ exists.
 | `applyPlanValidationStatus` distinct-per-code | `testApplyPlanStatusDistinctPerCode` | 2026-05-09 |
 | `applyPlanValidationMessage` distinct-per-code | `testApplyPlanMessageDistinctPerCode` | 2026-05-09 |
 | W5 async-task schema enum order = token-lock table order (partial-enforce until W5 Day-0 C++ lands) | `tests/v2-async-task-schema-test.sh` | 2026-05-10 (partial) |
+| W4 inline-action-request schema oneOf 3-branch action enum order = W4 spec §"Action enum lock" table order (partial-enforce until W4 Day-0 C++ lands) | `tests/v2-inline-action-request-schema-test.sh` | 2026-05-11 (partial) |
 | W4 + W5 specs carry `## Day-0 Entry-Point Plan` section | `tests/v2-plan-baseline-test.sh` (check 7) | 2026-05-10 |
 | W4 spec carries `### Action enum lock` subsection (L37) | `tests/v2-plan-baseline-test.sh` (check 8) | 2026-05-10 |
 | W5 spec carries `### Token lock` subsection (L37) | `tests/v2-plan-baseline-test.sh` (check 8) | 2026-05-10 |
