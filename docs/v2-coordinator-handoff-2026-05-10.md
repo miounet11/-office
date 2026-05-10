@@ -49,6 +49,15 @@ If you're tempted to bump a count field in a doc and append a ledger entry recor
 
 ## Production-ready gate (run before claiming completion)
 
+One-shot sweep (preferred — single source of truth):
+
+```bash
+bash bin/v2-harness-sweep.sh                  # H1→H7
+bash bin/v2-harness-sweep.sh --with-fixtures  # also V1.5+V2 fixtures w/ ≥36/0 assert
+```
+
+Manual equivalent (if you need to inspect individual harness output):
+
 ```bash
 bash tests/v2-provider-evidence-schema-test.sh       # H1
 bash tests/v2-plan-baseline-test.sh                  # H2

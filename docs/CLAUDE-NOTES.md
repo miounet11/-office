@@ -91,6 +91,10 @@ All seven must stay green on `main`. Run all seven after any V2
 schema, validator, or status-token change. Current baselines:
 H1=26 / H2=41 / H3=26 / H4 partial / H5 partial / H6=39 / H7 partial.
 
+One-shot sweep (single source of truth): `bin/v2-harness-sweep.sh`
+runs H1→H7 in canonical order; pass `--with-fixtures` to also run the
+V1.5+V2 fixture validator and assert ≥36 passed / 0 failed.
+
 ### V2 consistency locking architecture (post-L61)
 
 The seven harnesses form a three-layer matrix over V2 artifacts:
