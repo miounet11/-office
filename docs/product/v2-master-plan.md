@@ -1,9 +1,14 @@
 # 可圈office V2 Master Plan: AI-Native Office
 
-Date: 2026-05-08
-Status: Planning (V2 implementation not started)
+Date: 2026-05-08 (status refreshed 2026-05-10)
+Status: Spec complete (G1–G7 ✅) · Implementation in progress
 Predecessor: V1.5 完成 (`docs/product/v1.5-completion-milestone.md`)
-Goal artifact: `.agent/goals/2026-05-08-v2-ai-native/`
+Goal artifact: `.agent/goals/2026-05-08-v2-ai-native/` — G1–G7 cover spec
+authoring; W1/W2/W3 Day-0 + Day-1 implementation tracked in
+`ledger.jsonl` (append-only; see file for current count) and narrated in
+`v2/day0-skeleton-landed.md` + `v2/day1-progress.md`. Live wave/lane
+roll-up in `v2/lane-status.md`. Next gated step: **W3 Day-1b**
+(`SwDocShell::applyDiagnosticsPlan` wiring).
 
 ## 1. North Star
 
@@ -191,6 +196,8 @@ V2 不重新设计契约，**只把契约落地为运行时**。
 
 ## 10. 文档索引
 
+### 设计 / 规格 (planning surface)
+
 | 文档 | 范围 |
 |---|---|
 | **本文 (v2-master-plan.md)** | 总体架构 / 时间线 / 风险 |
@@ -200,4 +207,14 @@ V2 不重新设计契约，**只把契约落地为运行时**。
 | `v2/w4-select-to-act-spec.md` | Select-to-Act 浮窗 + Diff 视图 |
 | `v2/w5-async-cowork-spec.md` | 异步任务管理器 |
 
+### 实施 / 进度 (execution surface)
+
+| 文档 | 范围 |
+|---|---|
+| `v2/lane-status.md` | **Living lane roll-up** — 哪步落地 / 哪步门控 / drift locks |
+| `v2/day0-skeleton-landed.md` | W1 + W2 Day-0 骨架（UNO + cppunit + service.mode）|
+| `v2/day1-progress.md` | W1/W2/W3 Day-1{a..h} 逐步落地记录（含 cppunit 数量、不变量、为什么这样切片）|
+
 V2 实施时各 wave 单独立项 (`.agent/goals/v2-w<N>-<topic>/`)，本文档不再重复细节。
+当前 `.agent/goals/2026-05-08-v2-ai-native/` 同时承载 spec + 早期 Day-1
+实施记录；后续 implementation 子计划落地新 goal 目录后会拆分。
