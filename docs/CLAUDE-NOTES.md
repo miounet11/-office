@@ -150,6 +150,35 @@ whitespace and ` / ` vs space separators):
 also mirrors but lives outside the repo and is NOT enforced by
 check 13 — keep it manually mirrored.
 
+### Verifying check 12/13 actually catch drift (negative canary)
+
+Whenever you touch H2 check 12 (ledger row-shape) or check 13
+(baseline cross-doc), run the inline negative canary to prove
+the new logic catches its drift class — not just the canonical
+state. The pattern, copy-paste-safe in the BUILDDIR root:
+
+```bash
+# check 12 canary: same row count, mutated key-set
+cp .agent/goals/2026-05-08-v2-ai-native/ledger.jsonl /tmp/ledger.bak
+n=$(wc -l < /tmp/ledger.bak | tr -d ' ')
+head -$((n-1)) /tmp/ledger.bak > /tmp/ledger.tmp
+echo '{"goal_id":"X","notes":"shape-canary","bogus":"extra"}' >> /tmp/ledger.tmp
+mv /tmp/ledger.tmp .agent/goals/2026-05-08-v2-ai-native/ledger.jsonl
+bash tests/v2-plan-baseline-test.sh; echo "exit=$?"   # expect FAIL exit !=0
+mv /tmp/ledger.bak .agent/goals/2026-05-08-v2-ai-native/ledger.jsonl
+bash tests/v2-plan-baseline-test.sh; echo "exit=$?"   # expect 0
+
+# check 13 canary: mutate handoff baseline only
+sed -i.bak 's/H3=26/H3=27/' docs/v2-coordinator-handoff-2026-05-10.md
+bash tests/v2-plan-baseline-test.sh; echo "exit=$?"   # expect FAIL exit !=0
+mv docs/v2-coordinator-handoff-2026-05-10.md.bak docs/v2-coordinator-handoff-2026-05-10.md
+bash tests/v2-plan-baseline-test.sh; echo "exit=$?"   # expect 0
+```
+
+Don't commit the canary mutations. The `mv ... .bak` restore
+is part of the protocol; if it doesn't run, the harness itself
+will refuse the next baseline run.
+
 **CI automation**: `.github/workflows/v2-contract-harnesses.yml`
 runs all seven on push/PR touching `docs/schemas/**`,
 `docs/product/v2/**`, `docs/CLAUDE-NOTES.md`,
