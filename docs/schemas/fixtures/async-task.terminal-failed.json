@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "task_id": "tk-20260510-007",
+  "kind": "contract-review",
+  "state": "failed",
+  "title": "供应商合同年度复审（2026-Q2）",
+  "created_at": "2026-05-10T11:30:00Z",
+  "updated_at": "2026-05-10T11:34:18Z",
+  "service_mode": "offline",
+  "input": {
+    "source_docs": [
+      "file:///Users/lu/Documents/可圈office/合同/2026-Q2-供应商主合同.odt"
+    ],
+    "user_prompt": "审查条款变更并标注风险点。"
+  },
+  "steps": [
+    {
+      "step_id": "s1",
+      "title": "切分合同章节",
+      "state": "completed",
+      "evidence": "ev-9f8e7d6c5b4a3210"
+    },
+    {
+      "step_id": "s2",
+      "title": "逐条提取风险点",
+      "state": "failed",
+      "evidence": "ev-1122334455667788"
+    },
+    {
+      "step_id": "s3",
+      "title": "汇总风险摘要",
+      "state": "pending"
+    }
+  ],
+  "result_plan_id": null,
+  "evidence_ids": [
+    "ev-9f8e7d6c5b4a3210",
+    "ev-1122334455667788"
+  ],
+  "failure_reason": "Provider call timeout at step s2 after 30s (offline Ollama queue exhausted); task halted before assembling any apply-plan."
+}

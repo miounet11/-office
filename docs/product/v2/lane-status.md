@@ -22,7 +22,7 @@
 | W2  | Cmd+K palette                                  | Day-1a + RecentStore + Controller (incl. controller cppunit) | Day-1b (.uno: dispatch + popover GUI), Day-1c (pinyin) | 33 (8 idx + 8 fuzzy + 10 recent + 7 controller) |
 | W3  | Writer apply-runtime + ApplyPlan validator     | Day-1a/c/d/e/f/g/h   | Day-1b (SwDocShell wiring) | 51 (counted in W1 binary) |
 | W4  | Select-to-act (Writer/Calc/Impress action bubble) | —                  | spec + Day-0 entry-point plan; implementation gated (needs scope auth for `sw/source/uibase/inline-actions/`, `sc/source/ui/inline-actions/`, `sd/source/ui/inline-actions/`, `svx/source/sidebar/diff-review/`) | 0 |
-| W5  | Async cowork (long-running tasks + diff review)   | schema + fixtures (`async-task.schema.json` + 2 fixtures, baseline 26/11 → 28/12) | Day-0 C++ gated (needs scope auth for `kqoffice/source/ai/cowork/**`, `kqoffice/qa/cppunit/test_cowork*`); H4 in partial-enforce until C++ lands | 0 |
+| W5  | Async cowork (long-running tasks + diff review)   | schema + fixtures (`async-task.schema.json` + 3 fixtures incl. terminal-failed boundary, baseline 28/12 → 29/12) | Day-0 C++ gated (needs scope auth for `kqoffice/source/ai/cowork/**`, `kqoffice/qa/cppunit/test_cowork*`); H4 in partial-enforce until C++ lands | 0 |
 
 **ai-native cppunit suite total**: 84 cases (51 provider + 33 cui).
 
@@ -77,14 +77,18 @@ table for the canonical strings + UI labels + Diff-routing column.
 Spec + Day-0 entry-point plan + token lock + schema + fixtures
 (`docs/product/v2/w5-async-cowork-spec.md` §"Day-0 Entry-Point Plan"
 → §"Token lock"; `docs/schemas/async-task.schema.json` +
-`docs/schemas/fixtures/async-task.{valid,invalid}.json`; harness
-`tests/v2-async-task-schema-test.sh` in **partial-enforce** mode).
+`docs/schemas/fixtures/async-task.{valid,invalid,terminal-failed}.json`;
+harness `tests/v2-async-task-schema-test.sh` in **partial-enforce** mode).
 No production code yet. Day-0 C++ is gated on confirmation that the
 V2 allow-list extends from `kqoffice/source/ai/provider/` to
 `kqoffice/source/ai/cowork/**` plus `kqoffice/qa/cppunit/test_cowork*`.
 Schema + fixtures already landed (no new auth needed per spec
 §"Authorization required before Day-0 starts": Schema + harness
-paths are documentation-tier). Baseline grew 26/11 → 28/12.
+paths are documentation-tier). Baseline grew 26/11 → 28/12 → 29/12
+(L43 added `async-task.terminal-failed.json` extended-naming
+boundary fixture covering `state=failed` + `failure_reason` required
++ `result_plan_id=null` since terminal-failed never reaches
+awaiting-review).
 Enum tokens locked (L37): `TaskKind` 4-token (one per scenario at
 spec §"4 个前期场景"), `TaskState` 6-token (matches §"状态机" diagram
 exactly: pending / running / awaiting-review / applied / failed /
@@ -97,7 +101,7 @@ exists.
 ## Authoritative artifacts
 
 - **Goals** (status snapshot): `.agent/goals/2026-05-08-v2-ai-native/goals.json`
-- **Ledger** (append-only timeline): `.agent/goals/2026-05-08-v2-ai-native/ledger.jsonl` (42 entries)
+- **Ledger** (append-only timeline): `.agent/goals/2026-05-08-v2-ai-native/ledger.jsonl` (43 entries)
 - **Narratives**:
   - `docs/product/v2/day0-skeleton-landed.md` — Day-0 skeleton landing
   - `docs/product/v2/day1-progress.md` — Day-1{a..h} per-step rationale
