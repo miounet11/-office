@@ -225,6 +225,77 @@ LO VCL 默认无"上下文浮窗"基础设施。两条路径：
 3. ApplyPlan 含的 patch 数 > 50 时 sidebar 卡 → 引入分页
 4. Diff 视图无法处理 paragraph-format（无可视 diff） → 改为"前后样式名"展示
 
+## Day-0 Entry-Point Plan (skeleton)
+
+> **Status**: planned. This section enumerates the smallest set of files
+> that must land first so subsequent W4 sub-steps can be parallelized
+> safely. No production behavior; each file is either a header-only
+> placeholder, an empty TU registered into its module's gbuild, or a
+> contract-only fixture/test. Mirrors the W1/W2 Day-0 layout that
+> shipped 2026-05-08.
+
+### What lands in Day-0
+
+1. **W4-A Writer header skeleton** — `sw/source/uibase/inline-actions/`
+   - `ParagraphActions.hxx` (new, header-only): action enum
+     (`rewrite | summarize | expand | shorten | translate | format-fix |
+     intent-to-uno`) + free-function signatures, no implementations.
+   - `SelectToActPopover.hxx` (new, header-only): popover lifecycle
+     interface (`open(rect, paragraph_id) / close() / dispatchSelected()`),
+     no VCL dependency yet.
+   - `SelectToActPopover.cxx` / `ParagraphActions.cxx` (new, empty TUs):
+     compiled into `Library_sw` via `sw/Library_sw.mk` so the link
+     surface is stable for Day-1 popover wiring.
+2. **W4-B Calc header skeleton** — `sc/source/ui/inline-actions/`
+   - `CellActions.hxx` (new, header-only): 5-action enum
+     (`fill-formula | summarize-range | format-suggest | trend-text |
+     intent-to-uno`) + free-function signatures.
+   - `CellRangePopover.hxx` / `.cxx` (new, header + empty TU): same
+     popover lifecycle shape as W4-A; empty TU compiled via
+     `sc/Library_sc.mk`.
+3. **W4-C Impress header skeleton** — `sd/source/ui/inline-actions/`
+   - `SlideElementActions.hxx` + `SlideElementPopover.{hxx,cxx}`
+     mirroring W4-A/B; 4-action enum (`rewrite-text | suggest-layout |
+     extract-outline | intent-to-uno`).
+4. **W4-D Diff sidebar skeleton** — `svx/source/sidebar/diff-review/`
+   - `DiffReviewPanel.hxx` + empty `.cxx` registered as a sidebar deck
+     factory entry only (`officecfg/.../Sidebar.xcu` deck node);
+     accept/reject buttons wired to no-op handlers.
+5. **Pure-logic cppunit (no VCL bring-up)** — one `CppunitTest_*` per
+   surface with header-only action-enum stability tests
+   (`testParagraphActionEnumStable`, `testCellActionEnumStable`,
+   `testSlideElementActionEnumStable`) so the action set cannot drift
+   silently before Day-1.
+
+### Out of scope for Day-0
+
+- Real popover rendering (VCL `weld::Popover` / NSPopover bring-up).
+- Any provider call (`XProvider::call`); Day-0 popovers fire a
+  `dispatchSelected()` signal only, like W2 Day-0.
+- Diff sidebar actually showing patches; the deck registers but renders
+  an empty placeholder.
+- Cross-surface action consistency tests (deferred to Day-1d).
+
+### Verification gate for Day-0
+
+- `make sw.build sc.build sd.build svx.build` clean.
+- `make CppunitTest_sw_inline_actions CppunitTest_sc_inline_actions
+   CppunitTest_sd_inline_actions` green (3 binaries × ≥1 enum-stability
+   case each → ≥3 new pure-logic cases).
+- Sidebar deck visible as a registered (but empty) entry under
+  `Sidebar.xcu`.
+- V1.5 27/27 strict roundtrip baseline untouched.
+
+### Authorization required before Day-0 starts
+
+W4 spans `sw/`, `sc/`, `sd/`, `svx/`, `officecfg/`. None of those (except
+`officecfg`) are on the current pre-authorized allow-list (`sfx2 sdi /
+officecfg / cui commandpalette / sw docsh`), so Day-0 cannot begin
+without an explicit scope grant for `sw/source/uibase/inline-actions/`,
+`sc/source/ui/inline-actions/`, `sd/source/ui/inline-actions/`, and
+`svx/source/sidebar/diff-review/`. The header-only nature of Day-0
+keeps the blast radius small once authorized.
+
 ## Dependencies
 
 - W1：所有动作走 provider runtime

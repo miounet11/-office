@@ -19,12 +19,12 @@
 | Wave | Focus | Sub-steps landed | Gated | Pure-logic cppunit |
 |---|---|---|---|---|
 | W1  | Provider runtime (Ollama-first sandbox)        | step3 + Day-1a + Day-1b | Day-1c (i18n threading), Day-1d (cloud TLS) | 51 (kqoffice_provider) |
-| W2  | Cmd+K palette                                  | Day-1a + RecentStore + Controller | Day-1b (.uno: dispatch + popover GUI), Day-1c (pinyin) | 26 (8 idx + 8 fuzzy + 10 recent) |
+| W2  | Cmd+K palette                                  | Day-1a + RecentStore + Controller (incl. controller cppunit) | Day-1b (.uno: dispatch + popover GUI), Day-1c (pinyin) | 33 (8 idx + 8 fuzzy + 10 recent + 7 controller) |
 | W3  | Writer apply-runtime + ApplyPlan validator     | Day-1a/c/d/e/f/g/h   | Day-1b (SwDocShell wiring) | 51 (counted in W1 binary) |
-| W4  | Select-to-act (Writer/Calc/Impress action bubble) | —                  | spec-only at this milestone | 0 |
-| W5  | Async cowork (long-running tasks + diff review)   | —                  | spec-only at this milestone | 0 |
+| W4  | Select-to-act (Writer/Calc/Impress action bubble) | —                  | spec + Day-0 entry-point plan; implementation gated (needs scope auth for `sw/source/uibase/inline-actions/`, `sc/source/ui/inline-actions/`, `sd/source/ui/inline-actions/`, `svx/source/sidebar/diff-review/`) | 0 |
+| W5  | Async cowork (long-running tasks + diff review)   | —                  | spec + Day-0 entry-point plan; implementation gated (needs scope auth for `kqoffice/source/ai/cowork/**`, `kqoffice/qa/cppunit/test_cowork*`) | 0 |
 
-**ai-native cppunit suite total**: 77 cases (51 provider + 26 cui).
+**ai-native cppunit suite total**: 84 cases (51 provider + 33 cui).
 
 ## W1 — Provider Runtime
 
@@ -42,8 +42,8 @@
 |---|---|---|---|---|
 | Day-1a | ✅ | `cui/source/inc/commandpalette/CommandIndex.hxx`, `cui/qa/unit/{CommandIndex,FuzzyMatcher}Test.cxx` | L7 | Header-only fast-test split, 8+8 cases |
 | RecentStore | ✅ | `cui/source/inc/commandpalette/RecentStore.hxx`, `cui/qa/unit/RecentStoreTest.cxx` | L8 | JSON round-trip + ranking integration, 10 cases |
-| Controller | ✅ partial | `cui/source/dialogs/commandpalette/CommandPalette.cxx` (29-line thin wrapper: setCorpus + queryToResults via FuzzyMatcher) | L33 (audit) | `CommandPaletteController` class lives; no popover GUI, no `.uno:` dispatch |
-| Day-1b | ⛔ gated | `.uno:CommandPalette` accelerator + sfx2 dispatch + popover GUI | — | Controller class ready; needs sfx2 sdi slot + accelerator + GUI shell |
+| Controller | ✅ | `cui/source/inc/commandpalette/CommandPalette.hxx` (header-only inline; mirrors FuzzyMatcher fdo#47246 layout), `cui/qa/unit/CommandPaletteControllerTest.cxx`, `cui/CppunitTest_cui_commandpalette_controller.mk` | L34 (commit `8fe469f71`) | 7 cppunit cases covering corpus replacement, query routing, topN cap, shouldDispatch invariant. `CommandPalette.cxx` is now a placeholder TU reserved for Day-1b popover glue (sfx2 dispatch / Enter / ESC); still compiled into libcui so future symbols land without re-registration |
+| Day-1b | ⛔ gated | `.uno:CommandPalette` accelerator + sfx2 dispatch + popover GUI | — | Controller class + cppunit ready; needs sfx2 sdi slot (de0fd779f, sdi-only) + accelerator binding + GUI shell |
 | Day-1c | ⛔ gated | i18npool Transliteration_pinyin integration | — | Touches shared i18n surface |
 
 ## W3 — Writer Apply Runtime + ApplyPlanValidator
@@ -61,13 +61,21 @@
 
 ## W4 — Select-to-act
 
-Spec only (`docs/product/v2/w4-select-to-act-spec.md`). No
-implementation steps started; no cppunit binaries yet.
+Spec + Day-0 entry-point plan (`docs/product/v2/w4-select-to-act-spec.md`
+§"Day-0 Entry-Point Plan"). No production code yet. Day-0 is gated on
+scope auth for `sw/source/uibase/inline-actions/`,
+`sc/source/ui/inline-actions/`, `sd/source/ui/inline-actions/`, and
+`svx/source/sidebar/diff-review/` — header-only skeletons per the plan,
+≥3 new pure-logic cppunit cases (enum-stability), no VCL bring-up.
 
 ## W5 — Async cowork
 
-Spec only (`docs/product/v2/w5-async-cowork-spec.md`). No
-implementation steps started.
+Spec + Day-0 entry-point plan (`docs/product/v2/w5-async-cowork-spec.md`
+§"Day-0 Entry-Point Plan"). No production code yet. Day-0 is gated on
+confirmation that the V2 allow-list extends from
+`kqoffice/source/ai/provider/` to `kqoffice/source/ai/cowork/**` plus
+`kqoffice/qa/cppunit/test_cowork*`. Adds one schema
+(`async-task.schema.json`) + 2 fixtures → baseline 26/11 → 28/12.
 
 ## Authoritative artifacts
 

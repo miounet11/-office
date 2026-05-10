@@ -286,6 +286,70 @@ TaskEvidence (W5)
 3. Cron 任务在用户睡觉时跑导致电量耗尽 → 限制只在插电时跑
 4. 用户拒绝 task review > 80% → 说明 prompt 设计有问题，回 spec
 
+## Day-0 Entry-Point Plan (skeleton)
+
+> **Status**: planned. Mirrors the W1/W2/W4 Day-0 layout: minimum files
+> to land the linkable surface so subsequent sub-steps can fan out
+> without colliding. No real backend, no scheduler, no companion sync.
+
+### What lands in Day-0
+
+1. **Task envelope contract (header-only)** — `kqoffice/source/ai/cowork/`
+   - `AsyncTask.hxx`: `TaskKind` enum (`weekly-report | translate-batch |
+     summarize-folder | format-sweep`), `TaskState` enum
+     (`pending | running | needs-review | applied | rejected | failed`),
+     `AsyncTaskEnvelope` struct (id / kind / state / created_at /
+     payload_hash / evidence_id).
+   - `TaskStateMachine.hxx`: header-only valid-transition table
+     (`pending → running → needs-review → {applied | rejected | failed}`,
+     no skip-states).
+2. **Task store skeleton** — `kqoffice/source/ai/cowork/TaskStore.{hxx,cxx}`
+   - JSON-on-disk persistence under
+     `${UserInstallation}/ai-tasks/YYYY-MM/<task_id>.json`,
+     mirrors EvidenceRecorder layout. Day-0 ships file write + read +
+     list-by-state; no migration logic.
+3. **Schema** — `docs/schemas/async-task.schema.json` (new):
+   17-key envelope locked by JSON Schema 2020-12. Adds two fixtures
+   (`async-task.valid.json` / `async-task.invalid.json`) so
+   `tests/v2-plan-baseline-test.sh` baseline grows from 26/11 → 28/12.
+4. **Pure-logic cppunit** — `kqoffice/qa/cppunit/test_cowork.cxx` (new
+   file in existing `CppunitTest_kqoffice_provider` binary or a new
+   `CppunitTest_kqoffice_cowork` per fdo#47246 hygiene): cases for
+   state-machine transition validity, store round-trip, schema-vs-C++
+   enum drift lock (mirrors `tests/v2-provider-evidence-schema-test.sh`).
+5. **Drift lock harness** — extend
+   `tests/v2-provider-evidence-schema-test.sh` (or a new
+   `tests/v2-async-task-schema-test.sh`) to assert
+   `TaskKind` / `TaskState` enum subset ⊆ schema.
+
+### Out of scope for Day-0
+
+- Cron scheduler / wake-from-sleep / power-aware run.
+- Companion App pairing (mDNS, manual IP fallback).
+- Notification surface (sfx2 toast / system notification).
+- Apply path: `applied` state requires W3 Day-1b; until then Day-0
+  rejects `applied` transitions and surfaces them as `needs-review`.
+
+### Verification gate for Day-0
+
+- `make kqoffice.build` clean.
+- `make CppunitTest_kqoffice_cowork` (or extended provider binary) green.
+- `tests/v2-plan-baseline-test.sh` baseline updated: 28 fixtures across
+  12 schemas, status passed, checks unchanged at 21.
+- `tests/v2-provider-evidence-schema-test.sh` still passes (W1 schema
+  contract untouched).
+- V1.5 27/27 strict roundtrip baseline untouched.
+
+### Authorization required before Day-0 starts
+
+W5 lands inside `kqoffice/` (already on the V2 allow-list under
+`kqoffice/source/ai/provider/` precedent) plus `docs/schemas/`. The
+new `kqoffice/source/ai/cowork/` subdirectory is a sibling of an
+authorized path; explicit confirmation that the V2 allow-list extends
+to `kqoffice/source/ai/cowork/**` and `kqoffice/qa/cppunit/test_cowork*`
+is needed before Day-0 begins. Schema + harness paths are
+documentation-tier and don't need new authorization.
+
 ## Dependencies
 
 - W1：所有 LLM 调用
