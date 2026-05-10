@@ -292,6 +292,21 @@ if [[ -n "$baseline_violations" ]]; then
 fi
 pass_count=$((pass_count + 1))
 
+# 14. bin/v2-harness-sweep.sh executable-bit lock. The sweep script
+#     is referenced from CLAUDE-NOTES + handoff doc + CI workflow as
+#     the one-shot invocation; losing the 0755 mode bit would make
+#     all 3 call sites fail with a cryptic "bash: permission denied"
+#     without any single H2 check flagging it. Parallel to check 11
+#     which does the same for tests/v2-*.sh paths.
+sweep_script="bin/v2-harness-sweep.sh"
+if [[ ! -f "$sweep_script" ]]; then
+    fail "missing $sweep_script (referenced from CLAUDE-NOTES + handoff)"
+fi
+if [[ ! -x "$sweep_script" ]]; then
+    fail "$sweep_script missing 0755 mode bit (referenced by CLAUDE-NOTES + handoff + CI)"
+fi
+pass_count=$((pass_count + 1))
+
 printf 'Status: passed\n'
 printf 'Checks: %d\n' "$pass_count"
 printf 'Fixtures: 36 across 13 schemas\n'

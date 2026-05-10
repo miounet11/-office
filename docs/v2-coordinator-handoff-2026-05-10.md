@@ -72,7 +72,7 @@ grep -c '| passed |' tmp/intelligent-contract-fixtures.md  # must be ≥ 36
 grep -c '| failed |' tmp/intelligent-contract-fixtures.md  # must be 0
 ```
 
-Current pass-count baselines: H1=26 / H2=43 / H3=26 / H4 partial / H5 partial / H6=39 / H7 partial. ai-native cppunit total = 84.
+Current pass-count baselines: H1=26 / H2=44 / H3=26 / H4 partial / H5 partial / H6=39 / H7 partial. ai-native cppunit total = 84.
 
 Or rely on `.github/workflows/v2-contract-harnesses.yml` to run all 7 + V1.5 fixtures step on PR (post-L62).
 
