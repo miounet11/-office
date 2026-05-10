@@ -1,4 +1,4 @@
-# V2 Coordinator Handoff — last refreshed 2026-05-11 (L63)
+# V2 Coordinator Handoff — last refreshed 2026-05-11 (L67)
 
 > Authoritative wait-state snapshot. Read this first if a previous
 > session ended in /goal mode without explicit user authorization.
@@ -14,13 +14,14 @@
 - All 7 V2 contract harnesses green (H1–H7; see §"Production-ready gate" below)
 - `ai-native` cppunit suite at OK(84): 51 provider + 33 cui (8 idx + 8 fuzzy + 10 recent + 7 controller)
 - V1.5 27/27 strict roundtrip baseline untouched
-- 63 ledger rows on `main` as of 2026-05-11 (L63 = persistent memory seed)
+- 67 ledger rows on `main` as of 2026-05-11 (L67 = H2 baseline cross-doc lock)
 - CI workflow `.github/workflows/v2-contract-harnesses.yml` invokes ALL 7 harnesses (post-L62; pre-L62 only ran 4)
 - Persistent memory seeded at `/Users/lu/.clavue/projects/-Users-lu---office-clmpx2/memory/` (L63):
   `MEMORY.md`, `v2_entry_pointer.md`, `v2_invariants.md`,
   `v2_locking_architecture.md`, `authorization_gates.md`,
   `workspace_layout.md`, `feedback_terse_verifiable.md`
 - 4 reader's manuals on disk; H6 glob-discovers them and locks fact-blocks against schema bodies; H2 check 10 locks lane-status references bidirectionally
+- L65 bin/v2-harness-sweep.sh one-shot sweep; L66 ledger row-shape lock (H2 check 12); L67 pass-count baseline cross-doc lock (H2 check 13)
 
 Working tree may have uncommitted noise (sysui/desktop/macosx/LaunchConstraint.plist, generated config). Nothing has been pushed (B3 — no SSH key, HTTPS hits 500MB pack limit).
 

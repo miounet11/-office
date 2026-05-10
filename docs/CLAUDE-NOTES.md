@@ -109,10 +109,46 @@ The seven harnesses form a three-layer matrix over V2 artifacts:
    ledger row-count, reader's-manual references, harness
    references (file + 0755 mode). Both directions checked; any
    stale mention or missing on-disk artifact fails CI.
+4. **Self-consistency of the locking system itself** (H2 checks
+   12/13, post-L66/L67) — the ledger's own row shape and the
+   pass-count baseline string replicated across CLAUDE-NOTES /
+   handoff / sweep-script header. Born from the L65 incident
+   where I (the assistant) silently introduced a row with extra
+   keys; the L66/L67 locks now refuse the same drift class.
 
 Adding a new V2 schema: drop schema + fixtures + reader's manual
 + lane-status §"Schemas (V2)" entry in the same PR. The H2+H6
 locks will refuse incomplete landings.
+
+### Ledger row shape (locked by H2 check 12)
+
+Every row in `.agent/goals/2026-05-08-v2-ai-native/ledger.jsonl`
+MUST be valid JSON with EXACTLY these 4 keys (no more, no less):
+
+```
+{"event": "step_closed", "goal_id": "<kebab-or-PascalCase-id>",
+ "ts": "<ISO-8601>", "notes": "<freeform>"}
+```
+
+Do not add ad-hoc fields like `turn`, `artifacts`, `status`,
+`v2_harnesses`, etc. — they break downstream `jq` / grep tooling
+and the canonical event-type discriminator (`event`). If you
+need a new field across-the-board, update check 12's `expected`
+tuple in the same PR.
+
+### Pass-count baseline replicas (locked by H2 check 13)
+
+The H_N pass-count baseline string is replicated in 3 in-repo
+places. **Canonical**: `docs/CLAUDE-NOTES.md` (this file). The
+following must mirror it character-for-character (modulo
+whitespace and ` / ` vs space separators):
+
+- `docs/v2-coordinator-handoff-2026-05-10.md` §"Production-ready gate"
+- `bin/v2-harness-sweep.sh` header comment
+
+`/Users/lu/.clavue/projects/-Users-lu---office-clmpx2/memory/v2_entry_pointer.md`
+also mirrors but lives outside the repo and is NOT enforced by
+check 13 — keep it manually mirrored.
 
 **CI automation**: `.github/workflows/v2-contract-harnesses.yml`
 runs all seven on push/PR touching `docs/schemas/**`,
