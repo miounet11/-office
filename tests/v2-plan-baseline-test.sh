@@ -339,6 +339,47 @@ $sweep_only"
 fi
 pass_count=$((pass_count + 1))
 
+# 16. Ledger ts well-formedness + UTC-normalized monotonicity. Every
+#     row's `ts` field MUST parse as ISO-8601 with explicit timezone
+#     offset, and the resulting UTC instants MUST be non-decreasing
+#     across the file. Born from the L83 audit: rows 1-4 use +0800
+#     while rows 5-N use +0000; naive string comparison flagged a
+#     false NON-MONOTONIC at row 5 (raw "+0800" string > "+0000")
+#     even though UTC instants were in order. The ledger row-shape
+#     lock (check 12) only validates the JSON keys; this check
+#     validates the ts VALUE. Drift class caught: future rows with
+#     malformed ts ("2026-05-12" without time, missing tz, "Z"
+#     suffix without parser support, or wall-clock backward edits
+#     intended to retroactively reorder events). Parallel to
+#     check 12 (row-shape) — together they lock both schema and
+#     content of the canonical 4-key ledger envelope.
+ledger="$ledger_path"
+prev_utc=""
+prev_n=0
+n=0
+while IFS= read -r line; do
+    n=$((n + 1))
+    ts=$(printf '%s' "$line" | jq -r '.ts')
+    # Require explicit numeric tz offset (+HHMM or -HHMM); reject
+    # bare "Z" suffix and tz-less strings — both have bitten before.
+    if [[ ! "$ts" =~ [+-][0-9]{4}$ ]]; then
+        fail "ledger row $n ts=\"$ts\" missing explicit numeric tz offset (+HHMM/-HHMM); 'Z' or naked datetime is rejected — see CLAUDE-NOTES §Ledger row shape"
+    fi
+    # Parse to epoch seconds via BSD date -j -f (portable on macOS;
+    # GNU date uses different flags but this harness only runs in the
+    # configured BUILDDIR which is macOS).
+    epoch=$(date -j -f "%Y-%m-%dT%H:%M:%S%z" "$ts" +%s 2>/dev/null || true)
+    if [[ -z "$epoch" ]]; then
+        fail "ledger row $n ts=\"$ts\" failed BSD date parse (expected %Y-%m-%dT%H:%M:%S%z)"
+    fi
+    if [[ -n "$prev_utc" && "$epoch" -lt "$prev_utc" ]]; then
+        fail "ledger row $n ts=\"$ts\" (UTC epoch $epoch) is BEFORE row $prev_n (epoch $prev_utc) — append-only timeline must be UTC-monotonic non-decreasing"
+    fi
+    prev_utc="$epoch"
+    prev_n=$n
+done < "$ledger"
+pass_count=$((pass_count + 1))
+
 printf 'Status: passed\n'
 printf 'Checks: %d\n' "$pass_count"
 printf 'Fixtures: 36 across 13 schemas\n'

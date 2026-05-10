@@ -79,7 +79,7 @@ files are **tracked** (~230k files). Two consequences:
 | Script | Locks |
 |---|---|
 | `tests/v2-day0-skeleton-test.sh` (H3) | Day-0 skeleton doc structure (W1+W2 file-map manifest ↔ day0-skeleton-landed.md body) |
-| `tests/v2-plan-baseline-test.sh` (H2) | Spec docs + 36 fixtures across 13 schemas + V2 goals.json completed + lane-status ledger-count + reader's-manual roster bidirectional (check 10) + harness-reference lock (check 11) + ledger row-shape lock (check 12, post-L66) + pass-count baseline cross-doc lock (check 13, post-L67) + sweep-script exec-bit lock (check 14, post-L70) + sweep-enumeration ↔ disk parity (check 15, post-L76) + W4/W5 Day-0 + enum-lock subsections (check 7/8) |
+| `tests/v2-plan-baseline-test.sh` (H2) | Spec docs + 36 fixtures across 13 schemas + V2 goals.json completed + lane-status ledger-count + reader's-manual roster bidirectional (check 10) + harness-reference lock (check 11) + ledger row-shape lock (check 12, post-L66) + pass-count baseline cross-doc lock (check 13, post-L67) + sweep-script exec-bit lock (check 14, post-L70) + sweep-enumeration ↔ disk parity (check 15, post-L76) + ledger ts ISO-8601 + UTC monotonicity (check 16, post-L83) + W4/W5 Day-0 + enum-lock subsections (check 7/8) |
 | `tests/v2-provider-evidence-schema-test.sh` (H1) | Schema ↔ C++ token parity (13/13 apply-plan-* + 4 runtime tokens; 9-key envelope) |
 | `tests/v2-async-task-schema-test.sh` (H4) | W5 async-task schema enum order + fixture validity (**partial-enforce**; auto-promotes to full when `AsyncTask.hxx` lands) |
 | `tests/v2-inline-action-request-schema-test.sh` (H5) | W4 inline-action-request oneOf 3-branch action enum order + fixture validity (**partial-enforce**; auto-promotes to full when ParagraphActions.hxx + CellActions.hxx + SlideElementActions.hxx all land) |
@@ -89,13 +89,13 @@ files are **tracked** (~230k files). Two consequences:
 
 All seven must stay green on `main`. Run all seven after any V2
 schema, validator, or status-token change. Current baselines:
-H1=26 / H2=45 / H3=26 / H4 partial / H5 partial / H6=39 / H7 partial.
+H1=26 / H2=46 / H3=26 / H4 partial / H5 partial / H6=39 / H7 partial.
 
 One-shot sweep (single source of truth): `bin/v2-harness-sweep.sh`
 runs H1→H7 in canonical order; pass `--with-fixtures` to also run the
 V1.5+V2 fixture validator and assert ≥36 passed / 0 failed.
 
-### V2 consistency locking architecture (post-L76)
+### V2 consistency locking architecture (post-L83)
 
 The seven harnesses form a four-layer matrix over V2 artifacts:
 
@@ -110,16 +110,21 @@ The seven harnesses form a four-layer matrix over V2 artifacts:
    references (file + 0755 mode). Both directions checked; any
    stale mention or missing on-disk artifact fails CI.
 4. **Self-consistency of the locking system itself** (H2 checks
-   12/13/14/15, post-L66/L67/L70/L76) — the ledger's own row shape,
-   the pass-count baseline string replicated across CLAUDE-NOTES /
-   handoff / sweep-script header, the sweep-script exec-bit, and
-   sweep enumeration ↔ disk parity. Born from the L65 incident
-   where I (the assistant) silently introduced a row with extra
-   keys; the L66/L67/L70/L76 locks now refuse the entire same
-   drift class. L76 specifically catches new-harness-on-disk-but-
-   not-in-sweep — the local one-shot sweep would silently skip
+   12/13/14/15/16, post-L66/L67/L70/L76/L83) — the ledger's own row
+   shape, the pass-count baseline string replicated across
+   CLAUDE-NOTES / handoff / sweep-script header, the sweep-script
+   exec-bit, sweep enumeration ↔ disk parity, and ledger ts
+   well-formedness + UTC-normalized monotonicity. Born from the L65
+   incident where I (the assistant) silently introduced a row with
+   extra keys; the L66/L67/L70/L76/L83 locks now refuse the entire
+   same drift class. L76 specifically catches new-harness-on-disk-
+   but-not-in-sweep — the local one-shot sweep would silently skip
    the new harness while CI's per-file paths-filter would still
-   run it, producing false-green local sweeps.
+   run it, producing false-green local sweeps. L83 catches ledger
+   ts that mix tz formats (rows 1-4 are +0800, rows 5+ are +0000;
+   naive string compare flags a false NON-MONOTONIC at row 5) AND
+   real backward-edited timestamps that would corrupt the append-
+   only timeline contract.
 
 Adding a new V2 schema: drop schema + fixtures + reader's manual
 + lane-status §"Schemas (V2)" entry in the same PR. The H2+H6
@@ -155,14 +160,14 @@ whitespace and ` / ` vs space separators):
 also mirrors but lives outside the repo and is NOT enforced by
 check 13 — keep it manually mirrored.
 
-### Verifying check 12/13/14/15 actually catch drift (negative canary)
+### Verifying check 12/13/14/15/16 actually catch drift (negative canary)
 
 Whenever you touch H2 check 12 (ledger row-shape), check 13
-(baseline cross-doc), check 14 (sweep-script exec-bit), or
-check 15 (sweep enumeration ↔ disk parity), run the inline
-negative canary to prove the new logic catches its drift class —
-not just the canonical state. The pattern, copy-paste-safe in
-the BUILDDIR root:
+(baseline cross-doc), check 14 (sweep-script exec-bit), check 15
+(sweep enumeration ↔ disk parity), or check 16 (ledger ts ISO-8601
++ UTC monotonicity), run the inline negative canary to prove the
+new logic catches its drift class — not just the canonical state.
+The pattern, copy-paste-safe in the BUILDDIR root:
 
 ```bash
 # check 12 canary: same row count, mutated key-set
@@ -198,6 +203,28 @@ cp bin/v2-harness-sweep.sh /tmp/sweep.bak
 echo "bash tests/v2-ghost-test.sh" >> bin/v2-harness-sweep.sh
 bash tests/v2-plan-baseline-test.sh; echo "exit=$?"   # expect FAIL exit !=0
 mv /tmp/sweep.bak bin/v2-harness-sweep.sh
+bash tests/v2-plan-baseline-test.sh; echo "exit=$?"   # expect 0
+
+# check 16 canary A: backward UTC instant on last row
+cp .agent/goals/2026-05-08-v2-ai-native/ledger.jsonl /tmp/ledger.bak
+last_ts=$(jq -r '.ts' < /tmp/ledger.bak | tail -1)
+sed -i.tmp "s|$last_ts|2020-01-01T00:00:00+0000|" .agent/goals/2026-05-08-v2-ai-native/ledger.jsonl
+bash tests/v2-plan-baseline-test.sh; echo "exit=$?"   # expect FAIL exit !=0
+mv /tmp/ledger.bak .agent/goals/2026-05-08-v2-ai-native/ledger.jsonl
+rm -f .agent/goals/2026-05-08-v2-ai-native/ledger.jsonl.tmp
+bash tests/v2-plan-baseline-test.sh; echo "exit=$?"   # expect 0
+
+# check 16 canary B: bare-Z ts on last row (must reject — no explicit numeric tz)
+cp .agent/goals/2026-05-08-v2-ai-native/ledger.jsonl /tmp/ledger.bak
+python3 -c "
+import json
+p='.agent/goals/2026-05-08-v2-ai-native/ledger.jsonl'
+ls=open(p).readlines()
+last=json.loads(ls[-1]); last['ts']='2026-05-12T02:00:00Z'
+ls[-1]=json.dumps(last)+'\n'
+open(p,'w').writelines(ls)"
+bash tests/v2-plan-baseline-test.sh; echo "exit=$?"   # expect FAIL exit !=0
+mv /tmp/ledger.bak .agent/goals/2026-05-08-v2-ai-native/ledger.jsonl
 bash tests/v2-plan-baseline-test.sh; echo "exit=$?"   # expect 0
 ```
 
