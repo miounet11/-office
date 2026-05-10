@@ -21,13 +21,13 @@
 
 | ID | Decision needed | Owner | Blocks |
 |---|---|---|---|
-| D1 | Authorize touching `sw/source/uibase/app/docsh*.cxx` | user | W3 Day-1b (`SwDocShell::applyDiagnosticsPlan` wiring) — closes W3 Day-1 last gate |
-| D2 | Authorize touching `kqoffice/source/ai/provider/` | user | W1 Day-1a (OllamaAdapter real backend) |
-| D3 | Authorize touching `cui/source/dialogs/commandpalette/` | user | W2 Day-1b (popover controller + sfx2 dispatch) |
+| D1 | Authorize touching `sw/source/uibase/app/docsh*.cxx` + new files in `sw/source/core/{doc,undo}/` | user | W3 Day-1b (`SwDocShell::applyDiagnosticsPlan` wiring + `IntelligentWriterApplyEngine.cxx` + `UndoApplyPatch.cxx`) — closes W3 Day-1 last gate |
+| D2 | ~~Authorize touching `kqoffice/source/ai/provider/`~~ | ~~user~~ | **RESOLVED 2026-05-10 (L32 audit)**: OllamaAdapter Day-1a is in fact landed — real BSD-socket HTTP/1.0 + bounded reads + JSON parser + 5 cppunit cases in OK(77). lane-status corrected. |
+| D3 | Authorize touching sfx2 sdi (`.uno:CommandPalette` slot) + `cui/source/dialogs/commandpalette/` GUI shell + accelerator config | user | W2 Day-1b end-to-end. Per L33 audit: `CommandPaletteController` thin-wrapper class already lives at `cui/source/dialogs/commandpalette/CommandPalette.cxx` (29 lines, setCorpus + queryToResults via FuzzyMatcher). Remaining surface is sfx2 dispatch + popover GUI, not the controller class itself. |
 | D5 | Pick `downstream-branding/` source-of-truth (commit / submodule / skip) | user | CI installer artifacts have correct branding |
 | D6 | Re-scope worker owned-paths from `src/**`/`tests/**` to per-module | user | code-worker-2, test-worker-2 lane usability |
 | D7 | ~~Design **runtime ApplyPlan** schema~~ | ~~user~~ | **RESOLVED 2026-05-10**: `docs/schemas/apply-plan-runtime.schema.json` envelope locked + 2 fixtures (L26). Per-kind internal shape stays open until each `SwUndoApplyPatch` impl lands. |
-| Commit | Approve the ~10 uncommitted files (no production code, all coordinator/CI/docs/memory) | user | Persisting this session's work to `main` |
+| ~~Commit~~ | ~~Approve the ~10 uncommitted files~~ | ~~user~~ | **RESOLVED 2026-05-10**: 4 commits landed on `main` — d0cb9a2c4 (V2 harness baseline), 7d374d3ba (narratives + ledger + handoff + manifest), 29cb1889f (CI installer I2 partial), 85d56a5cc (W1 Day-1a audit correction). Not yet pushed to remote. |
 
 **None of these are reversible without authorization.** Coordinator MUST NOT
 attempt them autonomously. clavue.md is explicit: `git commit/push` and

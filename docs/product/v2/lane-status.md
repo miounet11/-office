@@ -19,7 +19,7 @@
 | Wave | Focus | Sub-steps landed | Gated | Pure-logic cppunit |
 |---|---|---|---|---|
 | W1  | Provider runtime (Ollama-first sandbox)        | step3 + Day-1a + Day-1b | Day-1c (i18n threading), Day-1d (cloud TLS) | 51 (kqoffice_provider) |
-| W2  | Cmd+K palette                                  | Day-1a + RecentStore | Day-1b (.uno: dispatch), Day-1c (pinyin) | 26 (8 idx + 8 fuzzy + 10 recent) |
+| W2  | Cmd+K palette                                  | Day-1a + RecentStore + Controller | Day-1b (.uno: dispatch + popover GUI), Day-1c (pinyin) | 26 (8 idx + 8 fuzzy + 10 recent) |
 | W3  | Writer apply-runtime + ApplyPlan validator     | Day-1a/c/d/e/f/g/h   | Day-1b (SwDocShell wiring) | 51 (counted in W1 binary) |
 | W4  | Select-to-act (Writer/Calc/Impress action bubble) | —                  | spec-only at this milestone | 0 |
 | W5  | Async cowork (long-running tasks + diff review)   | —                  | spec-only at this milestone | 0 |
@@ -42,7 +42,8 @@
 |---|---|---|---|---|
 | Day-1a | ✅ | `cui/source/inc/commandpalette/CommandIndex.hxx`, `cui/qa/unit/{CommandIndex,FuzzyMatcher}Test.cxx` | L7 | Header-only fast-test split, 8+8 cases |
 | RecentStore | ✅ | `cui/source/inc/commandpalette/RecentStore.hxx`, `cui/qa/unit/RecentStoreTest.cxx` | L8 | JSON round-trip + ranking integration, 10 cases |
-| Day-1b | ⛔ gated | `.uno:CommandPalette` accelerator + sfx2 dispatch | — | Touches sfx2 dispatch surface |
+| Controller | ✅ partial | `cui/source/dialogs/commandpalette/CommandPalette.cxx` (29-line thin wrapper: setCorpus + queryToResults via FuzzyMatcher) | L33 (audit) | `CommandPaletteController` class lives; no popover GUI, no `.uno:` dispatch |
+| Day-1b | ⛔ gated | `.uno:CommandPalette` accelerator + sfx2 dispatch + popover GUI | — | Controller class ready; needs sfx2 sdi slot + accelerator + GUI shell |
 | Day-1c | ⛔ gated | i18npool Transliteration_pinyin integration | — | Touches shared i18n surface |
 
 ## W3 — Writer Apply Runtime + ApplyPlanValidator
@@ -214,7 +215,7 @@ From the 8-worker sweep, concrete picks awaiting user authorization:
 |---|---|---|
 | D1 | Authorize **W3 Day-1b** (`SwDocShell::applyDiagnosticsPlan` wiring, `sw/source/uibase/app/docsh*.cxx`) | code-worker; closes the last W3 Day-1 gate |
 | D2 | ~~Authorize **W1 Day-1a** (OllamaAdapter real-backend implementation)~~ | **RESOLVED 2026-05-10** — audit found `kqoffice/source/ai/provider/OllamaAdapter.{hxx,cxx}` already lands real BSD-socket HTTP/1.0 against `127.0.0.1:11434` (probe / listModels / generate; bounded reads; 100ms+30s timeouts; JSON linear-scan parser); `Provider.cxx::call` dispatches through it; 5 cppunit cases included in OK(77). lane-status had marked D2 as gated; that was stale (L32) |
-| D3 | Authorize **W2 popover controller** (`cui/source/dialogs/commandpalette/CommandPalette.cxx` + sfx2 dispatch wiring) | W2 Day-1b; pure-logic substrate already landed |
+| D3 | Authorize **W2 Day-1b end-to-end** (`.uno:CommandPalette` sfx2 sdi slot + accelerator binding + popover GUI shell) | W2 Day-1b; pure-logic substrate + `CommandPaletteController` class already landed (L33 audit confirms `cui/source/dialogs/commandpalette/CommandPalette.cxx` thin wrapper). Real remaining surface: sfx2 sdi + `cui/source/dialogs/commandpalette/` GUI shell that hosts `CommandPaletteController` |
 | D4 | ~~Decide I1 fix~~ | **RESOLVED 2026-05-10** — `bin/` extended-naming + `tests/` count bump landed |
 | D5 | ~~Decide I2 fix~~ | **PARTIALLY RESOLVED 2026-05-10** — lang + bundle id landed; branding source-of-truth still open |
 | D6 | Re-scope worker owned-paths from `src/**` / `tests/**` (non-existent in this LO build tree) to per-module `<module>/source/**` / `<module>/qa/**` | code-worker-2, test-worker-2 |
