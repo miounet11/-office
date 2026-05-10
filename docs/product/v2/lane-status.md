@@ -109,7 +109,7 @@ exists.
 ## Authoritative artifacts
 
 - **Goals** (status snapshot): `.agent/goals/2026-05-08-v2-ai-native/goals.json`
-- **Ledger** (append-only timeline): `.agent/goals/2026-05-08-v2-ai-native/ledger.jsonl` (48 entries)
+- **Ledger** (append-only timeline): `.agent/goals/2026-05-08-v2-ai-native/ledger.jsonl` (49 entries)
 - **Narratives**:
   - `docs/product/v2/day0-skeleton-landed.md` — Day-0 skeleton landing
   - `docs/product/v2/day1-progress.md` — Day-1{a..h} per-step rationale
@@ -118,7 +118,7 @@ exists.
   - `docs/schemas/provider-evidence.schema.json` — runtime audit envelope (W1 / W3 Day-1f)
   - `docs/schemas/apply-plan-runtime.schema.json` — W3 Day-1b runtime ApplyPlan envelope (envelope-only; per-kind patch shape lands with each `SwUndoApplyPatch` impl)
   - `docs/schemas/async-task.schema.json` — W5 per-task envelope (TaskKind 4-token / TaskState 6-token / 11-required-key envelope; landed L41 ahead of C++ Day-0). Reader's manual: `docs/schemas/async-task.schema.md` (L45).
-  - `docs/schemas/inline-action-request.schema.json` — W4 per-trigger inline-action envelope (3-branch oneOf keyed on surface; ParagraphAction 7-token / CellAction 5-token / SlideElementAction 4-token; landed L46 ahead of C++ Day-0)
+  - `docs/schemas/inline-action-request.schema.json` — W4 per-trigger inline-action envelope (3-branch oneOf keyed on surface; ParagraphAction 7-token / CellAction 5-token / SlideElementAction 4-token; landed L46 ahead of C++ Day-0). Reader's manual: `docs/schemas/inline-action-request.schema.md` (L49).
 - **Schemas explicitly NOT touched**:
   - `docs/schemas/evidence-record.schema.json` — V1.5 m3-02 capability/diagnostic record (different fields, locked by 27/27 strict roundtrip baseline)
   - `docs/schemas/apply-plan.schema.json` — V1.5 m3-02 capability descriptor (per-capability metadata: id / undo_group / failure_behavior). Distinct from V2 `apply-plan-runtime.schema.json` per V2 invariants memory rule #5; do not collapse.
