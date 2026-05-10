@@ -174,6 +174,26 @@ while IFS= read -r ref; do
     pass_count=$((pass_count + 1))
 done <<< "$referenced_manuals"
 
+# 11. Every `tests/v2-*.sh` harness path referenced from
+#     lane-status.md must exist on disk. Catches the class of
+#     drift where a harness gets renamed or removed but
+#     lane-status keeps claiming it exists. Complements check 10
+#     (which does the same for reader's manuals).
+referenced_harnesses=$(grep -oE '`tests/v2-[a-z-]+\.sh`' \
+    docs/product/v2/lane-status.md \
+    | sed -E 's/`([^`]+)`/\1/' \
+    | sort -u || true)
+while IFS= read -r h; do
+    [[ -z "$h" ]] && continue
+    if [[ ! -f "$h" ]]; then
+        fail "lane-status.md references missing harness: $h"
+    fi
+    if [[ ! -x "$h" ]]; then
+        fail "lane-status.md references non-executable harness: $h (expected 0755 mode bit)"
+    fi
+    pass_count=$((pass_count + 1))
+done <<< "$referenced_harnesses"
+
 printf 'Status: passed\n'
 printf 'Checks: %d\n' "$pass_count"
 printf 'Fixtures: 36 across 13 schemas\n'
