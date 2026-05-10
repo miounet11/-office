@@ -144,6 +144,36 @@ if [[ "$claimed_rows" != "$ledger_rows" ]]; then
 fi
 pass_count=$((pass_count + 1))
 
+# 10. lane-status.md §"Schemas (V2)" reader's-manual references match
+#     the on-disk reader's-manual roster bidirectionally:
+#       (a) every docs/schemas/*.schema.md is referenced by at least
+#           one "Reader's manual: ..." line in lane-status;
+#       (b) every "Reader's manual: <path>" line in lane-status
+#           points at a file that actually exists.
+#     Catches the drift class where someone adds a 5th reader's
+#     manual but forgets to mirror it in lane-status (or removes a
+#     manual but leaves a stale reference). Symmetric to the H6 lock
+#     which already verifies fact-block ↔ schema-body coherence.
+shopt -s nullglob
+manuals_on_disk=( docs/schemas/*.schema.md )
+shopt -u nullglob
+for m in "${manuals_on_disk[@]}"; do
+    if ! grep -Fq "Reader's manual: \`$m\`" docs/product/v2/lane-status.md; then
+        fail "lane-status.md missing reader's-manual reference for $m"
+    fi
+    pass_count=$((pass_count + 1))
+done
+referenced_manuals=$(grep -oE "Reader's manual: \`docs/schemas/[a-z0-9-]+\.schema\.md\`" \
+    docs/product/v2/lane-status.md \
+    | sed -E "s/Reader's manual: \`([^\`]+)\`/\1/" || true)
+while IFS= read -r ref; do
+    [[ -z "$ref" ]] && continue
+    if [[ ! -f "$ref" ]]; then
+        fail "lane-status.md references missing reader's manual: $ref"
+    fi
+    pass_count=$((pass_count + 1))
+done <<< "$referenced_manuals"
+
 printf 'Status: passed\n'
 printf 'Checks: %d\n' "$pass_count"
 printf 'Fixtures: 36 across 13 schemas\n'

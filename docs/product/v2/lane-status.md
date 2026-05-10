@@ -110,7 +110,7 @@ exists.
 ## Authoritative artifacts
 
 - **Goals** (status snapshot): `.agent/goals/2026-05-08-v2-ai-native/goals.json`
-- **Ledger** (append-only timeline): `.agent/goals/2026-05-08-v2-ai-native/ledger.jsonl` (56 entries)
+- **Ledger** (append-only timeline): `.agent/goals/2026-05-08-v2-ai-native/ledger.jsonl` (57 entries)
 - **Narratives**:
   - `docs/product/v2/day0-skeleton-landed.md` — Day-0 skeleton landing
   - `docs/product/v2/day1-progress.md` — Day-1{a..h} per-step rationale
@@ -143,6 +143,7 @@ exists.
 | W5 spec carries `### Token lock` subsection (L37) | `tests/v2-plan-baseline-test.sh` (check 8) | 2026-05-10 |
 | lane-status.md ledger entry-count claim = `wc -l` of ledger.jsonl | `tests/v2-plan-baseline-test.sh` (check 9) | 2026-05-10 |
 | W1/W3/W4/W5 reader's-manual fact-blocks (schema_version const opt + required_count + total_props + enum_count multi-claim) ↔ schema body | `tests/v2-schema-manual-coherence-test.sh` | 2026-05-11 |
+| Bidirectional `docs/schemas/*.schema.md` ↔ lane-status.md "Reader's manual:" reference roster | `tests/v2-plan-baseline-test.sh` (check 10) | 2026-05-11 |
 | V1.5 27/27 strict roundtrip | `bin/intelligent-contract-fixtures.sh` + downstream pipeline | 2026-05-08 |
 
 ## Extended fixture naming (resolved 2026-05-10)
