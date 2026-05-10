@@ -79,7 +79,7 @@ files are **tracked** (~230k files). Two consequences:
 | Script | Locks |
 |---|---|
 | `tests/v2-day0-skeleton-test.sh` (H3) | Day-0 skeleton doc structure (W1+W2 file-map manifest ↔ day0-skeleton-landed.md body) |
-| `tests/v2-plan-baseline-test.sh` (H2) | Spec docs + 36 fixtures across 13 schemas + V2 goals.json completed + lane-status ledger-count + reader's-manual roster bidirectional (check 10) + harness-reference lock (check 11) + ledger row-shape lock (check 12, post-L66) + pass-count baseline cross-doc lock (check 13, post-L67) + sweep-script exec-bit lock (check 14, post-L70) + W4/W5 Day-0 + enum-lock subsections (check 7/8) |
+| `tests/v2-plan-baseline-test.sh` (H2) | Spec docs + 36 fixtures across 13 schemas + V2 goals.json completed + lane-status ledger-count + reader's-manual roster bidirectional (check 10) + harness-reference lock (check 11) + ledger row-shape lock (check 12, post-L66) + pass-count baseline cross-doc lock (check 13, post-L67) + sweep-script exec-bit lock (check 14, post-L70) + sweep-enumeration ↔ disk parity (check 15, post-L76) + W4/W5 Day-0 + enum-lock subsections (check 7/8) |
 | `tests/v2-provider-evidence-schema-test.sh` (H1) | Schema ↔ C++ token parity (13/13 apply-plan-* + 4 runtime tokens; 9-key envelope) |
 | `tests/v2-async-task-schema-test.sh` (H4) | W5 async-task schema enum order + fixture validity (**partial-enforce**; auto-promotes to full when `AsyncTask.hxx` lands) |
 | `tests/v2-inline-action-request-schema-test.sh` (H5) | W4 inline-action-request oneOf 3-branch action enum order + fixture validity (**partial-enforce**; auto-promotes to full when ParagraphActions.hxx + CellActions.hxx + SlideElementActions.hxx all land) |
@@ -89,7 +89,7 @@ files are **tracked** (~230k files). Two consequences:
 
 All seven must stay green on `main`. Run all seven after any V2
 schema, validator, or status-token change. Current baselines:
-H1=26 / H2=44 / H3=26 / H4 partial / H5 partial / H6=39 / H7 partial.
+H1=26 / H2=45 / H3=26 / H4 partial / H5 partial / H6=39 / H7 partial.
 
 One-shot sweep (single source of truth): `bin/v2-harness-sweep.sh`
 runs H1→H7 in canonical order; pass `--with-fixtures` to also run the
@@ -110,11 +110,16 @@ The seven harnesses form a four-layer matrix over V2 artifacts:
    references (file + 0755 mode). Both directions checked; any
    stale mention or missing on-disk artifact fails CI.
 4. **Self-consistency of the locking system itself** (H2 checks
-   12/13, post-L66/L67) — the ledger's own row shape and the
-   pass-count baseline string replicated across CLAUDE-NOTES /
-   handoff / sweep-script header. Born from the L65 incident
+   12/13/14/15, post-L66/L67/L70/L76) — the ledger's own row shape,
+   the pass-count baseline string replicated across CLAUDE-NOTES /
+   handoff / sweep-script header, the sweep-script exec-bit, and
+   sweep enumeration ↔ disk parity. Born from the L65 incident
    where I (the assistant) silently introduced a row with extra
-   keys; the L66/L67 locks now refuse the same drift class.
+   keys; the L66/L67/L70/L76 locks now refuse the entire same
+   drift class. L76 specifically catches new-harness-on-disk-but-
+   not-in-sweep — the local one-shot sweep would silently skip
+   the new harness while CI's per-file paths-filter would still
+   run it, producing false-green local sweeps.
 
 Adding a new V2 schema: drop schema + fixtures + reader's manual
 + lane-status §"Schemas (V2)" entry in the same PR. The H2+H6

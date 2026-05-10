@@ -307,6 +307,38 @@ if [[ ! -x "$sweep_script" ]]; then
 fi
 pass_count=$((pass_count + 1))
 
+# 15. Sweep enumeration ↔ disk parity. Every `tests/v2-*.sh` file on
+#     disk MUST appear as a `bash tests/v2-*.sh` invocation line in
+#     bin/v2-harness-sweep.sh, and vice versa. Catches the drift class
+#     where a new V2 harness lands but no one updates the sweep script
+#     — CI would then run the new harness directly (paths-filter
+#     covers tests/v2-*.sh post-L62) but the local one-shot sweep
+#     would silently skip it, producing false-green local runs while
+#     CI catches regressions only at PR time. Parallel to check 11 +
+#     check 14 (both verify that artifacts referenced from elsewhere
+#     actually exist on disk); this check verifies the inverse —
+#     artifacts on disk are referenced by the canonical entry point.
+disk_harnesses=$(find tests -maxdepth 1 -type f -name 'v2-*.sh' \
+    | sort -u)
+sweep_harnesses=$(grep -oE 'tests/v2-[a-z0-9-]+\.sh' "$sweep_script" \
+    | sort -u)
+# Compare by canonical relative paths.
+disk_only=$(comm -23 \
+    <(printf '%s\n' "$disk_harnesses") \
+    <(printf '%s\n' "$sweep_harnesses"))
+sweep_only=$(comm -13 \
+    <(printf '%s\n' "$disk_harnesses") \
+    <(printf '%s\n' "$sweep_harnesses"))
+if [[ -n "$disk_only" ]]; then
+    fail "harnesses on disk but not in $sweep_script (sweep would skip them):
+$disk_only"
+fi
+if [[ -n "$sweep_only" ]]; then
+    fail "harnesses referenced in $sweep_script but missing from disk:
+$sweep_only"
+fi
+pass_count=$((pass_count + 1))
+
 printf 'Status: passed\n'
 printf 'Checks: %d\n' "$pass_count"
 printf 'Fixtures: 36 across 13 schemas\n'
