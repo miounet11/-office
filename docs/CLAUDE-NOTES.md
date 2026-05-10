@@ -80,9 +80,10 @@ files are **tracked** (~230k files). Two consequences:
 | `tests/v2-day0-skeleton-test.sh` | Day-0 skeleton doc structure |
 | `tests/v2-plan-baseline-test.sh` | Spec docs + 24 fixtures across 10 schemas + V2 goals.json completed |
 | `tests/v2-provider-evidence-schema-test.sh` | Schema ↔ C++ token parity (3-way) |
+| `tests/v2-async-task-schema-test.sh` | W5 async-task schema ↔ C++ TaskKind/TaskState lock (skeleton until W5 Day-0 lands; auto-promotes to enforcement once schema + `AsyncTask.hxx` exist) |
 | `bin/intelligent-contract-fixtures.sh` | V1.5 m3-02 + V2 fixture roster (24/24) |
 
-All four must stay green on `main`. Run all four after any V2
+All five must stay green on `main`. Run all five after any V2
 schema, validator, or status-token change.
 
 **CI automation**: `.github/workflows/v2-contract-harnesses.yml`
@@ -90,8 +91,10 @@ runs all four on push/PR touching `docs/schemas/**`,
 `docs/product/v2/**`, `docs/CLAUDE-NOTES.md`,
 `kqoffice/source/ai/provider/**`, `tests/v2-*.sh`, or
 `bin/intelligent-contract-fixtures.sh`. ~5 minutes, no external
-deps. If you break an invariant locally, CI will catch it before
-merge — but still run them locally first; faster feedback.
+deps. `tests/v2-async-task-schema-test.sh` is included by the
+`tests/v2-*.sh` glob and runs in skeleton-skip mode until W5
+Day-0 lands. If you break an invariant locally, CI will catch it
+before merge — but still run them locally first; faster feedback.
 
 ## When to ask the user vs. proceed
 

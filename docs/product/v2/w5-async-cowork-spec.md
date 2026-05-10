@@ -373,7 +373,8 @@ is the standard term, **not** `needs-review`).
 - Companion App pairing (mDNS, manual IP fallback).
 - Notification surface (sfx2 toast / system notification).
 - Apply path: `applied` state requires W3 Day-1b; until then Day-0
-  rejects `applied` transitions and surfaces them as `needs-review`.
+  rejects `applied` transitions and leaves the task at `awaiting-review`
+  (the single canonical pre-apply state per §"状态机").
 
 ### Verification gate for Day-0
 

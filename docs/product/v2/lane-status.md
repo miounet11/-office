@@ -74,23 +74,26 @@ table for the canonical strings + UI labels + Diff-routing column.
 
 ## W5 — Async cowork
 
-Spec + Day-0 entry-point plan + token lock
+Spec + Day-0 entry-point plan + token lock + skeleton harness
 (`docs/product/v2/w5-async-cowork-spec.md` §"Day-0 Entry-Point Plan"
-→ §"Token lock"). No production code yet. Day-0 is gated on
-confirmation that the V2 allow-list extends from
-`kqoffice/source/ai/provider/` to `kqoffice/source/ai/cowork/**` plus
-`kqoffice/qa/cppunit/test_cowork*`. Adds one schema
-(`async-task.schema.json`) + 2 fixtures → baseline 26/11 → 28/12.
-Enum tokens locked (L37): `TaskKind` 4-token (one per scenario at
-spec §"4 个前期场景"), `TaskState` 6-token (matches §"状态机" diagram
-exactly: pending / running / awaiting-review / applied / failed /
-cancelled — `awaiting-review` is the standard, **not**
-`needs-review`).
+→ §"Token lock"; harness `tests/v2-async-task-schema-test.sh`). No
+production code yet. Day-0 is gated on confirmation that the V2
+allow-list extends from `kqoffice/source/ai/provider/` to
+`kqoffice/source/ai/cowork/**` plus `kqoffice/qa/cppunit/test_cowork*`.
+Adds one schema (`async-task.schema.json`) + 2 fixtures → baseline
+26/11 → 28/12. Enum tokens locked (L37): `TaskKind` 4-token (one per
+scenario at spec §"4 个前期场景"), `TaskState` 6-token (matches §"状态机"
+diagram exactly: pending / running / awaiting-review / applied /
+failed / cancelled — `awaiting-review` is the standard, **not**
+`needs-review`). `tests/v2-async-task-schema-test.sh` (L39) runs in
+skeleton-skip mode until schema + `AsyncTask.hxx` land, then
+auto-promotes to full enforcement (schema enum order = token-lock
+order; C++ enum tokens = token-lock set; fixture round-trip).
 
 ## Authoritative artifacts
 
 - **Goals** (status snapshot): `.agent/goals/2026-05-08-v2-ai-native/goals.json`
-- **Ledger** (append-only timeline): `.agent/goals/2026-05-08-v2-ai-native/ledger.jsonl` (38 entries)
+- **Ledger** (append-only timeline): `.agent/goals/2026-05-08-v2-ai-native/ledger.jsonl` (39 entries)
 - **Narratives**:
   - `docs/product/v2/day0-skeleton-landed.md` — Day-0 skeleton landing
   - `docs/product/v2/day1-progress.md` — Day-1{a..h} per-step rationale
@@ -113,6 +116,7 @@ cancelled — `awaiting-review` is the standard, **not**
 | ApplyPlanValidator.hxx 14-tag enum stable | `testApplyPlanCodeEnumStable` cppunit case | 2026-05-09 |
 | `applyPlanValidationStatus` distinct-per-code | `testApplyPlanStatusDistinctPerCode` | 2026-05-09 |
 | `applyPlanValidationMessage` distinct-per-code | `testApplyPlanMessageDistinctPerCode` | 2026-05-09 |
+| W5 async-task schema enum order = token-lock table order (skeleton-skip until W5 Day-0 lands) | `tests/v2-async-task-schema-test.sh` | 2026-05-10 (skip) |
 | V1.5 27/27 strict roundtrip | `bin/intelligent-contract-fixtures.sh` + downstream pipeline | 2026-05-08 |
 
 ## Extended fixture naming (resolved 2026-05-10)
