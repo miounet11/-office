@@ -68,10 +68,11 @@ for spec in docs/product/v2/w[1-5]-*.md; do
     pass_count=$((pass_count + 1))
 done
 
-# 5. Fixture baseline: 29 fixtures across 12 schemas all pass.
-#    18→24→26→28→29 / 9→10→11→12 reflects V2 additions
+# 5. Fixture baseline: 30 fixtures across 12 schemas all pass.
+#    18→24→26→28→29→30 / 9→10→11→12 reflects V2 additions
 #    (provider-request scenarios + provider-evidence + apply-plan-runtime
-#     + W5 async-task valid/invalid + W5 async-task terminal-failed boundary).
+#     + W5 async-task valid/invalid + W5 async-task terminal-failed boundary
+#     + W3 apply-plan-runtime utf8 multi-codepoint boundary).
 report="$(mktemp -t v2-plan-baseline-fixtures.XXXXXX.md)"
 trap 'rm -f "$report"' EXIT
 
@@ -84,9 +85,9 @@ if ! grep -Fq "Status: **passed**" "$report"; then
     cat "$report" >&2
     fail "fixture report not in passed state"
 fi
-if ! grep -Fq "Fixtures checked: 29" "$report"; then
+if ! grep -Fq "Fixtures checked: 30" "$report"; then
     cat "$report" >&2
-    fail "expected 29 fixtures (V1.5 18 + V2 8 + W5 async-task 2 + W5 terminal-failed 1)"
+    fail "expected 30 fixtures (V1.5 18 + V2 8 + W5 async-task 2 + W5 terminal-failed 1 + W3 utf8 boundary 1)"
 fi
 if ! grep -Fq "Schemas covered: 12" "$report"; then
     cat "$report" >&2
@@ -144,5 +145,5 @@ pass_count=$((pass_count + 1))
 
 printf 'Status: passed\n'
 printf 'Checks: %d\n' "$pass_count"
-printf 'Fixtures: 29 across 12 schemas\n'
+printf 'Fixtures: 30 across 12 schemas\n'
 printf 'V2 specs: master + 5 wave specs present\n'

@@ -1,0 +1,54 @@
+{
+  "schema_version": "v2-w3-runtime-1",
+  "plan_id": "ap-20260510-w3-utf8boundary",
+  "source_diagnostic_id": "diag-20260510-utf8-multicodepoint",
+  "doc_snapshot_hash": "sha256:deadbeef0badf00dcafe1234567890abcdef1234567890abcdef1234567890ab",
+  "preview_only": true,
+  "patches": [
+    {
+      "patch_id": "p1",
+      "kind": "paragraph-replace",
+      "target": {"paragraph_id": "swpara-100"},
+      "severity": "minor",
+      "rationale": "替换含 emoji 与全角标点的段落 — 锁定 ApplyPlanValidator 对 4-byte UTF-8 (U+1F389 🎉) 与全角标点 (，。) 的长度计数不截断。",
+      "before": "上周团队聚餐🎉，大家聊得很开心。",
+      "after": "上周团队聚餐，大家交流充分、气氛融洽。"
+    },
+    {
+      "patch_id": "p2",
+      "kind": "text-range-replace",
+      "target": {"paragraph_id": "swpara-101"},
+      "severity": "normal",
+      "rationale": "替换带零宽连接符 (ZWJ U+200D) 的组合 emoji — 'family' 序列 👨\u200D👩\u200D👧\u200D👦 是 11 字节但 1 grapheme，range.length 走字节语义。",
+      "range": {"start": 0, "length": 11},
+      "before": "👨\u200D👩\u200D👧\u200D👦",
+      "after": "一家人"
+    },
+    {
+      "patch_id": "p3",
+      "kind": "paragraph-format",
+      "target": {"paragraph_id": "swpara-102"},
+      "severity": "minor",
+      "rationale": "在转义引号 (\\\") 与字符串终结字符边界测试 ApplyPlanValidator 的 apv_readString 基元。",
+      "format_changes": {"style": "Quote", "note": "引号嵌套 \"外\"\"内\" 合法"}
+    },
+    {
+      "patch_id": "p4",
+      "kind": "paragraph-replace",
+      "target": {"paragraph_id": "swpara-103"},
+      "severity": "normal",
+      "rationale": "RTL 混排 (Hebrew + Arabic + 中文) + BiDi override — 段落 reading order 由 vcl 保证，validator 只做字节级校验。",
+      "before": "混合 שָׁלוֹם 与 السَّلَام 两个问候语",
+      "after": "混合示意：希伯来语问候 + 阿拉伯语问候"
+    },
+    {
+      "patch_id": "p5",
+      "kind": "text-format",
+      "target": {"paragraph_id": "swpara-104"},
+      "severity": "major",
+      "rationale": "3-byte UTF-8 CJK ideograph extension B (U+20000+) — 私有使用区与扩展区字符 𠀾𠁀𠁁 占 4 字节 per codepoint。",
+      "range": {"start": 0, "length": 12},
+      "format_changes": {"bold": true, "italic": false}
+    }
+  ]
+}
