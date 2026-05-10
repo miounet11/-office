@@ -77,25 +77,47 @@ files are **tracked** (~230k files). Two consequences:
 
 | Script | Locks |
 |---|---|
-| `tests/v2-day0-skeleton-test.sh` | Day-0 skeleton doc structure |
-| `tests/v2-plan-baseline-test.sh` | Spec docs + 28 fixtures across 12 schemas + V2 goals.json completed |
-| `tests/v2-provider-evidence-schema-test.sh` | Schema ↔ C++ token parity (3-way) |
-| `tests/v2-async-task-schema-test.sh` | W5 async-task schema enum order + fixture validity (partial-enforce; auto-promotes to full-enforce once `AsyncTask.hxx` lands) |
-| `bin/intelligent-contract-fixtures.sh` | V1.5 m3-02 + V2 fixture roster (28/28) |
+| `tests/v2-day0-skeleton-test.sh` (H3) | Day-0 skeleton doc structure (W1+W2 file-map manifest ↔ day0-skeleton-landed.md body) |
+| `tests/v2-plan-baseline-test.sh` (H2) | Spec docs + 36 fixtures across 13 schemas + V2 goals.json completed + lane-status ledger-count + reader's-manual roster bidirectional (check 10) + harness-reference lock (check 11) + W4/W5 Day-0 + enum-lock subsections (check 7/8) |
+| `tests/v2-provider-evidence-schema-test.sh` (H1) | Schema ↔ C++ token parity (13/13 apply-plan-* + 4 runtime tokens; 9-key envelope) |
+| `tests/v2-async-task-schema-test.sh` (H4) | W5 async-task schema enum order + fixture validity (**partial-enforce**; auto-promotes to full when `AsyncTask.hxx` lands) |
+| `tests/v2-inline-action-request-schema-test.sh` (H5) | W4 inline-action-request oneOf 3-branch action enum order + fixture validity (**partial-enforce**; auto-promotes to full when ParagraphActions.hxx + CellActions.hxx + SlideElementActions.hxx all land) |
+| `tests/v2-schema-manual-coherence-test.sh` (H6) | 4 reader's manuals (glob-discovered) ↔ schema bodies — fact-block claims locked: `schema_version_const` opt + `required_count` + `total_props` + `enum_count` multi-claim; unknown fact-block keys rejected |
+| `tests/v2-apply-plan-runtime-schema-test.sh` (H7) | W3 apply-plan-runtime schema kind enum order ↔ W3 spec §"Patch Kinds（v1）" + envelope structural locks + fixture validity (**partial-enforce**; auto-promotes to full when `SwUndoApplyPatch*.hxx` aggregator OR subclass lands) |
+| `bin/intelligent-contract-fixtures.sh` | V1.5 m3-02 + V2 fixture roster (36/36 across 13 schemas, including extended-naming forms) |
 
-All five must stay green on `main`. Run all five after any V2
-schema, validator, or status-token change.
+All seven must stay green on `main`. Run all seven after any V2
+schema, validator, or status-token change. Current baselines:
+H1=26 / H2=41 / H3=26 / H4 partial / H5 partial / H6=39 / H7 partial.
+
+### V2 consistency locking architecture (post-L61)
+
+The seven harnesses form a three-layer matrix over V2 artifacts:
+
+1. **Schema-body ↔ C++ tokens** (H1 full / H4 H5 H7 partial) — on
+   C++ arrival each partial auto-promotes without harness edits.
+2. **Schema-body ↔ reader's manual fact-block** (H6) — glob-
+   discovered; new `docs/schemas/*.schema.md` auto-enrolls. Allow-
+   list on fact-block keys (schema, schema_version_const,
+   required_count, total_props, enum_count) — unknown keys fail.
+3. **lane-status.md ↔ on-disk artifacts** (H2 checks 9/10/11) —
+   ledger row-count, reader's-manual references, harness
+   references (file + 0755 mode). Both directions checked; any
+   stale mention or missing on-disk artifact fails CI.
+
+Adding a new V2 schema: drop schema + fixtures + reader's manual
++ lane-status §"Schemas (V2)" entry in the same PR. The H2+H6
+locks will refuse incomplete landings.
 
 **CI automation**: `.github/workflows/v2-contract-harnesses.yml`
-runs all four on push/PR touching `docs/schemas/**`,
+runs all seven on push/PR touching `docs/schemas/**`,
 `docs/product/v2/**`, `docs/CLAUDE-NOTES.md`,
 `kqoffice/source/ai/provider/**`, `tests/v2-*.sh`, or
 `bin/intelligent-contract-fixtures.sh`. ~5 minutes, no external
-deps. `tests/v2-async-task-schema-test.sh` runs in **partial-enforce**
-mode (schema + fixtures landed L41, C++ `AsyncTask.hxx` pending W5
-Day-0 auth) and auto-promotes to full-enforce when the header
-arrives. If you break an invariant locally, CI will catch it
-before merge — but still run them locally first; faster feedback.
+deps. H4/H5/H7 run in **partial-enforce** mode until their
+respective C++ headers land; each auto-promotes on arrival. If
+you break an invariant locally, CI will catch it before merge —
+but still run them locally first; faster feedback.
 
 ## When to ask the user vs. proceed
 

@@ -43,16 +43,28 @@ jobs:
       - name: Show python3 version
         run: python3 --version
 
-      - name: H1 — V2 Day-0 skeleton doc coherence
-        run: bash tests/v2-day0-skeleton-test.sh
-
-      - name: H2 — V2 plan baseline (specs + fixtures + goals)
-        run: bash tests/v2-plan-baseline-test.sh
-
-      - name: H3 — provider-evidence schema ↔ C++ drift lock
+      - name: H1 — provider-evidence schema ↔ C++ drift lock
         run: bash tests/v2-provider-evidence-schema-test.sh
 
-      - name: H4 — V1.5 m3-02 intelligent-contract fixtures (24/24)
+      - name: H2 — V2 plan baseline (specs + 36 fixtures + goals + roster locks)
+        run: bash tests/v2-plan-baseline-test.sh
+
+      - name: H3 — V2 Day-0 skeleton doc coherence
+        run: bash tests/v2-day0-skeleton-test.sh
+
+      - name: H4 — W5 async-task schema ↔ spec token lock (partial-enforce)
+        run: bash tests/v2-async-task-schema-test.sh
+
+      - name: H5 — W4 inline-action-request schema ↔ spec action lock (partial-enforce)
+        run: bash tests/v2-inline-action-request-schema-test.sh
+
+      - name: H6 — V2 reader's-manual fact-block ↔ schema body coherence
+        run: bash tests/v2-schema-manual-coherence-test.sh
+
+      - name: H7 — W3 apply-plan-runtime schema ↔ spec patch-kind lock (partial-enforce)
+        run: bash tests/v2-apply-plan-runtime-schema-test.sh
+
+      - name: V1.5 m3-02 intelligent-contract fixtures (36 across 13 schemas)
         run: |
           bash bin/intelligent-contract-fixtures.sh
           # Fail loudly if any fixture entry didn't pass.
@@ -63,7 +75,7 @@ jobs:
             echo "::error::V1.5 m3-02 fixtures regressed (${fail_count} failed)"
             exit 1
           fi
-          if [ "${pass_count}" -lt 24 ]; then
-            echo "::error::Expected ≥24 fixtures to pass; got ${pass_count}"
+          if [ "${pass_count}" -lt 36 ]; then
+            echo "::error::Expected ≥36 fixtures to pass; got ${pass_count}"
             exit 1
           fi
