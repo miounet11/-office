@@ -1,0 +1,159 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kqoffice.local/schemas/async-task.schema.json",
+  "title": "KQOffice V2 W5 Async Cowork Task Envelope",
+  "description": "Per-task envelope written by kqoffice::ai::cowork::TaskStore for every async cowork task. JSON-on-disk under ${UserInstallation}/ai-tasks/YYYY-MM/<task_id>.json. Distinct from provider-evidence.schema.json (per-call audit) and apply-plan-runtime.schema.json (per-call apply payload). Locked by W5 spec §'Token lock' (TaskKind 4-token, TaskState 6-token) and W5 spec §'Task Schema' (envelope shape). Out-of-band fields: companion-app pairing tokens / cron schedule live in separate files; this schema only covers the per-task record.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "task_id",
+    "kind",
+    "state",
+    "title",
+    "created_at",
+    "updated_at",
+    "service_mode",
+    "input",
+    "steps",
+    "evidence_ids",
+    "schema_version"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "description": "Envelope schema version. Bumped only when a non-additive change lands. Day-0 ships v1.",
+      "const": 1
+    },
+    "task_id": {
+      "type": "string",
+      "description": "Per-day unique task id. Format: tk-YYYYMMDD-NNN (NNN is zero-padded 3-digit counter).",
+      "pattern": "^tk-[0-9]{8}-[0-9]{3}$"
+    },
+    "kind": {
+      "type": "string",
+      "description": "Scenario kind. Token lock per W5 spec §'Token lock' (one per scenario at §'4 个前期场景'). Order locked.",
+      "enum": [
+        "weekly-report",
+        "outline-to-slides",
+        "contract-review",
+        "data-cleanup"
+      ]
+    },
+    "state": {
+      "type": "string",
+      "description": "Task state. Token lock per W5 spec §'Token lock' (matches §'状态机' diagram exactly). Order locked. 'awaiting-review' is the standard pre-apply state — never 'needs-review'.",
+      "enum": [
+        "pending",
+        "running",
+        "awaiting-review",
+        "applied",
+        "failed",
+        "cancelled"
+      ]
+    },
+    "title": {
+      "type": "string",
+      "description": "Human-readable task title shown in TaskManager UI and notifications.",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "created_at": {
+      "type": "string",
+      "description": "ISO-8601 UTC timestamp at task accept (state pending). Seconds precision, 'Z' suffix.",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+    },
+    "updated_at": {
+      "type": "string",
+      "description": "ISO-8601 UTC timestamp at last state-machine transition. Same format as created_at.",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+    },
+    "service_mode": {
+      "type": "string",
+      "description": "Active ServiceModePolicy mode at task accept. Locked at creation; cron tasks must use the same mode (no silent escalation per W5 spec §'安全').",
+      "enum": ["offline", "private", "cloud"]
+    },
+    "input": {
+      "type": "object",
+      "description": "Per-kind input payload. Day-0 envelope-only; per-kind input shape lands incrementally.",
+      "additionalProperties": true,
+      "properties": {
+        "source_docs": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "file:// or document URL list. Optional for kinds that synthesize from prompt only."
+        },
+        "user_prompt": {
+          "type": "string",
+          "description": "Optional free-form prompt to steer task execution."
+        },
+        "target_template": {
+          "type": "string",
+          "description": "Output template path or registered template name."
+        }
+      }
+    },
+    "steps": {
+      "type": "array",
+      "description": "Per-step progress. Each step is one Provider call or one local helper invocation. Step state-machine is independent of task state-machine; task state advances only on terminal step rollups.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["step_id", "title", "state"],
+        "properties": {
+          "step_id": {
+            "type": "string",
+            "pattern": "^s[0-9]+$",
+            "description": "Per-task ordinal step id."
+          },
+          "title": {"type": "string", "minLength": 1},
+          "state": {
+            "type": "string",
+            "enum": ["pending", "running", "completed", "failed"],
+            "description": "Per-step state — narrower than TaskState because steps never enter awaiting-review (the apply-plan that triggers awaiting-review is a task-level rollup)."
+          },
+          "evidence": {
+            "type": "string",
+            "description": "Provider evidence id minted by the underlying call, when present.",
+            "pattern": "^ev-[0-9a-f]{16}$"
+          }
+        }
+      }
+    },
+    "result_plan_id": {
+      "description": "ApplyPlan id assembled from the steps[] outputs once the task reaches awaiting-review. null while running/pending; required to be a string of form ap-<hex16> when state is awaiting-review or applied.",
+      "oneOf": [
+        {"type": "null"},
+        {"type": "string", "pattern": "^ap-[0-9a-f]{16}$"}
+      ]
+    },
+    "evidence_ids": {
+      "type": "array",
+      "description": "Flat list of provider-evidence ids generated by all steps. Mirrors steps[].evidence when present.",
+      "items": {
+        "type": "string",
+        "pattern": "^ev-[0-9a-f]{16}$"
+      }
+    },
+    "review_decisions": {
+      "type": "array",
+      "description": "Optional. Populated only when state has reached awaiting-review and the user has acted on individual patches. Empty array means user has not acted yet.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["patch_id", "decision"],
+        "properties": {
+          "patch_id": {"type": "string"},
+          "decision": {
+            "type": "string",
+            "enum": ["accept", "reject", "refine"]
+          }
+        }
+      }
+    },
+    "failure_reason": {
+      "type": "string",
+      "description": "Optional. Required iff state == 'failed'; free-form short reason string.",
+      "maxLength": 500
+    }
+  }
+}

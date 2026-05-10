@@ -22,7 +22,7 @@
 | W2  | Cmd+K palette                                  | Day-1a + RecentStore + Controller (incl. controller cppunit) | Day-1b (.uno: dispatch + popover GUI), Day-1c (pinyin) | 33 (8 idx + 8 fuzzy + 10 recent + 7 controller) |
 | W3  | Writer apply-runtime + ApplyPlan validator     | Day-1a/c/d/e/f/g/h   | Day-1b (SwDocShell wiring) | 51 (counted in W1 binary) |
 | W4  | Select-to-act (Writer/Calc/Impress action bubble) | —                  | spec + Day-0 entry-point plan; implementation gated (needs scope auth for `sw/source/uibase/inline-actions/`, `sc/source/ui/inline-actions/`, `sd/source/ui/inline-actions/`, `svx/source/sidebar/diff-review/`) | 0 |
-| W5  | Async cowork (long-running tasks + diff review)   | —                  | spec + Day-0 entry-point plan; implementation gated (needs scope auth for `kqoffice/source/ai/cowork/**`, `kqoffice/qa/cppunit/test_cowork*`) | 0 |
+| W5  | Async cowork (long-running tasks + diff review)   | schema + fixtures (`async-task.schema.json` + 2 fixtures, baseline 26/11 → 28/12) | Day-0 C++ gated (needs scope auth for `kqoffice/source/ai/cowork/**`, `kqoffice/qa/cppunit/test_cowork*`); H4 in partial-enforce until C++ lands | 0 |
 
 **ai-native cppunit suite total**: 84 cases (51 provider + 33 cui).
 
@@ -74,26 +74,30 @@ table for the canonical strings + UI labels + Diff-routing column.
 
 ## W5 — Async cowork
 
-Spec + Day-0 entry-point plan + token lock + skeleton harness
+Spec + Day-0 entry-point plan + token lock + schema + fixtures
 (`docs/product/v2/w5-async-cowork-spec.md` §"Day-0 Entry-Point Plan"
-→ §"Token lock"; harness `tests/v2-async-task-schema-test.sh`). No
-production code yet. Day-0 is gated on confirmation that the V2
-allow-list extends from `kqoffice/source/ai/provider/` to
+→ §"Token lock"; `docs/schemas/async-task.schema.json` +
+`docs/schemas/fixtures/async-task.{valid,invalid}.json`; harness
+`tests/v2-async-task-schema-test.sh` in **partial-enforce** mode).
+No production code yet. Day-0 C++ is gated on confirmation that the
+V2 allow-list extends from `kqoffice/source/ai/provider/` to
 `kqoffice/source/ai/cowork/**` plus `kqoffice/qa/cppunit/test_cowork*`.
-Adds one schema (`async-task.schema.json`) + 2 fixtures → baseline
-26/11 → 28/12. Enum tokens locked (L37): `TaskKind` 4-token (one per
-scenario at spec §"4 个前期场景"), `TaskState` 6-token (matches §"状态机"
-diagram exactly: pending / running / awaiting-review / applied /
-failed / cancelled — `awaiting-review` is the standard, **not**
-`needs-review`). `tests/v2-async-task-schema-test.sh` (L39) runs in
-skeleton-skip mode until schema + `AsyncTask.hxx` land, then
-auto-promotes to full enforcement (schema enum order = token-lock
-order; C++ enum tokens = token-lock set; fixture round-trip).
+Schema + fixtures already landed (no new auth needed per spec
+§"Authorization required before Day-0 starts": Schema + harness
+paths are documentation-tier). Baseline grew 26/11 → 28/12.
+Enum tokens locked (L37): `TaskKind` 4-token (one per scenario at
+spec §"4 个前期场景"), `TaskState` 6-token (matches §"状态机" diagram
+exactly: pending / running / awaiting-review / applied / failed /
+cancelled — `awaiting-review` is the standard, **not**
+`needs-review`). H4 currently runs in partial-enforce: schema enum
+order + fixture validity locked; auto-promotes to full-enforce
+once `${KDOFFICE_SRC_ROOT}/kqoffice/source/ai/cowork/AsyncTask.hxx`
+exists.
 
 ## Authoritative artifacts
 
 - **Goals** (status snapshot): `.agent/goals/2026-05-08-v2-ai-native/goals.json`
-- **Ledger** (append-only timeline): `.agent/goals/2026-05-08-v2-ai-native/ledger.jsonl` (40 entries)
+- **Ledger** (append-only timeline): `.agent/goals/2026-05-08-v2-ai-native/ledger.jsonl` (41 entries)
 - **Narratives**:
   - `docs/product/v2/day0-skeleton-landed.md` — Day-0 skeleton landing
   - `docs/product/v2/day1-progress.md` — Day-1{a..h} per-step rationale
@@ -101,6 +105,7 @@ order; C++ enum tokens = token-lock set; fixture round-trip).
   - `docs/schemas/provider-request.schema.json` — request envelope (W1)
   - `docs/schemas/provider-evidence.schema.json` — runtime audit envelope (W1 / W3 Day-1f)
   - `docs/schemas/apply-plan-runtime.schema.json` — W3 Day-1b runtime ApplyPlan envelope (envelope-only; per-kind patch shape lands with each `SwUndoApplyPatch` impl)
+  - `docs/schemas/async-task.schema.json` — W5 per-task envelope (TaskKind 4-token / TaskState 6-token / 11-required-key envelope; landed L41 ahead of C++ Day-0)
 - **Schemas explicitly NOT touched**:
   - `docs/schemas/evidence-record.schema.json` — V1.5 m3-02 capability/diagnostic record (different fields, locked by 27/27 strict roundtrip baseline)
   - `docs/schemas/apply-plan.schema.json` — V1.5 m3-02 capability descriptor (per-capability metadata: id / undo_group / failure_behavior). Distinct from V2 `apply-plan-runtime.schema.json` per V2 invariants memory rule #5; do not collapse.
@@ -116,7 +121,7 @@ order; C++ enum tokens = token-lock set; fixture round-trip).
 | ApplyPlanValidator.hxx 14-tag enum stable | `testApplyPlanCodeEnumStable` cppunit case | 2026-05-09 |
 | `applyPlanValidationStatus` distinct-per-code | `testApplyPlanStatusDistinctPerCode` | 2026-05-09 |
 | `applyPlanValidationMessage` distinct-per-code | `testApplyPlanMessageDistinctPerCode` | 2026-05-09 |
-| W5 async-task schema enum order = token-lock table order (skeleton-skip until W5 Day-0 lands) | `tests/v2-async-task-schema-test.sh` | 2026-05-10 (skip) |
+| W5 async-task schema enum order = token-lock table order (partial-enforce until W5 Day-0 C++ lands) | `tests/v2-async-task-schema-test.sh` | 2026-05-10 (partial) |
 | W4 + W5 specs carry `## Day-0 Entry-Point Plan` section | `tests/v2-plan-baseline-test.sh` (check 7) | 2026-05-10 |
 | W4 spec carries `### Action enum lock` subsection (L37) | `tests/v2-plan-baseline-test.sh` (check 8) | 2026-05-10 |
 | W5 spec carries `### Token lock` subsection (L37) | `tests/v2-plan-baseline-test.sh` (check 8) | 2026-05-10 |

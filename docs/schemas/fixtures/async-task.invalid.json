@@ -1,0 +1,26 @@
+{
+  "schema_version": 2,
+  "task_id": "TK-20260510-1",
+  "kind": "needs-review",
+  "state": "rejected",
+  "title": "",
+  "created_at": "2026-05-10 14:00:00",
+  "updated_at": "2026-05-10T14:08:42",
+  "service_mode": "online",
+  "input": {
+    "source_docs": "not-an-array"
+  },
+  "steps": [
+    {
+      "step_id": "step-1",
+      "title": "bad step id pattern",
+      "state": "awaiting-review",
+      "evidence": "ev-NOTHEX"
+    }
+  ],
+  "result_plan_id": "plan-without-prefix",
+  "evidence_ids": [
+    "ev-too-short"
+  ],
+  "rogue_extra_field": "must trip additionalProperties:false"
+}

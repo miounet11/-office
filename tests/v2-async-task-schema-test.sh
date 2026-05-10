@@ -67,21 +67,36 @@ fail() {
     exit 1
 }
 
-# --- Skeleton-mode gates -----------------------------------------------------
-missing=()
-[[ -e "$schema" ]] || missing+=("$schema")
-for f in "${fixtures[@]}"; do
-    [[ -e "$f" ]] || missing+=("$f")
-done
-[[ -e "$async_task_hxx" ]] || missing+=("$async_task_hxx")
+# --- Mode selection ----------------------------------------------------------
+# Three modes:
+#   skeleton-skip   — schema or fixtures missing; print Status: skipped
+#   partial-enforce — schema + fixtures present, AsyncTask.hxx absent;
+#                     run schema/fixture locks, skip C++ enum check
+#   full-enforce    — everything present; run all locks
+schema_present=true
+fixtures_present=true
+hxx_present=true
 
-if (( ${#missing[@]} > 0 )); then
-    reason="W5 Day-0 not yet landed; missing: ${missing[*]}"
-    skip "$reason"
+[[ -e "$schema" ]] || schema_present=false
+for f in "${fixtures[@]}"; do
+    [[ -e "$f" ]] || fixtures_present=false
+done
+[[ -e "$async_task_hxx" ]] || hxx_present=false
+
+if ! $schema_present || ! $fixtures_present; then
+    missing=()
+    $schema_present || missing+=("$schema")
+    for f in "${fixtures[@]}"; do
+        [[ -e "$f" ]] || missing+=("$f")
+    done
+    skip "W5 Day-0 schema/fixtures not yet landed; missing: ${missing[*]}"
 fi
 
-# --- Full-enforcement mode ---------------------------------------------------
-python3 - "$schema" "$async_task_hxx" "$EXPECTED_TASK_KIND" "$EXPECTED_TASK_STATE" "${fixtures[@]}" <<'PY'
+mode="partial-enforce"
+$hxx_present && mode="full-enforce"
+
+# --- Schema + fixture lock (always run when schema + fixtures present) -------
+python3 - "$schema" "$mode" "$async_task_hxx" "$EXPECTED_TASK_KIND" "$EXPECTED_TASK_STATE" "${fixtures[@]}" <<'PY'
 from __future__ import annotations
 
 import json
@@ -90,10 +105,11 @@ import sys
 from pathlib import Path
 
 schema_path = Path(sys.argv[1])
-hxx_path = Path(sys.argv[2])
-expected_kind = sys.argv[3].split()
-expected_state = sys.argv[4].split()
-fixture_paths = [Path(p) for p in sys.argv[5:]]
+mode = sys.argv[2]
+hxx_path = Path(sys.argv[3])
+expected_kind = sys.argv[4].split()
+expected_state = sys.argv[5].split()
+fixture_paths = [Path(p) for p in sys.argv[6:]]
 expected_validity = ["valid", "invalid"]
 
 # 1. Schema enums + structural locks.
@@ -136,53 +152,58 @@ if not schema_required:
     sys.exit(1)
 
 # 2. C++ TaskKind / TaskState tokens — sub-set of expected, in order.
-hxx_text = hxx_path.read_text(encoding="utf-8", errors="ignore")
-cpp_kinds = re.findall(r'"(weekly-report|outline-to-slides|contract-review|data-cleanup)"', hxx_text)
-cpp_states = re.findall(r'"(pending|running|awaiting-review|applied|failed|cancelled)"', hxx_text)
+#    Skipped in partial-enforce mode (AsyncTask.hxx absent).
+cpp_kinds_unique: list[str] = []
+cpp_states_unique: list[str] = []
 
-# De-dup preserving first-seen order.
-def stable_unique(seq: list[str]) -> list[str]:
-    seen: set[str] = set()
-    out: list[str] = []
-    for item in seq:
-        if item not in seen:
-            seen.add(item)
-            out.append(item)
-    return out
+if mode == "full-enforce":
+    hxx_text = hxx_path.read_text(encoding="utf-8", errors="ignore")
+    cpp_kinds = re.findall(r'"(weekly-report|outline-to-slides|contract-review|data-cleanup)"', hxx_text)
+    cpp_states = re.findall(r'"(pending|running|awaiting-review|applied|failed|cancelled)"', hxx_text)
 
-cpp_kinds_unique = stable_unique(cpp_kinds)
-cpp_states_unique = stable_unique(cpp_states)
+    # De-dup preserving first-seen order.
+    def stable_unique(seq: list[str]) -> list[str]:
+        seen: set[str] = set()
+        out: list[str] = []
+        for item in seq:
+            if item not in seen:
+                seen.add(item)
+                out.append(item)
+        return out
 
-if set(cpp_kinds_unique) != set(expected_kind):
-    print("FAIL: AsyncTask.hxx TaskKind tokens drift from token lock",
-          file=sys.stderr)
-    print(f"  expected: {sorted(expected_kind)}", file=sys.stderr)
-    print(f"  C++:      {sorted(cpp_kinds_unique)}", file=sys.stderr)
-    sys.exit(1)
+    cpp_kinds_unique = stable_unique(cpp_kinds)
+    cpp_states_unique = stable_unique(cpp_states)
 
-if set(cpp_states_unique) != set(expected_state):
-    print("FAIL: AsyncTask.hxx TaskState tokens drift from token lock",
-          file=sys.stderr)
-    print(f"  expected: {sorted(expected_state)}", file=sys.stderr)
-    print(f"  C++:      {sorted(cpp_states_unique)}", file=sys.stderr)
-    sys.exit(1)
+    if set(cpp_kinds_unique) != set(expected_kind):
+        print("FAIL: AsyncTask.hxx TaskKind tokens drift from token lock",
+              file=sys.stderr)
+        print(f"  expected: {sorted(expected_kind)}", file=sys.stderr)
+        print(f"  C++:      {sorted(cpp_kinds_unique)}", file=sys.stderr)
+        sys.exit(1)
 
-# Catch silent reorder if the spec table order has been changed but
-# C++ kept the old order (or vice versa). Header order is the
-# canonical source for both schema enum and the .po translation files.
-if cpp_kinds_unique != expected_kind:
-    print("FAIL: AsyncTask.hxx TaskKind order != token-lock order",
-          file=sys.stderr)
-    print(f"  expected: {expected_kind}", file=sys.stderr)
-    print(f"  C++:      {cpp_kinds_unique}", file=sys.stderr)
-    sys.exit(1)
+    if set(cpp_states_unique) != set(expected_state):
+        print("FAIL: AsyncTask.hxx TaskState tokens drift from token lock",
+              file=sys.stderr)
+        print(f"  expected: {sorted(expected_state)}", file=sys.stderr)
+        print(f"  C++:      {sorted(cpp_states_unique)}", file=sys.stderr)
+        sys.exit(1)
 
-if cpp_states_unique != expected_state:
-    print("FAIL: AsyncTask.hxx TaskState order != token-lock order",
-          file=sys.stderr)
-    print(f"  expected: {expected_state}", file=sys.stderr)
-    print(f"  C++:      {cpp_states_unique}", file=sys.stderr)
-    sys.exit(1)
+    # Catch silent reorder if the spec table order has been changed but
+    # C++ kept the old order (or vice versa). Header order is the
+    # canonical source for both schema enum and the .po translation files.
+    if cpp_kinds_unique != expected_kind:
+        print("FAIL: AsyncTask.hxx TaskKind order != token-lock order",
+              file=sys.stderr)
+        print(f"  expected: {expected_kind}", file=sys.stderr)
+        print(f"  C++:      {cpp_kinds_unique}", file=sys.stderr)
+        sys.exit(1)
+
+    if cpp_states_unique != expected_state:
+        print("FAIL: AsyncTask.hxx TaskState order != token-lock order",
+              file=sys.stderr)
+        print(f"  expected: {expected_state}", file=sys.stderr)
+        print(f"  C++:      {cpp_states_unique}", file=sys.stderr)
+        sys.exit(1)
 
 # 3. Fixtures: validity per .valid.json / .invalid.json convention.
 TASK_ID_RE = re.compile(r"^tk-[0-9]{8}-[0-9]{3}$")
@@ -218,14 +239,19 @@ for path, expected in zip(fixture_paths, expected_validity):
         sys.exit(1)
 
 # Report.
-print("Status: passed")
+status_label = "passed" if mode == "full-enforce" else "passed (partial)"
+print(f"Status: {status_label}")
+print(f"Mode: {mode}")
 print(f"Schema: {schema_path}")
 print(f"  required keys: {len(schema_required)} (locked)")
 print(f"  kind enum:  {len(schema_kind)} tokens, order matches table")
 print(f"  state enum: {len(schema_state)} tokens, order matches table")
-print(f"C++ AsyncTask.hxx tokens:")
-print(f"  TaskKind:  {cpp_kinds_unique}")
-print(f"  TaskState: {cpp_states_unique}")
+if mode == "full-enforce":
+    print(f"C++ AsyncTask.hxx tokens:")
+    print(f"  TaskKind:  {cpp_kinds_unique}")
+    print(f"  TaskState: {cpp_states_unique}")
+else:
+    print(f"C++ AsyncTask.hxx: not yet landed (skipped); will auto-promote on arrival")
 print(f"Fixtures checked: {len(fixture_status)}")
 for path, expected, observed, errs in fixture_status:
     rel = Path(path).name
