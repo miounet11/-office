@@ -179,7 +179,7 @@ done <<< "$referenced_manuals"
 #     drift where a harness gets renamed or removed but
 #     lane-status keeps claiming it exists. Complements check 10
 #     (which does the same for reader's manuals).
-referenced_harnesses=$(grep -oE '`tests/v2-[a-z-]+\.sh`' \
+referenced_harnesses=$(grep -oE '`tests/v2-[a-z0-9-]+\.sh`' \
     docs/product/v2/lane-status.md \
     | sed -E 's/`([^`]+)`/\1/' \
     | sort -u || true)

@@ -110,7 +110,7 @@ exists.
 ## Authoritative artifacts
 
 - **Goals** (status snapshot): `.agent/goals/2026-05-08-v2-ai-native/goals.json`
-- **Ledger** (append-only timeline): `.agent/goals/2026-05-08-v2-ai-native/ledger.jsonl` (60 entries)
+- **Ledger** (append-only timeline): `.agent/goals/2026-05-08-v2-ai-native/ledger.jsonl` (61 entries)
 - **Narratives**:
   - `docs/product/v2/day0-skeleton-landed.md` — Day-0 skeleton landing
   - `docs/product/v2/day1-progress.md` — Day-1{a..h} per-step rationale
@@ -145,6 +145,7 @@ exists.
 | W1/W3/W4/W5 reader's-manual fact-blocks (schema_version const opt + required_count + total_props + enum_count multi-claim + unknown-key rejection) ↔ schema body | `tests/v2-schema-manual-coherence-test.sh` | 2026-05-11 |
 | Bidirectional `docs/schemas/*.schema.md` ↔ lane-status.md "Reader's manual:" reference roster | `tests/v2-plan-baseline-test.sh` (check 10) | 2026-05-11 |
 | `tests/v2-*.sh` harness paths referenced from lane-status.md exist + 0755 mode bit | `tests/v2-plan-baseline-test.sh` (check 11) | 2026-05-11 |
+| V2 Day-0 skeleton file-map manifest (W1 provider runtime + W2 command palette) ↔ `docs/product/v2/day0-skeleton-landed.md` body | `tests/v2-day0-skeleton-test.sh` | 2026-05-11 |
 | V1.5 27/27 strict roundtrip | `bin/intelligent-contract-fixtures.sh` + downstream pipeline | 2026-05-08 |
 
 ## Extended fixture naming (resolved 2026-05-10)
