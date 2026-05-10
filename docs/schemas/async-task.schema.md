@@ -5,6 +5,8 @@ schema: docs/schemas/async-task.schema.json
 schema_version_const: 1
 required_count: 11
 total_props: 14
+enum_count: kind=4
+enum_count: state=6
 -->
 
 > Reader's guide for the V2 W5 async-task envelope. The schema itself

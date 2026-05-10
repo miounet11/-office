@@ -98,6 +98,63 @@ PY
         fail "$manual claims total_props=$prop_count; schema body has $actual_props"
     fi
     pass_count=$((pass_count + 1))
+
+    # Optional enum_count claims (multiple). Each line shape:
+    #   enum_count: <dot-path>=<int>
+    # dot-path resolves against the schema root; numeric segments index
+    # into JSON arrays (e.g. oneOf.0.action), word segments index
+    # 'properties.<word>' implicitly when not literally in the schema.
+    enum_lines=$(awk '/<!-- schema-coherence/,/-->/' "$manual" \
+        | grep -E '^enum_count:' \
+        | sed 's/^enum_count: *//' || true)
+
+    if [[ -n "$enum_lines" ]]; then
+        while IFS= read -r line; do
+            [[ -z "$line" ]] && continue
+            claim_path="${line%%=*}"
+            claim_count="${line##*=}"
+            actual_enum_count=$(python3 - "$schema" "$claim_path" <<'PY'
+import json, sys
+schema_path, dot_path = sys.argv[1], sys.argv[2]
+s = json.load(open(schema_path))
+node = s
+segments = dot_path.split(".")
+for seg in segments:
+    try:
+        if seg.isdigit():
+            idx = int(seg)
+            if not isinstance(node, list) or idx >= len(node):
+                print(f"PATH_NOT_FOUND:{dot_path}:stuck_at:{seg}")
+                sys.exit(0)
+            node = node[idx]
+        elif isinstance(node, dict) and seg in node:
+            node = node[seg]
+        elif isinstance(node, dict) and "properties" in node and seg in node["properties"]:
+            node = node["properties"][seg]
+        else:
+            print(f"PATH_NOT_FOUND:{dot_path}:stuck_at:{seg}")
+            sys.exit(0)
+    except (KeyError, IndexError, TypeError):
+        print(f"PATH_NOT_FOUND:{dot_path}:stuck_at:{seg}")
+        sys.exit(0)
+# Resolve to enum array
+if isinstance(node, dict) and "enum" in node:
+    print(len(node["enum"]))
+elif isinstance(node, dict) and "items" in node and isinstance(node["items"], dict) and "enum" in node["items"]:
+    print(len(node["items"]["enum"]))
+else:
+    print(f"NOT_AN_ENUM:{dot_path}")
+PY
+)
+            if [[ "$actual_enum_count" == PATH_NOT_FOUND* ]] || [[ "$actual_enum_count" == NOT_AN_ENUM* ]]; then
+                fail "$manual enum_count '$claim_path': $actual_enum_count"
+            fi
+            if [[ "$actual_enum_count" != "$claim_count" ]]; then
+                fail "$manual claims enum_count $claim_path=$claim_count; schema body has $actual_enum_count"
+            fi
+            pass_count=$((pass_count + 1))
+        done <<< "$enum_lines"
+    fi
 done
 
 printf 'Status: passed\n'

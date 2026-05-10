@@ -5,6 +5,11 @@ schema: docs/schemas/inline-action-request.schema.json
 schema_version_const: v2-w4-1
 required_count: 7
 total_props: 9
+enum_count: surface=3
+enum_count: service_mode=3
+enum_count: oneOf.0.action=7
+enum_count: oneOf.1.action=5
+enum_count: oneOf.2.action=4
 -->
 
 > Reader's guide for the V2 W4 inline-action-request envelope. The
