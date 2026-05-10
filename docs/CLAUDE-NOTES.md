@@ -79,7 +79,7 @@ files are **tracked** (~230k files). Two consequences:
 | Script | Locks |
 |---|---|
 | `tests/v2-day0-skeleton-test.sh` (H3) | Day-0 skeleton doc structure (W1+W2 file-map manifest ↔ day0-skeleton-landed.md body) |
-| `tests/v2-plan-baseline-test.sh` (H2) | Spec docs + 36 fixtures across 13 schemas + V2 goals.json completed + lane-status ledger-count + reader's-manual roster bidirectional (check 10) + harness-reference lock (check 11) + W4/W5 Day-0 + enum-lock subsections (check 7/8) |
+| `tests/v2-plan-baseline-test.sh` (H2) | Spec docs + 36 fixtures across 13 schemas + V2 goals.json completed + lane-status ledger-count + reader's-manual roster bidirectional (check 10) + harness-reference lock (check 11) + ledger row-shape lock (check 12, post-L66) + W4/W5 Day-0 + enum-lock subsections (check 7/8) |
 | `tests/v2-provider-evidence-schema-test.sh` (H1) | Schema ↔ C++ token parity (13/13 apply-plan-* + 4 runtime tokens; 9-key envelope) |
 | `tests/v2-async-task-schema-test.sh` (H4) | W5 async-task schema enum order + fixture validity (**partial-enforce**; auto-promotes to full when `AsyncTask.hxx` lands) |
 | `tests/v2-inline-action-request-schema-test.sh` (H5) | W4 inline-action-request oneOf 3-branch action enum order + fixture validity (**partial-enforce**; auto-promotes to full when ParagraphActions.hxx + CellActions.hxx + SlideElementActions.hxx all land) |
@@ -89,7 +89,7 @@ files are **tracked** (~230k files). Two consequences:
 
 All seven must stay green on `main`. Run all seven after any V2
 schema, validator, or status-token change. Current baselines:
-H1=26 / H2=41 / H3=26 / H4 partial / H5 partial / H6=39 / H7 partial.
+H1=26 / H2=42 / H3=26 / H4 partial / H5 partial / H6=39 / H7 partial.
 
 One-shot sweep (single source of truth): `bin/v2-harness-sweep.sh`
 runs H1→H7 in canonical order; pass `--with-fixtures` to also run the

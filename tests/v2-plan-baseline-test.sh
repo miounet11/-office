@@ -194,6 +194,43 @@ while IFS= read -r h; do
     pass_count=$((pass_count + 1))
 done <<< "$referenced_harnesses"
 
+# 12. ledger.jsonl row-shape lock. Every row MUST be valid JSON with
+#     EXACTLY the canonical keys: event, goal_id, notes, ts. Catches
+#     the L65-class drift where a new entry quietly drops `event` or
+#     adds ad-hoc fields (e.g. `turn`, `artifacts`, `status`,
+#     `v2_harnesses`) — append-only ledgers depend on uniform shape
+#     for downstream tooling and historical greppability.
+shape_violations=$(python3 - "$ledger_path" <<'PY'
+import json, sys
+path = sys.argv[1]
+expected = ('event', 'goal_id', 'notes', 'ts')
+violations = []
+with open(path, encoding='utf-8') as f:
+    for i, line in enumerate(f, 1):
+        line = line.rstrip('\n')
+        if not line.strip():
+            continue
+        try:
+            d = json.loads(line)
+        except json.JSONDecodeError as e:
+            violations.append(f'row {i}: invalid JSON ({e})')
+            continue
+        keys = tuple(sorted(d.keys()))
+        if keys != expected:
+            violations.append(
+                f'row {i}: keys {keys} != canonical {expected}'
+            )
+for v in violations:
+    print(v)
+PY
+)
+if [[ -n "$shape_violations" ]]; then
+    printf 'FAIL: ledger.jsonl row-shape violations:\n%s\n' \
+        "$shape_violations" >&2
+    exit 1
+fi
+pass_count=$((pass_count + 1))
+
 printf 'Status: passed\n'
 printf 'Checks: %d\n' "$pass_count"
 printf 'Fixtures: 36 across 13 schemas\n'
