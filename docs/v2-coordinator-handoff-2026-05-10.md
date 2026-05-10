@@ -1,4 +1,4 @@
-# V2 Coordinator Handoff — last refreshed 2026-05-11 (L77)
+# V2 Coordinator Handoff — last refreshed 2026-05-11 (L82)
 
 > Authoritative wait-state snapshot. Read this first if a previous
 > session ended in /goal mode without explicit user authorization.
@@ -14,14 +14,14 @@
 - All 7 V2 contract harnesses green (H1–H7; see §"Production-ready gate" below)
 - `ai-native` cppunit suite at OK(84) **claimed**: 51 provider + 33 cui (8 idx + 8 fuzzy + 10 recent + 7 controller). Workdir log evidence (L72): OK(77) verified across 3 binaries (`kqoffice_provider` 51 + `cui_commandpalette_fuzzy` 8 + `cui_commandpalette_index` 8 + `cui_commandpalette_recent` 10); the 7-case `cui_commandpalette_controller` test exists in SRCDIR (`cui/qa/unit/CommandPaletteControllerTest.cxx` registers 7 `CPPUNIT_TEST(...)` macros) but `workdir/CppunitTest/cui_commandpalette_controller.test.log` is absent. **L75 (2026-05-11)**: attempted `make CppunitTest_cui_commandpalette_controller` to upgrade evidence 77 → 84; build FAILED at the harfbuzz external dep — `meson.build:114:16: ERROR: Unhandled python exception` (`UnicodeDecodeError: 'utf-8' codec can't decode byte 0xe5 in position 13: invalid continuation byte`, traced to non-ASCII path component `可点office` in BUILDDIR root that meson's pkgconf invocation cannot decode). This is **B2-class** (build environment toolchain mismatch, not a V2 invariant regression). Full log: `/tmp/cppunit-controller-build.log` (1561 lines). OK(84) upgrade is **blocked on B2 resolution**, NOT just wall-clock budget. Until B2 is resolved (rename BUILDDIR to ASCII-only, or patch meson invocation to set `LC_ALL=C` env), the OK(7) controller component remains workdir-unverified despite SRCDIR source presence.
 - V1.5 27/27 strict roundtrip baseline untouched
-- 77 ledger rows on `main` as of 2026-05-11 (L77 = canary-section coverage extended to checks 14+15)
+- 81 ledger rows on `main` as of 2026-05-11 (L81 = CLAUDE-NOTES stale L-pointer refresh L63→L77 + post-L67→post-L76)
 - CI workflow `.github/workflows/v2-contract-harnesses.yml` invokes ALL 7 harnesses (post-L62; pre-L62 only ran 4); paths-filter covers `bin/v2-harness-sweep.sh` and `.agent/goals/2026-05-08-v2-ai-native/**` (post-L73; previously these inputs could regress without triggering CI)
 - Persistent memory seeded at `/Users/lu/.clavue/projects/-Users-lu---office-clmpx2/memory/` (L63):
   `MEMORY.md`, `v2_entry_pointer.md`, `v2_invariants.md`,
   `v2_locking_architecture.md`, `authorization_gates.md`,
   `workspace_layout.md`, `feedback_terse_verifiable.md`
 - 4 reader's manuals on disk; H6 glob-discovers them and locks fact-blocks against schema bodies; H2 check 10 locks lane-status references bidirectionally
-- L65 bin/v2-harness-sweep.sh one-shot sweep; L66 ledger row-shape lock (H2 check 12); L67 pass-count baseline cross-doc lock (H2 check 13); L68 lock-system semantics docs (CLAUDE-NOTES §Ledger row shape + §Pass-count baseline replicas + 4-tier matrix); L69 negative-canary protocol; L70 sweep-script exec-bit lock (H2 check 14); L71 D8/D9 handoff blockers; L72 OK(84) claim vs OK(77) workdir-verified honest split; L73 CI trigger covers sweep + ledger paths; L74 handoff refresh L67→L73; L75 cppunit OK(84) upgrade B2-blocked honesty correction (4 docs); L76 sweep-enumeration ↔ disk parity (H2 check 15, baseline 44→45); L77 canary section extended to cover checks 14+15
+- L65 bin/v2-harness-sweep.sh one-shot sweep; L66 ledger row-shape lock (H2 check 12); L67 pass-count baseline cross-doc lock (H2 check 13); L68 lock-system semantics docs (CLAUDE-NOTES §Ledger row shape + §Pass-count baseline replicas + 4-tier matrix); L69 negative-canary protocol; L70 sweep-script exec-bit lock (H2 check 14); L71 D8/D9 handoff blockers; L72 OK(84) claim vs OK(77) workdir-verified honest split; L73 CI trigger covers sweep + ledger paths; L74 handoff refresh L67→L73; L75 cppunit OK(84) upgrade B2-blocked honesty correction (4 docs); L76 sweep-enumeration ↔ disk parity (H2 check 15, baseline 44→45); L77 canary section extended to cover checks 14+15; L78 handoff refresh L73→L77; L79 STATUS-2026-05-11 evening §13 L47-L78 delta append-only; L80 v2-commit-manifest superseded-banner; L81 CLAUDE-NOTES stale L-pointer refresh (L63→L77 handoff anchor + post-L67→post-L76 heading)
 
 Working tree may have uncommitted noise (sysui/desktop/macosx/LaunchConstraint.plist, generated config). Nothing has been pushed (B3 — no SSH key, HTTPS hits 500MB pack limit).
 
