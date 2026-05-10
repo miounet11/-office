@@ -107,3 +107,65 @@ merge — but still run them locally first; faster feedback.
 - Build-tree noise (`workdir/`, `instdir/`, `autom4te.cache/`,
   `config.log`, `config.status`) — never include in any commit
   unless the user explicitly says so.
+
+## `/parallel` worker scope mapping (D6)
+
+The Clavue `/parallel` command generates default Mao worker scopes
+that assume a JS/TS-style layout (`src/**`, `tests/**`,
+`package.json`, `scripts/**`). **Those globs match nothing in this
+repository** — this is a LibreOffice-style multi-module build tree
+where source lives under per-module `<module>/source/**` and tests
+under `<module>/qa/**`. The first `/parallel --agents 8` run on
+2026-05-10 confirmed every default-scope worker exited as `blocked`
+or `completed: None`, with zero file edits across all 8 worktrees.
+
+When invoking `/parallel` here, override the scopes per worker so
+the owned-paths reflect the actual surface being changed. Use this
+mapping (extend as new waves authorize new modules):
+
+| Default template | This repo's surface | Notes |
+|---|---|---|
+| `src/**`              | `<module>/source/**`            | Pick the module(s) the wave actually targets — `cui/source/**`, `sw/source/**`, `sc/source/**`, `sd/source/**`, `vcl/source/**`, `sfx2/source/**`, `kqoffice/source/**`, etc. Never grant `src/**` literally. |
+| `tests/**`            | `<module>/qa/**` + `tests/**`   | LO module unit tests live under `<module>/qa/{cppunit,unit,uitest,extras}/`. The repo's top-level `tests/` exists but only carries V2 contract harnesses (`v2-*.sh`); both should be addressable so cppunit + harness work fan out cleanly. |
+| `package.json`        | `Repository.mk` + `<module>/Module_*.mk` | gbuild module registration replaces npm-style package metadata. Wiring a new test target almost always needs `Module_<module>.mk` only. |
+| `scripts/**`          | `bin/**` + `solenv/bin/**`      | Repo helper scripts live in `bin/`; build-system glue lives in `solenv/bin/` and is generally off-limits without an explicit grant. |
+| `README.md`           | `README.md` + `docs/**`         | Same as default for narrative; `docs/product/v2/` is the V2 source-of-truth. |
+| `dist/**`             | `instdir/**` + `workdir/**`     | Always forbidden — these are gbuild outputs, never edited by hand. |
+| `experimental-dist/**`| n/a                              | Always forbidden. |
+| `release-artifacts/**`| `release-artifacts/**` (real)    | Default forbid is correct; only release pipelines write here. |
+
+Recommended worker shape for a typical V2 dispatch (4 roles × 2
+shards):
+
+- `code-worker` / `code-worker-2`:
+  owned `<wave-target-module>/source/**` (e.g. `cui/source/dialogs/commandpalette/**` for W2,
+  `sw/source/uibase/app/docsh*.cxx` for W3 Day-1b once authorized,
+  `kqoffice/source/ai/**` for W1/W5);
+  forbidden `**/qa/**`, `docs/**`, `instdir/**`, `workdir/**`,
+  `release-artifacts/**`.
+- `test-worker` / `test-worker-2`:
+  owned `<wave-target-module>/qa/**` + `tests/v2-*.sh`;
+  forbidden `<wave-target-module>/source/**`, `instdir/**`,
+  `workdir/**`.
+- `scope-worker` / `scope-worker-2`:
+  owned `docs/**` + `.agent/goals/**/ledger.jsonl`;
+  forbidden everything else.
+- `integration-worker` / `integration-worker-2`:
+  owned `Repository.mk`, `<module>/Module_*.mk`,
+  `bin/**`, `.github/workflows/**`, top-level `README.md`;
+  forbidden `<module>/source/**`, `<module>/qa/**`,
+  `instdir/**`, `workdir/**`.
+
+Every wave that adds a new module to the V2 allow-list must be
+mirrored here so the next `/parallel` run produces useful workers
+instead of a fleet of `blocked` reports. If you authorize a new
+surface (e.g. `sw/source/uibase/inline-actions/` for W4 Day-0),
+update both the V2 allow-list note above and the appropriate row
+in the table.
+
+Until the Clavue CLI itself learns to consume this table, the
+operator running `/parallel` must paste the per-worker overrides
+explicitly (or add them to the `/parallel` invocation prompt).
+The CLI templates are baked into the binary and are not editable
+from this repo.
+
