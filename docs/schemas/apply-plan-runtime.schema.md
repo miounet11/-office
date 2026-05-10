@@ -6,6 +6,7 @@ schema_version_const: v2-w3-runtime-1
 required_count: 6
 total_props: 6
 enum_count: patches.items.properties.kind=7
+enum_count: patches.items.properties.severity=3
 -->
 
 > Reader's guide for the V2 W3 runtime ApplyPlan envelope. The schema
