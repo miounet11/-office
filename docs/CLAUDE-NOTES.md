@@ -182,8 +182,11 @@ will refuse the next baseline run.
 **CI automation**: `.github/workflows/v2-contract-harnesses.yml`
 runs all seven on push/PR touching `docs/schemas/**`,
 `docs/product/v2/**`, `docs/CLAUDE-NOTES.md`,
-`kqoffice/source/ai/provider/**`, `tests/v2-*.sh`, or
-`bin/intelligent-contract-fixtures.sh`. ~5 minutes, no external
+`kqoffice/source/ai/provider/**`, `tests/v2-*.sh`,
+`bin/intelligent-contract-fixtures.sh`, `bin/v2-harness-sweep.sh`
+(post-L73), `.agent/goals/2026-05-08-v2-ai-native/**` (post-L73,
+covers ledger.jsonl row-shape regressions), or the workflow YAML
+itself. ~5 minutes, no external
 deps. H4/H5/H7 run in **partial-enforce** mode until their
 respective C++ headers land; each auto-promotes on arrival. If
 you break an invariant locally, CI will catch it before merge —

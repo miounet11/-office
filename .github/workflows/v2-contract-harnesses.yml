@@ -10,6 +10,8 @@ on:
       - 'kqoffice/source/ai/provider/**'
       - 'tests/v2-*.sh'
       - 'bin/intelligent-contract-fixtures.sh'
+      - 'bin/v2-harness-sweep.sh'
+      - '.agent/goals/2026-05-08-v2-ai-native/**'
       - '.github/workflows/v2-contract-harnesses.yml'
   pull_request:
     paths:
@@ -19,6 +21,8 @@ on:
       - 'kqoffice/source/ai/provider/**'
       - 'tests/v2-*.sh'
       - 'bin/intelligent-contract-fixtures.sh'
+      - 'bin/v2-harness-sweep.sh'
+      - '.agent/goals/2026-05-08-v2-ai-native/**'
       - '.github/workflows/v2-contract-harnesses.yml'
   workflow_dispatch:
 
