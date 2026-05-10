@@ -72,6 +72,24 @@ for manual in "${manuals[@]}"; do
     # carry no schema_version property. Use literal 'none' or omit the line.
     pass_count=$((pass_count + 1))
 
+    # Reject unknown fact-block keys. Mirrors `additionalProperties: false`
+    # at schema-body level — typos like 'requires_count' or 'enum-count'
+    # would otherwise be silently ignored, defeating the whole lock.
+    # Allowed keys: schema, schema_version_const, required_count,
+    # total_props, enum_count.
+    fact_block_keys=$(awk '/<!-- schema-coherence/,/-->/' "$manual" \
+        | grep -E '^[a-z_]+:' \
+        | sed 's/:.*//' \
+        | sort -u || true)
+    while IFS= read -r k; do
+        [[ -z "$k" ]] && continue
+        case "$k" in
+            schema|schema_version_const|required_count|total_props|enum_count) ;;
+            *) fail "$manual fact-block has unknown key '$k' (allowed: schema, schema_version_const, required_count, total_props, enum_count)" ;;
+        esac
+    done <<< "$fact_block_keys"
+    pass_count=$((pass_count + 1))
+
     [[ -f "$schema" ]] || fail "$manual references missing schema $schema"
     pass_count=$((pass_count + 1))
 
