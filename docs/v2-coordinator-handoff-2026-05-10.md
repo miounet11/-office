@@ -1,4 +1,4 @@
-# V2 Coordinator Handoff — last refreshed 2026-05-12 (L90)
+# V2 Coordinator Handoff — last refreshed 2026-05-12 (L93)
 
 > Authoritative wait-state snapshot. Read this first if a previous
 > session ended in /goal mode without explicit user authorization.
