@@ -99,6 +99,48 @@ if ! grep -Fq '"status": "completed"' .agent/goals/2026-05-08-v2-ai-native/goals
 fi
 pass_count=$((pass_count + 1))
 
+# 7. W4 + W5 specs each carry a Day-0 Entry-Point Plan section.
+#    W1/W2/W3 graduated past Day-0 (provider runtime / cmd palette
+#    controller / apply-plan validator are all in flight or landed),
+#    so their spec bodies no longer need the entry-point block. W4
+#    and W5 remain pre-implementation, and the skeleton-landing
+#    contract that gates their first commits must stay locked.
+for spec in docs/product/v2/w4-*.md docs/product/v2/w5-*.md; do
+    if ! grep -qE "^## Day-0 Entry-Point Plan" "$spec"; then
+        fail "$spec missing '## Day-0 Entry-Point Plan' section"
+    fi
+    pass_count=$((pass_count + 1))
+done
+
+# 8. W4 + W5 specs carry their enum-lock subsections (L37).
+#    The lock tables are the single source of truth Day-0 headers,
+#    schema enum lists, and harness drift-lock asserts must agree on.
+if ! grep -qE "^### Action enum lock" docs/product/v2/w4-select-to-act-spec.md; then
+    fail "w4-select-to-act-spec.md missing '### Action enum lock' subsection (L37)"
+fi
+pass_count=$((pass_count + 1))
+
+if ! grep -qE "^### Token lock" docs/product/v2/w5-async-cowork-spec.md; then
+    fail "w5-async-cowork-spec.md missing '### Token lock' subsection (L37)"
+fi
+pass_count=$((pass_count + 1))
+
+# 9. lane-status.md ledger entry-count claim matches the actual
+#    ledger.jsonl row count (catches the L37→L38 protocol-violation
+#    class of drift where ledger grows but lane-status mirror stalls).
+ledger_path=".agent/goals/2026-05-08-v2-ai-native/ledger.jsonl"
+ledger_rows=$(wc -l < "$ledger_path" | tr -d ' ')
+claimed_rows=$(grep -oE 'ledger\.jsonl\` \(([0-9]+) entries\)' \
+    docs/product/v2/lane-status.md \
+    | grep -oE '[0-9]+' | head -1)
+if [[ -z "${claimed_rows:-}" ]]; then
+    fail "lane-status.md does not state a ledger entry-count"
+fi
+if [[ "$claimed_rows" != "$ledger_rows" ]]; then
+    fail "lane-status.md claims ledger has $claimed_rows entries; ledger.jsonl has $ledger_rows"
+fi
+pass_count=$((pass_count + 1))
+
 printf 'Status: passed\n'
 printf 'Checks: %d\n' "$pass_count"
 printf 'Fixtures: 26 across 11 schemas\n'
