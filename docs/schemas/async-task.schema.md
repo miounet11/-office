@@ -151,20 +151,28 @@ These are deferred to incremental ships (each will bump
 
 ## 7. Fixture coverage matrix
 
-The schema is exercised by 3 fixtures under `docs/schemas/fixtures/`:
+The schema is exercised by 7 fixtures under `docs/schemas/fixtures/`
+— one per `state` enum value plus the all-violations negative case.
+Every state in §6's diagram has at least one validity-locked
+fixture, so any future enum drift surfaces in the H4 sweep:
 
 | Fixture | State branch | Locks |
 |---|---|---|
+| `async-task.pending.json` | pending (3 pending steps, no evidence) | accept-time envelope: `result_plan_id=null`, `evidence_ids=[]`, all step states pending |
+| `async-task.running.json` | running (mixed steps: completed+running+pending) | mid-flight envelope: `result_plan_id=null`, partial `evidence_ids` mirroring only completed steps, step state-machine independence from task state |
 | `async-task.valid.json` | awaiting-review (3 completed steps) | happy path, full evidence_ids, real result_plan_id |
-| `async-task.invalid.json` | 11 distinct schema violations at once | enum drift defenses (`needs-review`/`rejected`/`online`), pattern guards (task_id case, evidence non-hex), additionalProperties:false (`rogue_extra_field`), required-key absence (`schema_version`), naive datetime (no `Z`) |
+| `async-task.applied.json` | applied (3 completed steps) | post-apply envelope: `result_plan_id` populated as `^ap-[0-9a-f]{16}$`, `review_decisions` populated with accept/refine/reject mix |
 | `async-task.terminal-failed.json` | failed (mixed step terminal states) | `state=failed`, `failure_reason` populated, `result_plan_id=null` branch of oneOf, evidence_ids ⊊ steps[].evidence |
+| `async-task.cancelled.json` | cancelled (mid-flight cancel) | terminal cancel: `result_plan_id=null`, no `failure_reason` (distinguishes cancel from failure), partial steps frozen |
+| `async-task.invalid.json` | 11 distinct schema violations at once | enum drift defenses (`needs-review`/`rejected`/`online`), pattern guards (task_id case, evidence non-hex), additionalProperties:false (`rogue_extra_field`), required-key absence (`schema_version`), naive datetime (no `Z`) |
 
-Adding a 4th fixture: drop a new file under `docs/schemas/fixtures/`
+Adding an 8th fixture: drop a new file under `docs/schemas/fixtures/`
 matching `async-task.<status-token>.json` (extended-naming) for
-valid payloads, or `async-task.invalid.json` for invalid payloads
-(strict naming required for the negative case). H2 baseline must
-be bumped in the same commit (`tests/v2-plan-baseline-test.sh`
-fixture count assertion).
+valid payloads, or extend `async-task.invalid.json` for invalid
+payloads (strict naming required for the negative case — only one
+`async-task.invalid.json` per dir). H2 baseline must be bumped in
+the same commit (`tests/v2-plan-baseline-test.sh` fixture count
+assertion).
 
 ## 8. Reader checklist (downstream tools)
 

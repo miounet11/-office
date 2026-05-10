@@ -68,10 +68,11 @@ for spec in docs/product/v2/w[1-5]-*.md; do
     pass_count=$((pass_count + 1))
 done
 
-# 5. Fixture baseline: 36 fixtures across 13 schemas all pass.
-#    18→24→26→28→29→30→34→36 / 9→10→11→12→13 reflects V2 additions
+# 5. Fixture baseline: 39 fixtures across 13 schemas all pass.
+#    18→24→26→28→29→30→34→36→39 / 9→10→11→12→13 reflects V2 additions
 #    (provider-request scenarios + provider-evidence + apply-plan-runtime
 #     + W5 async-task valid/invalid + W5 async-task terminal-failed + cancelled
+#     + W5 async-task pending/running/applied (L95 state-enum lifecycle coverage)
 #     + W3 apply-plan-runtime utf8 multi-codepoint boundary
 #     + W4 inline-action-request 4 fixtures + writer-custom).
 report="$(mktemp -t v2-plan-baseline-fixtures.XXXXXX.md)"
@@ -86,9 +87,9 @@ if ! grep -Fq "Status: **passed**" "$report"; then
     cat "$report" >&2
     fail "fixture report not in passed state"
 fi
-if ! grep -Fq "Fixtures checked: 36" "$report"; then
+if ! grep -Fq "Fixtures checked: 39" "$report"; then
     cat "$report" >&2
-    fail "expected 36 fixtures (V1.5 18 + V2 8 + W5 async-task 4 [valid+invalid+terminal-failed+cancelled] + W3 utf8 boundary 1 + W4 inline-action 5 [valid+invalid+calc+impress+writer-custom])"
+    fail "expected 39 fixtures (V1.5 18 + V2 8 + W5 async-task 7 [valid+invalid+terminal-failed+cancelled+pending+running+applied] + W3 utf8 boundary 1 + W4 inline-action 5 [valid+invalid+calc+impress+writer-custom])"
 fi
 if ! grep -Fq "Schemas covered: 13" "$report"; then
     cat "$report" >&2
@@ -429,5 +430,5 @@ pass_count=$((pass_count + 1))
 
 printf 'Status: passed\n'
 printf 'Checks: %d\n' "$pass_count"
-printf 'Fixtures: 36 across 13 schemas\n'
+printf 'Fixtures: 39 across 13 schemas\n'
 printf 'V2 specs: master + 5 wave specs present\n'
