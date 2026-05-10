@@ -62,6 +62,8 @@ jobs:
             --enable-release-build
             --with-product-name="$KDOFFICE_PRODUCT_NAME"
             --with-package-format=dmg
+            --with-lang=zh-CN
+            --with-macosx-bundle-identifier=com.kdoffice.app
             --enable-bogus-pkg-config
           )
           if [ -d "$PWD/downstream-branding" ]; then
@@ -175,6 +177,7 @@ jobs:
             --with-visual-studio=2022
             --with-package-format=msi
             --with-product-name="$KDOFFICE_PRODUCT_NAME"
+            --with-lang=zh-CN
             --disable-online-update
             --disable-odk
             --without-junit
