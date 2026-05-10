@@ -380,6 +380,50 @@ while IFS= read -r line; do
 done < "$ledger"
 pass_count=$((pass_count + 1))
 
+# 17. L-anchor cross-doc cadence lock. Three sentinel docs each carry
+#     a current-state L-number anchor that, when out of sync, has
+#     repeatedly produced "where are we right now?" confusion (drift
+#     class fixed manually 4 times across L81/L82/L85/L86/L88 — see
+#     CLAUDE-NOTES §"V2 consistency locking architecture (post-L83)"
+#     once L88 is rolled in). Sentinels:
+#       (a) docs/v2-coordinator-handoff-2026-05-10.md title `(L<N>)`
+#       (b) docs/CLAUDE-NOTES.md handoff anchor `refreshed ... / L<N>`
+#       (c) docs/product/v2/STATUS-2026-05-11.md latest "## <N>." section
+#           tail "L<X>→L<Y>" — Y is the section's covered tail
+#     Invariant: max(a,b,c) - min(a,b,c) MUST be ≤ 3. Tolerance 3 is the
+#     measured natural cadence (handoff lags ~4 commits per L82 finding;
+#     anchors going more than 3 apart means at least one doc was forgotten
+#     across a full cluster). Tighter (≤ 1 or ≤ 2) would force every
+#     reversible commit to touch all three docs, which the cadence pattern
+#     showed is unrealistic; looser (≤ 5+) lets a whole STATUS section
+#     append cycle elapse before catching the drift, which is what L81/L86
+#     had to clean up manually. ≤ 3 catches the divergence at the same
+#     ~4-commit interval handoff refreshes naturally happen anyway.
+handoff_doc="docs/v2-coordinator-handoff-2026-05-10.md"
+notes_doc="docs/CLAUDE-NOTES.md"
+status_doc="docs/product/v2/STATUS-2026-05-11.md"
+handoff_l=$(grep -oE '\(L[0-9]+\)' "$handoff_doc" | head -1 | grep -oE '[0-9]+' || true)
+notes_l=$(grep -oE 'refreshed [0-9-]+ / L[0-9]+' "$notes_doc" | head -1 | grep -oE '[0-9]+$' || true)
+# STATUS sentinel: scan all "L<X>→L<Y>" range markers in section headings
+# and take the max Y across them (= covered-tail of the latest delta section).
+status_l=$(grep -oE 'L[0-9]+→L[0-9]+|L[0-9]+ ?→ ?L[0-9]+' "$status_doc" \
+    | grep -oE 'L[0-9]+' | grep -oE '[0-9]+' \
+    | sort -n | tail -1 || true)
+if [[ -z "$handoff_l" || -z "$notes_l" || -z "$status_l" ]]; then
+    fail "L-anchor extraction failed: handoff=$handoff_l notes=$notes_l status=$status_l (one of the 3 sentinel patterns is missing — check pattern stability in $handoff_doc / $notes_doc / $status_doc)"
+fi
+max_l=$handoff_l
+min_l=$handoff_l
+for l in "$notes_l" "$status_l"; do
+    if (( l > max_l )); then max_l=$l; fi
+    if (( l < min_l )); then min_l=$l; fi
+done
+gap=$((max_l - min_l))
+if (( gap > 3 )); then
+    fail "L-anchor cadence drift exceeded 3: handoff=L$handoff_l notes=L$notes_l status=L$status_l (max=$max_l min=$min_l gap=$gap). Refresh the lagging doc(s) to within 3 of the leader before merging — this is the drift class L81/L86/L88 had to clean up manually."
+fi
+pass_count=$((pass_count + 1))
+
 printf 'Status: passed\n'
 printf 'Checks: %d\n' "$pass_count"
 printf 'Fixtures: 36 across 13 schemas\n'

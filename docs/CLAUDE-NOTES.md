@@ -79,7 +79,7 @@ files are **tracked** (~230k files). Two consequences:
 | Script | Locks |
 |---|---|
 | `tests/v2-day0-skeleton-test.sh` (H3) | Day-0 skeleton doc structure (W1+W2 file-map manifest ↔ day0-skeleton-landed.md body) |
-| `tests/v2-plan-baseline-test.sh` (H2) | Spec docs + 36 fixtures across 13 schemas + V2 goals.json completed + lane-status ledger-count + reader's-manual roster bidirectional (check 10) + harness-reference lock (check 11) + ledger row-shape lock (check 12, post-L66) + pass-count baseline cross-doc lock (check 13, post-L67) + sweep-script exec-bit lock (check 14, post-L70) + sweep-enumeration ↔ disk parity (check 15, post-L76) + ledger ts ISO-8601 + UTC monotonicity (check 16, post-L83) + W4/W5 Day-0 + enum-lock subsections (check 7/8) |
+| `tests/v2-plan-baseline-test.sh` (H2) | Spec docs + 36 fixtures across 13 schemas + V2 goals.json completed + lane-status ledger-count + reader's-manual roster bidirectional (check 10) + harness-reference lock (check 11) + ledger row-shape lock (check 12, post-L66) + pass-count baseline cross-doc lock (check 13, post-L67) + sweep-script exec-bit lock (check 14, post-L70) + sweep-enumeration ↔ disk parity (check 15, post-L76) + ledger ts ISO-8601 + UTC monotonicity (check 16, post-L83) + L-anchor cross-doc cadence ≤ 3 (check 17, post-L89) + W4/W5 Day-0 + enum-lock subsections (check 7/8) |
 | `tests/v2-provider-evidence-schema-test.sh` (H1) | Schema ↔ C++ token parity (13/13 apply-plan-* + 4 runtime tokens; 9-key envelope) |
 | `tests/v2-async-task-schema-test.sh` (H4) | W5 async-task schema enum order + fixture validity (**partial-enforce**; auto-promotes to full when `AsyncTask.hxx` lands) |
 | `tests/v2-inline-action-request-schema-test.sh` (H5) | W4 inline-action-request oneOf 3-branch action enum order + fixture validity (**partial-enforce**; auto-promotes to full when ParagraphActions.hxx + CellActions.hxx + SlideElementActions.hxx all land) |
@@ -89,13 +89,13 @@ files are **tracked** (~230k files). Two consequences:
 
 All seven must stay green on `main`. Run all seven after any V2
 schema, validator, or status-token change. Current baselines:
-H1=26 / H2=46 / H3=26 / H4 partial / H5 partial / H6=39 / H7 partial.
+H1=26 / H2=47 / H3=26 / H4 partial / H5 partial / H6=39 / H7 partial.
 
 One-shot sweep (single source of truth): `bin/v2-harness-sweep.sh`
 runs H1→H7 in canonical order; pass `--with-fixtures` to also run the
 V1.5+V2 fixture validator and assert ≥36 passed / 0 failed.
 
-### V2 consistency locking architecture (post-L83)
+### V2 consistency locking architecture (post-L89)
 
 The seven harnesses form a four-layer matrix over V2 artifacts:
 
@@ -110,11 +110,14 @@ The seven harnesses form a four-layer matrix over V2 artifacts:
    references (file + 0755 mode). Both directions checked; any
    stale mention or missing on-disk artifact fails CI.
 4. **Self-consistency of the locking system itself** (H2 checks
-   12/13/14/15/16, post-L66/L67/L70/L76/L83) — the ledger's own row
+   12/13/14/15/16/17, post-L66/L67/L70/L76/L83/L89) — the ledger's own row
    shape, the pass-count baseline string replicated across
    CLAUDE-NOTES / handoff / sweep-script header, the sweep-script
-   exec-bit, sweep enumeration ↔ disk parity, and ledger ts
-   well-formedness + UTC-normalized monotonicity. Born from the L65
+   exec-bit, sweep enumeration ↔ disk parity, ledger ts
+   well-formedness + UTC-normalized monotonicity, and L-anchor
+   cross-doc cadence (≤ 3 between handoff title / CLAUDE-NOTES
+   line-9 anchor / STATUS-2026-05-11 latest §N L→L range tail).
+   Born from the L65
    incident where I (the assistant) silently introduced a row with
    extra keys; the L66/L67/L70/L76/L83 locks now refuse the entire
    same drift class. L76 specifically catches new-harness-on-disk-
@@ -160,12 +163,13 @@ whitespace and ` / ` vs space separators):
 also mirrors but lives outside the repo and is NOT enforced by
 check 13 — keep it manually mirrored.
 
-### Verifying check 12/13/14/15/16 actually catch drift (negative canary)
+### Verifying check 12/13/14/15/16/17 actually catch drift (negative canary)
 
 Whenever you touch H2 check 12 (ledger row-shape), check 13
 (baseline cross-doc), check 14 (sweep-script exec-bit), check 15
-(sweep enumeration ↔ disk parity), or check 16 (ledger ts ISO-8601
-+ UTC monotonicity), run the inline negative canary to prove the
+(sweep enumeration ↔ disk parity), check 16 (ledger ts ISO-8601
++ UTC monotonicity), or check 17 (L-anchor cross-doc cadence ≤ 3),
+run the inline negative canary to prove the
 new logic catches its drift class — not just the canonical state.
 The pattern, copy-paste-safe in the BUILDDIR root:
 
@@ -225,6 +229,20 @@ ls[-1]=json.dumps(last)+'\n'
 open(p,'w').writelines(ls)"
 bash tests/v2-plan-baseline-test.sh; echo "exit=$?"   # expect FAIL exit !=0
 mv /tmp/ledger.bak .agent/goals/2026-05-08-v2-ai-native/ledger.jsonl
+bash tests/v2-plan-baseline-test.sh; echo "exit=$?"   # expect 0
+
+# check 17 canary A: CLAUDE-NOTES handoff anchor stale (gap > 3 by lagging notes_doc)
+cp docs/CLAUDE-NOTES.md /tmp/CN.bak
+sed -i '' 's|refreshed 2026-05-11 / L8[0-9]|refreshed 2026-05-11 / L70|' docs/CLAUDE-NOTES.md
+bash tests/v2-plan-baseline-test.sh; echo "exit=$?"   # expect FAIL with gap > 3
+mv /tmp/CN.bak docs/CLAUDE-NOTES.md
+bash tests/v2-plan-baseline-test.sh; echo "exit=$?"   # expect 0
+
+# check 17 canary B: handoff title rolled back (gap > 3 by lagging handoff_doc)
+cp docs/v2-coordinator-handoff-2026-05-10.md /tmp/HO.bak
+sed -i '' '1s/(L[0-9][0-9])/(L80)/' docs/v2-coordinator-handoff-2026-05-10.md
+bash tests/v2-plan-baseline-test.sh; echo "exit=$?"   # expect FAIL with gap > 3
+mv /tmp/HO.bak docs/v2-coordinator-handoff-2026-05-10.md
 bash tests/v2-plan-baseline-test.sh; echo "exit=$?"   # expect 0
 ```
 
