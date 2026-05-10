@@ -40,6 +40,7 @@ manuals=(
     "docs/schemas/async-task.schema.md"
     "docs/schemas/inline-action-request.schema.md"
     "docs/schemas/apply-plan-runtime.schema.md"
+    "docs/schemas/provider-evidence.schema.md"
 )
 
 for manual in "${manuals[@]}"; do
@@ -49,21 +50,22 @@ for manual in "${manuals[@]}"; do
     # Parse fact-block. Each line shape: 'key: value' between
     # '<!-- schema-coherence' and '-->'.
     schema=$(awk '/<!-- schema-coherence/,/-->/' "$manual" \
-        | grep -E '^schema:' | sed 's/^schema: *//')
+        | grep -E '^schema:' | sed 's/^schema: *//' || true)
     sv_const=$(awk '/<!-- schema-coherence/,/-->/' "$manual" \
         | grep -E '^schema_version_const:' \
-        | sed 's/^schema_version_const: *//')
+        | sed 's/^schema_version_const: *//' || true)
     req_count=$(awk '/<!-- schema-coherence/,/-->/' "$manual" \
         | grep -E '^required_count:' \
-        | sed 's/^required_count: *//')
+        | sed 's/^required_count: *//' || true)
     prop_count=$(awk '/<!-- schema-coherence/,/-->/' "$manual" \
         | grep -E '^total_props:' \
-        | sed 's/^total_props: *//')
+        | sed 's/^total_props: *//' || true)
 
     [[ -n "$schema" ]]     || fail "$manual fact-block missing 'schema:'"
-    [[ -n "$sv_const" ]]   || fail "$manual fact-block missing 'schema_version_const:'"
     [[ -n "$req_count" ]]  || fail "$manual fact-block missing 'required_count:'"
     [[ -n "$prop_count" ]] || fail "$manual fact-block missing 'total_props:'"
+    # schema_version_const is optional: some schemas (e.g. provider-evidence)
+    # carry no schema_version property. Use literal 'none' or omit the line.
     pass_count=$((pass_count + 1))
 
     [[ -f "$schema" ]] || fail "$manual references missing schema $schema"
@@ -75,7 +77,7 @@ for manual in "${manuals[@]}"; do
 import json, sys
 s = json.load(open(sys.argv[1]))
 sv = s.get("properties", {}).get("schema_version", {}).get("const")
-print(f"sv_const={sv}")
+print(f"sv_const={sv if sv is not None else 'none'}")
 print(f"required_count={len(s.get('required', []))}")
 print(f"total_props={len(s.get('properties', {}))}")
 PY
@@ -84,8 +86,10 @@ PY
     actual_req=$(echo "$actual" | grep '^required_count=' | cut -d= -f2)
     actual_props=$(echo "$actual" | grep '^total_props=' | cut -d= -f2)
 
-    if [[ "$actual_sv" != "$sv_const" ]]; then
-        fail "$manual claims schema_version_const='$sv_const'; schema body has '$actual_sv'"
+    # If sv_const claim absent, treat it as 'none' (asserts schema also lacks one).
+    claim_sv="${sv_const:-none}"
+    if [[ "$actual_sv" != "$claim_sv" ]]; then
+        fail "$manual claims schema_version_const='$claim_sv'; schema body has '$actual_sv'"
     fi
     pass_count=$((pass_count + 1))
 
@@ -159,4 +163,4 @@ done
 
 printf 'Status: passed\n'
 printf 'Checks: %d\n' "$pass_count"
-printf 'Manuals locked: %d (W3 apply-plan-runtime + W4 inline-action-request + W5 async-task)\n' "${#manuals[@]}"
+printf 'Manuals locked: %d (W1 provider-evidence + W3 apply-plan-runtime + W4 inline-action-request + W5 async-task)\n' "${#manuals[@]}"
