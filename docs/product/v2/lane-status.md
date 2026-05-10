@@ -24,7 +24,7 @@
 | W4  | Select-to-act (Writer/Calc/Impress action bubble) | spec + Day-0 entry-point plan + enum lock + schema + 5 fixtures + H5 partial-enforce | Day-0 C++ gated (needs scope auth for `sw/source/uibase/inline-actions/`, `sc/source/ui/inline-actions/`, `sd/source/ui/inline-actions/`, `svx/source/sidebar/diff-review/`) | 0 |
 | W5  | Async cowork (long-running tasks + diff review)   | schema + 4 fixtures (valid/invalid + terminal-failed + cancelled boundaries) + reader's manual + H4 partial-enforce | Day-0 C++ gated (needs scope auth for `kqoffice/source/ai/cowork/**`, `kqoffice/qa/cppunit/test_cowork*`); H4 in partial-enforce until C++ lands | 0 |
 
-**ai-native cppunit suite total**: 84 cases (51 provider + 33 cui).
+**ai-native cppunit suite total**: 84 cases claimed (51 provider + 33 cui = 8 idx + 8 fuzzy + 10 recent + 7 controller). Workdir logs on this BUILDDIR HEAD verify 77 (controller binary unbuilt; `make CppunitTest_cui_commandpalette_controller` upgrades evidence to 84).
 
 ## W1 — Provider Runtime
 
@@ -110,7 +110,7 @@ exists.
 ## Authoritative artifacts
 
 - **Goals** (status snapshot): `.agent/goals/2026-05-08-v2-ai-native/goals.json`
-- **Ledger** (append-only timeline): `.agent/goals/2026-05-08-v2-ai-native/ledger.jsonl` (71 entries)
+- **Ledger** (append-only timeline): `.agent/goals/2026-05-08-v2-ai-native/ledger.jsonl` (72 entries)
 - **Narratives**:
   - `docs/product/v2/day0-skeleton-landed.md` — Day-0 skeleton landing
   - `docs/product/v2/day1-progress.md` — Day-1{a..h} per-step rationale

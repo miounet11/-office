@@ -12,7 +12,7 @@
 ## State at handoff
 
 - All 7 V2 contract harnesses green (H1–H7; see §"Production-ready gate" below)
-- `ai-native` cppunit suite at OK(84): 51 provider + 33 cui (8 idx + 8 fuzzy + 10 recent + 7 controller)
+- `ai-native` cppunit suite at OK(84) **claimed**: 51 provider + 33 cui (8 idx + 8 fuzzy + 10 recent + 7 controller). Workdir log evidence (L72): OK(77) verified across 3 binaries (`kqoffice_provider` 51 + `cui_commandpalette_fuzzy` 8 + `cui_commandpalette_index` 8 + `cui_commandpalette_recent` 10); the 7-case `cui_commandpalette_controller` test exists in SRCDIR (`cui/qa/unit/CommandPaletteControllerTest.cxx` registers 7 `CPPUNIT_TEST(...)` macros) but `workdir/CppunitTest/cui_commandpalette_controller.test.log` is absent — its OK(7) component is unverified on this BUILDDIR HEAD until `make CppunitTest_cui_commandpalette_controller` runs (long-running, would consume goal-mode budget).
 - V1.5 27/27 strict roundtrip baseline untouched
 - 67 ledger rows on `main` as of 2026-05-11 (L67 = H2 baseline cross-doc lock)
 - CI workflow `.github/workflows/v2-contract-harnesses.yml` invokes ALL 7 harnesses (post-L62; pre-L62 only ran 4)
