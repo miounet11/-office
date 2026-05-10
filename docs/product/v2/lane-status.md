@@ -21,8 +21,8 @@
 | W1  | Provider runtime (Ollama-first sandbox)        | step3 + Day-1a + Day-1b | Day-1c (i18n threading), Day-1d (cloud TLS) | 51 (kqoffice_provider) |
 | W2  | Cmd+K palette                                  | Day-1a + RecentStore + Controller (incl. controller cppunit) | Day-1b (.uno: dispatch + popover GUI), Day-1c (pinyin) | 33 (8 idx + 8 fuzzy + 10 recent + 7 controller) |
 | W3  | Writer apply-runtime + ApplyPlan validator     | Day-1a/c/d/e/f/g/h   | Day-1b (SwDocShell wiring) | 51 (counted in W1 binary) |
-| W4  | Select-to-act (Writer/Calc/Impress action bubble) | spec + Day-0 entry-point plan + enum lock + schema + 4 fixtures + H5 partial-enforce | Day-0 C++ gated (needs scope auth for `sw/source/uibase/inline-actions/`, `sc/source/ui/inline-actions/`, `sd/source/ui/inline-actions/`, `svx/source/sidebar/diff-review/`) | 0 |
-| W5  | Async cowork (long-running tasks + diff review)   | schema + fixtures (`async-task.schema.json` + 3 fixtures incl. terminal-failed boundary, baseline 28/12 → 29/12) | Day-0 C++ gated (needs scope auth for `kqoffice/source/ai/cowork/**`, `kqoffice/qa/cppunit/test_cowork*`); H4 in partial-enforce until C++ lands | 0 |
+| W4  | Select-to-act (Writer/Calc/Impress action bubble) | spec + Day-0 entry-point plan + enum lock + schema + 5 fixtures + H5 partial-enforce | Day-0 C++ gated (needs scope auth for `sw/source/uibase/inline-actions/`, `sc/source/ui/inline-actions/`, `sd/source/ui/inline-actions/`, `svx/source/sidebar/diff-review/`) | 0 |
+| W5  | Async cowork (long-running tasks + diff review)   | schema + 4 fixtures (valid/invalid + terminal-failed + cancelled boundaries) + reader's manual + H4 partial-enforce | Day-0 C++ gated (needs scope auth for `kqoffice/source/ai/cowork/**`, `kqoffice/qa/cppunit/test_cowork*`); H4 in partial-enforce until C++ lands | 0 |
 
 **ai-native cppunit suite total**: 84 cases (51 provider + 33 cui).
 
@@ -61,9 +61,9 @@
 
 ## W4 — Select-to-act
 
-Spec + Day-0 entry-point plan + enum lock + **schema + 4 fixtures + H5
+Spec + Day-0 entry-point plan + enum lock + **schema + 5 fixtures + H5
 partial-enforce** (`docs/schemas/inline-action-request.schema.json`,
-oneOf 3 branches keyed on surface; `docs/schemas/fixtures/inline-action-request.{valid,invalid,calc-suggest-chart,impress-translate}.json`;
+oneOf 3 branches keyed on surface; `docs/schemas/fixtures/inline-action-request.{valid,invalid,calc-suggest-chart,impress-translate,writer-custom}.json`;
 `tests/v2-inline-action-request-schema-test.sh` in **partial-enforce**
 mode pending W4 Day-0 C++). No production code yet. Day-0 C++ is gated
 on scope auth for `sw/source/uibase/inline-actions/`,
@@ -76,13 +76,16 @@ table for the canonical strings + UI labels + Diff-routing column.
 Schema oneOf branch enum order locked against the same spec table by
 H5 (auto-promotes to full-enforce when ParagraphActions.hxx +
 CellActions.hxx + SlideElementActions.hxx all land in SRCDIR).
+`writer-custom.json` (L48) covers the `action=custom` branch with
+mandatory `user_prompt` populated — the spec rule that ties prompt
+required-ness to action token, exercised at fixture layer.
 
 ## W5 — Async cowork
 
 Spec + Day-0 entry-point plan + token lock + schema + fixtures
 (`docs/product/v2/w5-async-cowork-spec.md` §"Day-0 Entry-Point Plan"
 → §"Token lock"; `docs/schemas/async-task.schema.json` +
-`docs/schemas/fixtures/async-task.{valid,invalid,terminal-failed}.json`;
+`docs/schemas/fixtures/async-task.{valid,invalid,terminal-failed,cancelled}.json`;
 harness `tests/v2-async-task-schema-test.sh` in **partial-enforce** mode).
 No production code yet. Day-0 C++ is gated on confirmation that the
 V2 allow-list extends from `kqoffice/source/ai/provider/` to
@@ -90,10 +93,10 @@ V2 allow-list extends from `kqoffice/source/ai/provider/` to
 Schema + fixtures already landed (no new auth needed per spec
 §"Authorization required before Day-0 starts": Schema + harness
 paths are documentation-tier). Baseline grew 26/11 → 28/12 → 29/12
-(L43 added `async-task.terminal-failed.json` extended-naming
-boundary fixture covering `state=failed` + `failure_reason` required
-+ `result_plan_id=null` since terminal-failed never reaches
-awaiting-review).
+→ 36/13 (L48 added `async-task.cancelled.json` extended-naming
+boundary fixture covering `state=cancelled` + user-interrupt path
++ `result_plan_id=null` + empty `evidence_ids` since no provider
+call completed before cancel).
 Enum tokens locked (L37): `TaskKind` 4-token (one per scenario at
 spec §"4 个前期场景"), `TaskState` 6-token (matches §"状态机" diagram
 exactly: pending / running / awaiting-review / applied / failed /
@@ -106,7 +109,7 @@ exists.
 ## Authoritative artifacts
 
 - **Goals** (status snapshot): `.agent/goals/2026-05-08-v2-ai-native/goals.json`
-- **Ledger** (append-only timeline): `.agent/goals/2026-05-08-v2-ai-native/ledger.jsonl` (47 entries)
+- **Ledger** (append-only timeline): `.agent/goals/2026-05-08-v2-ai-native/ledger.jsonl` (48 entries)
 - **Narratives**:
   - `docs/product/v2/day0-skeleton-landed.md` — Day-0 skeleton landing
   - `docs/product/v2/day1-progress.md` — Day-1{a..h} per-step rationale

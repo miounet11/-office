@@ -1,0 +1,11 @@
+{
+  "schema_version": "v2-w4-1",
+  "request_id": "iar-d4e5f60718293041",
+  "surface": "writer-paragraph",
+  "action": "custom",
+  "target": {"paragraph_id": "swpara-88"},
+  "service_mode": "offline",
+  "created_at": "2026-05-11T08:30:00Z",
+  "user_prompt": "把这段改写成更礼貌的客服回复语气，保留所有事实信息，不超过 80 字。",
+  "expected_capability": "custom"
+}
