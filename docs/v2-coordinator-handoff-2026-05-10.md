@@ -35,6 +35,8 @@ Working tree may have uncommitted noise (sysui/desktop/macosx/LaunchConstraint.p
 | D6 | Re-scope worker owned-paths from `src/**`/`tests/**` to per-module | user | code-worker-2, test-worker-2 lane usability — blocked on Clavue CLI internal `/parallel` template, not this repo |
 | W4 scope | Authorize `sw/source/uibase/inline-actions/`, `sc/source/ui/inline-actions/`, `sd/source/ui/inline-actions/`, `svx/source/sidebar/diff-review/` | user | W4 Day-0 C++; H5 auto-promotes from partial → full on header arrival |
 | W5 scope | Authorize `kqoffice/source/ai/cowork/**` + `kqoffice/qa/cppunit/test_cowork*` | user | W5 Day-0 C++; H4 auto-promotes from partial → full on `AsyncTask.hxx` arrival |
+| D8 | Decide `sysui/desktop/macosx/LaunchConstraint.plist` `team-identifier` value (currently empty in working tree, was `2B7JZ4N26U` on `main`) | user | macOS code signing / notarization. Empty value will be rejected by `--enable-macosx-code-signing` builds. Either revert to `2B7JZ4N26U`, intentionally clear (for unsigned dev), or substitute the correct team. Working tree change is unattributed |
+| D9 | Decide whether to commit SRCDIR `officecfg/.../GenericCommands.xcu` `.uno:CommandPalette` 11-line en-US label (D3.3a authorized scope but uncommitted in `/Users/lu/kdoffice-src` HEAD `8fe469f71`) | user | W2 Cmd+K end-to-end. D3 popover GUI is the bigger gate, but committing the xcu label closes the smallest D3 sub-step independently |
 
 | Resolved | When | What |
 |---|---|---|
