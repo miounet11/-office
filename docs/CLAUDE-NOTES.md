@@ -155,12 +155,14 @@ whitespace and ` / ` vs space separators):
 also mirrors but lives outside the repo and is NOT enforced by
 check 13 — keep it manually mirrored.
 
-### Verifying check 12/13 actually catch drift (negative canary)
+### Verifying check 12/13/14/15 actually catch drift (negative canary)
 
-Whenever you touch H2 check 12 (ledger row-shape) or check 13
-(baseline cross-doc), run the inline negative canary to prove
-the new logic catches its drift class — not just the canonical
-state. The pattern, copy-paste-safe in the BUILDDIR root:
+Whenever you touch H2 check 12 (ledger row-shape), check 13
+(baseline cross-doc), check 14 (sweep-script exec-bit), or
+check 15 (sweep enumeration ↔ disk parity), run the inline
+negative canary to prove the new logic catches its drift class —
+not just the canonical state. The pattern, copy-paste-safe in
+the BUILDDIR root:
 
 ```bash
 # check 12 canary: same row count, mutated key-set
@@ -177,6 +179,25 @@ bash tests/v2-plan-baseline-test.sh; echo "exit=$?"   # expect 0
 sed -i.bak 's/H3=26/H3=27/' docs/v2-coordinator-handoff-2026-05-10.md
 bash tests/v2-plan-baseline-test.sh; echo "exit=$?"   # expect FAIL exit !=0
 mv docs/v2-coordinator-handoff-2026-05-10.md.bak docs/v2-coordinator-handoff-2026-05-10.md
+bash tests/v2-plan-baseline-test.sh; echo "exit=$?"   # expect 0
+
+# check 14 canary: drop sweep-script exec bit
+chmod -x bin/v2-harness-sweep.sh
+bash tests/v2-plan-baseline-test.sh; echo "exit=$?"   # expect FAIL exit !=0
+chmod +x bin/v2-harness-sweep.sh
+bash tests/v2-plan-baseline-test.sh; echo "exit=$?"   # expect 0
+
+# check 15 canary A: harness on disk but not in sweep
+cp tests/v2-day0-skeleton-test.sh tests/v2-canary-fake-test.sh
+bash tests/v2-plan-baseline-test.sh; echo "exit=$?"   # expect FAIL exit !=0
+rm tests/v2-canary-fake-test.sh
+bash tests/v2-plan-baseline-test.sh; echo "exit=$?"   # expect 0
+
+# check 15 canary B: sweep references missing harness
+cp bin/v2-harness-sweep.sh /tmp/sweep.bak
+echo "bash tests/v2-ghost-test.sh" >> bin/v2-harness-sweep.sh
+bash tests/v2-plan-baseline-test.sh; echo "exit=$?"   # expect FAIL exit !=0
+mv /tmp/sweep.bak bin/v2-harness-sweep.sh
 bash tests/v2-plan-baseline-test.sh; echo "exit=$?"   # expect 0
 ```
 
