@@ -27,7 +27,13 @@ for candidate in "${soffice_candidates[@]}"; do
         break
     fi
 done
-soffice_bin="${KDOFFICE_SOFFICE_BIN:-$default_soffice_bin}"
+if [[ -n "${KDOFFICE_SOFFICE_BIN:-}" ]]; then
+    soffice_bin="$KDOFFICE_SOFFICE_BIN"
+elif [[ -n "${KDOFFICE_APP_BUNDLE:-}" ]]; then
+    soffice_bin="$KDOFFICE_APP_BUNDLE/Contents/MacOS/soffice"
+else
+    soffice_bin="$default_soffice_bin"
+fi
 run_root_default="$repo_root/tmp/compatibility-runs"
 format_arg="docx"
 format_provided="0"
@@ -74,6 +80,9 @@ Environment:
   KDOFFICE_SRC_ROOT
            Source tree used for sample discovery and source-relative manifest paths.
            Defaults to repo_root/libreoffice-core when present, otherwise repo_root.
+  KDOFFICE_APP_BUNDLE
+           Explicit app bundle. Used to derive Contents/MacOS/soffice when
+           KDOFFICE_SOFFICE_BIN is not set.
   KDOFFICE_SOFFICE_BIN
            Explicit soffice executable. Defaults to the first executable found in
            repo instdir, repo test-install, source-tree test-install, or source-tree

@@ -5,13 +5,12 @@
 #   tests/v2-async-task-schema-test.sh           (H4, W5)
 #   tests/v2-inline-action-request-schema-test.sh (H5, W4)
 #
-# Until W3 Day-1b/c/d land per-kind SwUndoApplyPatch impls under
-# sw/source/uibase/<...>, this harness runs in *partial-enforce*
-# mode: it locks the schema kind enum order against W3 spec
-# §"Patch Kinds（v1）" table order and walks the fixture roster,
-# but skips C++ string-literal extraction. Once all 7 SwUndoApplyPatch
-# subclasses (or a single SwUndoApplyPatch.hxx that lists them all)
-# land in SRCDIR, the harness auto-promotes itself to full enforcement.
+# W3 Day-1b D1 landed UndoApplyPatch under sw/source/core/undo/ per
+# W3 spec §"File Map" L46-47. This harness now runs in *full-enforce*
+# mode: it locks the schema kind enum order against W3 spec §"Patch
+# Kinds（v1）" table order, walks the fixture roster, AND extracts C++
+# string literals from the engine + undo headers. Mode auto-falls back
+# to partial-enforce if the C++ headers haven't landed yet.
 #
 # Locks (when schema + C++ headers all exist):
 #
@@ -19,9 +18,9 @@
 #      properties.kind enum order matches W3 spec §"Patch Kinds（v1）"
 #      table top-to-bottom.
 #   2. C++ kind tokens (string literals) in
-#      ${KDOFFICE_SRC_ROOT}/sw/source/uibase/inline-actions/SwUndoApplyPatch.hxx
-#      OR (if that file doesn't exist) the per-kind subclass headers
-#      under sw/source/uibase/inline-actions/SwUndoApplyPatch*.hxx.
+#      ${KDOFFICE_SRC_ROOT}/sw/inc/IntelligentWriterApplyEngine.hxx
+#      and ${KDOFFICE_SRC_ROOT}/sw/source/core/undo/UndoApplyPatch.hxx
+#      (both ship the 7 kinds via parseKind/toString).
 #   3. Fixtures docs/schemas/fixtures/apply-plan-runtime.{valid,invalid,utf8}.json
 #      enforce expected validity via canonical fixture validator.
 #
@@ -34,11 +33,12 @@
 # Verification:
 #   bash tests/v2-apply-plan-runtime-schema-test.sh
 # Expected exit 0 with "Status: skipped" if schema missing, "Status:
-# passed (partial)" until W3 Day-1b/c/d land the SwUndoApplyPatch
-# header(s), "Status: passed" thereafter.
+# passed (partial)" if engine/undo headers haven't landed, "Status:
+# passed" once W3 Day-1b D1 skeleton is in place.
 #
 # Owner: V2 W3 (writer apply runtime). Scoped to docs/schemas/ +
-# sw/source/uibase/inline-actions/SwUndoApplyPatch*.hxx once authorized.
+# sw/inc/IntelligentWriterApplyEngine.hxx +
+# sw/source/core/undo/UndoApplyPatch.hxx.
 
 set -euo pipefail
 
@@ -55,10 +55,11 @@ fixtures=(
 )
 expected_validity=("valid" "invalid" "valid")
 
-# Either a single aggregator header lists all 7, or per-kind subclass
-# headers each name their own kind. Harness accepts either layout.
-patch_aggregator_hxx="$src_root/sw/source/uibase/inline-actions/SwUndoApplyPatch.hxx"
-patch_subclass_glob="$src_root/sw/source/uibase/inline-actions/SwUndoApplyPatch*.hxx"
+# Engine header carries the 7-token parseKind/toString contract; undo
+# header carries the registration site. Harness accepts either alone or
+# both together (set semantics) to be tolerant of partial landings.
+patch_aggregator_hxx="$src_root/sw/inc/IntelligentWriterApplyEngine.hxx"
+patch_subclass_glob="$src_root/sw/source/core/undo/UndoApplyPatch*.hxx"
 
 EXPECTED_KINDS="paragraph-replace paragraph-insert-after paragraph-delete paragraph-format paragraph-reformat text-range-replace text-format"
 
@@ -67,7 +68,7 @@ skip() {
     printf 'Reason: %s\n' "$1"
     printf 'Source-of-truth tokens (W3 spec §%s):\n' '"Patch Kinds（v1）"'
     printf '  kind (7): %s\n' "$EXPECTED_KINDS"
-    printf 'Auto-promotes to full enforcement once schema + SwUndoApplyPatch*.hxx land.\n'
+    printf 'Auto-promotes to full enforcement once schema + engine/undo headers land.\n'
     exit 0
 }
 
@@ -184,7 +185,7 @@ if mode == "full-enforce":
                 cpp_kinds_unique.append(tok)
 
     if set(cpp_kinds_unique) != set(expected_kinds):
-        print("FAIL: SwUndoApplyPatch* tokens drift from W3 spec §'Patch Kinds（v1）'",
+        print("FAIL: engine/undo header tokens drift from W3 spec §'Patch Kinds（v1）'",
               file=sys.stderr)
         print(f"  expected: {sorted(expected_kinds)}", file=sys.stderr)
         print(f"  C++:      {sorted(cpp_kinds_unique)}", file=sys.stderr)
@@ -272,7 +273,7 @@ if mode == "full-enforce":
     print(f"C++ headers scanned: {len(hxx_files)}")
     print(f"  unique kind tokens: {cpp_kinds_unique}")
 else:
-    print(f"C++ SwUndoApplyPatch*.hxx: not yet landed (skipped); will auto-promote on arrival")
+    print(f"C++ engine/undo headers: not yet landed (skipped); will auto-promote on arrival")
 print(f"Fixtures checked: {len(fixture_status)}")
 for path, expected, observed, errs in fixture_status:
     rel = Path(path).name

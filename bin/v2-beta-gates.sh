@@ -130,6 +130,44 @@ record_manual_blocker() {
     return 1
 }
 
+run_live_accessibility_gate() {
+    local proof="$repo_root/tmp/product-completion/live-accessibility-proof.md"
+    local validation="$repo_root/tmp/product-completion/live-accessibility-validation.md"
+    local validation_json="$repo_root/tmp/product-completion/live-accessibility-validation.json"
+    local expected_app="${KDOFFICE_APP_BUNDLE:-$repo_root/test-install/可圈office.app}"
+    local proof_rel="${proof#$repo_root/}"
+    local validation_rel="${validation#$repo_root/}"
+    local validation_json_rel="${validation_json#$repo_root/}"
+    local command
+    command="$(format_command "$repo_root/bin/workbench-a11y-live-validate.sh" --proof "$proof" --output "$validation" --json-output "$validation_json" --expected-app "$expected_app")"
+    local action='review tmp/product-completion/live-accessibility-checklist.md or generate it with bin/workbench-a11y-live.sh --checklist tmp/product-completion/live-accessibility-checklist.md, then complete bin/workbench-a11y-live.sh --resume --app /Users/lu/可点office/test-install/可圈office.app --output tmp/product-completion/live-accessibility-proof.md with 24/24 pass evidence, validate tmp/product-completion/live-accessibility-validation.json, and rerun beta gates.'
+
+    if "$repo_root/bin/workbench-a11y-live-validate.sh" --proof "$proof" --output "$validation" --json-output "$validation_json" --expected-app "$expected_app" > "$repo_root/tmp/v2-beta-gates/$run_name.workbench-live-accessibility.log" 2>&1; then
+        record_step_result workbench-live-accessibility passed beta-hard "$command" "$validation_rel" ""
+        {
+            printf '## workbench-live-accessibility\n\n'
+            printf -- '- status: **passed**\n'
+            printf -- '- tier: `beta-hard`\n'
+            printf -- '- evidence: `%s`\n\n' "$proof_rel"
+            printf -- '- validation: `%s`\n\n' "$validation_rel"
+            printf -- '- validation_json: `%s`\n\n' "$validation_json_rel"
+        } >> "$report_path"
+        return 0
+    fi
+
+    record_step_result workbench-live-accessibility failed beta-hard "$command" "$validation_rel" "$action"
+    {
+        printf '## workbench-live-accessibility\n\n'
+        printf -- '- status: **failed**\n'
+        printf -- '- tier: `beta-hard`\n'
+        printf -- '- evidence: `%s`\n' "$proof_rel"
+        printf -- '- validation: `%s`\n' "$validation_rel"
+        printf -- '- validation_json: `%s`\n' "$validation_json_rel"
+        printf -- '- action: %s\n\n' "$action"
+    } >> "$report_path"
+    return 1
+}
+
 failures=0
 failed_steps=()
 
@@ -183,9 +221,9 @@ default_actions = {
     "workbench-accessibility-static": "Inspect tmp/workbench-accessibility-check.md and keep static accessibility evidence separate from live manual accessibility evidence.",
     "gui-smoke-timing-startcenter": "Inspect the gui-smoke-timing report and referenced soffice log for survival, timeout, and timing-budget classification.",
     "compatibility-layout-evidence": "Inspect tmp/compatibility-layout-evidence.md; do not treat layout-proxy evidence as pixel-fidelity proof.",
-    "source-hygiene-strict": "Inspect tmp/source-hygiene-report-strict.md and docs/product/source-hygiene-release-packet.md before cleaning, ignoring, or staging any working-tree entries.",
+    "source-hygiene-strict": "Inspect tmp/source-hygiene-report-strict.md, tmp/source-hygiene-decision-summary.json, tmp/source-hygiene-decisions.tsv, tmp/source-hygiene-decisions.current-slice-filled.tsv, tmp/source-hygiene-current-dev-paths.txt, tmp/source-hygiene-decision-suggestions.json, tmp/source-hygiene-decision-suggestions.md, tmp/source-hygiene-decision-suggestions.tsv, tmp/source-hygiene-decision-current-slice-accepted.json, tmp/source-hygiene-decision-current-slice-accepted.md, tmp/source-hygiene-decision-current-slice-accepted.tsv, tmp/source-hygiene-decision-current-slice-merged.json, tmp/source-hygiene-decision-current-slice-merged-progress.json, tmp/source-hygiene-decision-current-slice-merged-progress.md, tmp/source-hygiene-decision-current-slice-progress.json, tmp/source-hygiene-decision-current-slice-progress.md, tmp/source-hygiene-decision-progress.md, tmp/source-hygiene-decision-progress.json, tmp/source-hygiene-decision-validation.md, tmp/source-hygiene-decision-plan.md, tmp/source-hygiene-decision-plan.json, tmp/source-hygiene-apply-plan-dry-run.md, tmp/source-hygiene-apply-plan-dry-run.json, tmp/source-hygiene-decision-packets/index.md, and docs/product/source-hygiene-release-packet.md before cleaning, ignoring, or staging any working-tree entries.",
     "service-policy-enforcement": "Inspect tmp/plugin-manifest-validator.md; runtime plugin/provider readiness remains blocked beyond manifest self-tests.",
-    "workbench-live-accessibility": "Complete manual Tab/Shift+Tab, Enter/Space, VoiceOver, high-contrast, resize, and missing-template fallback review with evidence.",
+    "workbench-live-accessibility": "Review tmp/product-completion/live-accessibility-checklist.md, then complete manual Tab/Shift+Tab, Enter/Space, VoiceOver, high-contrast, resize, and missing-template fallback review with proof and JSON validation evidence.",
 }
 
 steps = []
@@ -262,19 +300,40 @@ run_step validator-readiness-strict beta-hard \
     record_failure validator-readiness-strict
 }
 
+compatibility_roundtrip_cmd=()
+if [[ -n "${KDOFFICE_APP_BUNDLE:-}" || -n "${KDOFFICE_SOFFICE_BIN:-}" ]]; then
+    compatibility_roundtrip_cmd+=(env)
+    if [[ -n "${KDOFFICE_APP_BUNDLE:-}" ]]; then
+        compatibility_roundtrip_cmd+=("KDOFFICE_APP_BUNDLE=$KDOFFICE_APP_BUNDLE")
+    fi
+    if [[ -n "${KDOFFICE_SOFFICE_BIN:-}" ]]; then
+        compatibility_roundtrip_cmd+=("KDOFFICE_SOFFICE_BIN=$KDOFFICE_SOFFICE_BIN")
+    elif [[ -n "${KDOFFICE_APP_BUNDLE:-}" ]]; then
+        compatibility_roundtrip_cmd+=("KDOFFICE_SOFFICE_BIN=$KDOFFICE_APP_BUNDLE/Contents/MacOS/soffice")
+    fi
+fi
+compatibility_roundtrip_cmd+=("$repo_root/bin/compatibility-roundtrip.sh")
+
 run_step compatibility-roundtrip beta-hard \
-    "$repo_root/bin/compatibility-roundtrip.sh" \
+    "${compatibility_roundtrip_cmd[@]}" \
     --manifest "$repo_root/docs/compatibility/smoke-manifest.tsv" \
     --strict-validators \
     --allow-extension-namespace \
     --run-name "$run_name-compatibility-smoke" || record_failure compatibility-roundtrip
+
+gui_smoke_cmd=()
+if [[ -n "${KDOFFICE_APP_BUNDLE:-}" ]]; then
+    gui_smoke_cmd+=(env "KDOFFICE_APP_BUNDLE=$KDOFFICE_APP_BUNDLE" "$repo_root/bin/gui-smoke-timing.sh" --app "$KDOFFICE_APP_BUNDLE")
+else
+    gui_smoke_cmd+=("$repo_root/bin/gui-smoke-timing.sh")
+fi
 
 run_step workbench-accessibility-static beta-hard \
     "$repo_root/bin/workbench-accessibility-check.sh" \
     "$repo_root/tmp/workbench-accessibility-check.md" || record_failure workbench-accessibility-static
 
 run_step gui-smoke-timing-startcenter beta-hard \
-    "$repo_root/bin/gui-smoke-timing.sh" \
+    "${gui_smoke_cmd[@]}" \
     --mode startcenter \
     --wait 12 \
     --timeout 20 \
@@ -289,7 +348,7 @@ run_step compatibility-layout-evidence beta-hard \
 run_step source-hygiene-strict beta-hard \
     "$repo_root/bin/source-hygiene-report.sh" \
     --strict "$repo_root/tmp/source-hygiene-report-strict.md" || {
-    action='inspect `tmp/source-hygiene-report-strict.md` and `docs/product/source-hygiene-release-packet.md` for source review, generated/local cleanup, config/autoconf, install/test/release, and human-decision buckets.'
+    action='inspect tmp/source-hygiene-report-strict.md, generate tmp/source-hygiene-decision-summary.json and tmp/source-hygiene-decisions.tsv, review tmp/source-hygiene-current-dev-paths.txt, tmp/source-hygiene-decision-suggestions.json, tmp/source-hygiene-decision-suggestions.md, and tmp/source-hygiene-decision-suggestions.tsv for explicit current-slice suggestions, inspect tmp/source-hygiene-decision-current-slice-accepted.json, tmp/source-hygiene-decision-current-slice-accepted.md, tmp/source-hygiene-decision-current-slice-accepted.tsv, tmp/source-hygiene-decisions.current-slice-filled.tsv, tmp/source-hygiene-decision-current-slice-merged.json, tmp/source-hygiene-decision-current-slice-merged-progress.json, tmp/source-hygiene-decision-current-slice-merged-progress.md, tmp/source-hygiene-decision-current-slice-progress.json, and tmp/source-hygiene-decision-current-slice-progress.md as accepted-preview evidence, fill TSV decision columns, merge with bin/source-hygiene-decision-tsv.sh --merge tmp/source-hygiene-decision-summary.json --tsv tmp/source-hygiene-decisions.tsv --output tmp/source-hygiene-decision-summary.filled.json, track tmp/source-hygiene-decision-progress.md and tmp/source-hygiene-decision-progress.json, validate tmp/source-hygiene-decision-validation.md, review tmp/source-hygiene-decision-plan.md and tmp/source-hygiene-decision-plan.json, run bin/source-hygiene-apply-plan.sh --dry-run --json-output tmp/source-hygiene-apply-plan-dry-run.json for tmp/source-hygiene-apply-plan-dry-run.md, and review tmp/source-hygiene-decision-packets/index.md before any source review, generated/local cleanup, config/autoconf, install/test/release, or human-decision batch.'
     set_step_action source-hygiene-strict "$action"
     {
         printf -- '- action: %s\n\n' "$action"
@@ -302,27 +361,31 @@ run_step service-policy-enforcement beta-hard \
     --self-test \
     --report "$repo_root/tmp/plugin-manifest-validator.md" || record_failure service-policy-enforcement
 
-record_manual_blocker workbench-live-accessibility \
-    'docs/accessibility/workbench-accessibility-evidence-m2-06.md keeps live Tab/Shift+Tab, Enter/Space, VoiceOver, high-contrast, resize, and missing-template fallback review as beta blockers.' || record_failure workbench-live-accessibility
+run_live_accessibility_gate || record_failure workbench-live-accessibility
 
 {
+    failed_step_text=""
+    if [[ "${#failed_steps[@]}" -gt 0 ]]; then
+        failed_step_text="${failed_steps[*]}"
+    fi
+
     remediation_index=1
     printf '## Remediation Order\n\n'
     printf 'Failed beta blockers must be remediated in this order; do not claim beta readiness until every beta-hard item passes with evidence. Missing validators and live accessibility remain beta-hard failures.\n\n'
-    if [[ " ${failed_steps[*]} " == *" validator-readiness-strict "* || " ${failed_steps[*]} " == *" compatibility-roundtrip "* ]]; then
+    if [[ " $failed_step_text " == *" validator-readiness-strict "* || " $failed_step_text " == *" compatibility-roundtrip "* ]]; then
         printf '%s. **Missing validator assets / strict compatibility**: resolve `validator-readiness-strict` first, then rerun `compatibility-roundtrip` with strict validators. Evidence: `tmp/validator-readiness-strict.md`, validator asset provenance/checksums, wrapper smoke output, and the roundtrip report under `tmp/compatibility-roundtrip/`.\n' "$remediation_index"
         remediation_index=$((remediation_index + 1))
     fi
-    if [[ " ${failed_steps[*]} " == *" gui-smoke-timing-startcenter "* ]]; then
+    if [[ " $failed_step_text " == *" gui-smoke-timing-startcenter "* ]]; then
         printf '%s. **GUI survival diagnostics**: resolve `gui-smoke-timing-startcenter` using the GUI report pid, exit status/classification, and soffice log tail. Evidence: `tmp/gui-smoke-timing/%s-gui-budget/report.md` plus the referenced soffice log.\n' "$remediation_index" "$run_name"
         remediation_index=$((remediation_index + 1))
     fi
-    if [[ " ${failed_steps[*]} " == *" source-hygiene-strict "* ]]; then
-        printf '%s. **Source hygiene**: resolve `source-hygiene-strict` without deleting/resetting unrelated generated outputs. Evidence: `tmp/source-hygiene-report-strict.md` and any reviewed release packet decisions.\n' "$remediation_index"
+    if [[ " $failed_step_text " == *" source-hygiene-strict "* ]]; then
+        printf '%s. **Source hygiene**: resolve source-hygiene-strict without deleting/resetting unrelated generated outputs. Evidence: tmp/source-hygiene-report-strict.md, tmp/source-hygiene-decision-summary.json, tmp/source-hygiene-decisions.tsv, tmp/source-hygiene-decisions.current-slice-filled.tsv, tmp/source-hygiene-current-dev-paths.txt, tmp/source-hygiene-decision-suggestions.json, tmp/source-hygiene-decision-suggestions.md, tmp/source-hygiene-decision-suggestions.tsv, tmp/source-hygiene-decision-current-slice-accepted.json, tmp/source-hygiene-decision-current-slice-accepted.md, tmp/source-hygiene-decision-current-slice-accepted.tsv, tmp/source-hygiene-decision-current-slice-merged.json, tmp/source-hygiene-decision-current-slice-merged-progress.json, tmp/source-hygiene-decision-current-slice-merged-progress.md, tmp/source-hygiene-decision-current-slice-progress.json, tmp/source-hygiene-decision-current-slice-progress.md, tmp/source-hygiene-decision-progress.md, tmp/source-hygiene-decision-progress.json, tmp/source-hygiene-decision-validation.md, tmp/source-hygiene-decision-plan.md, tmp/source-hygiene-decision-plan.json, tmp/source-hygiene-apply-plan-dry-run.md, tmp/source-hygiene-apply-plan-dry-run.json, tmp/source-hygiene-decision-packets/index.md, and any reviewed release packet decisions.\n' "$remediation_index"
         remediation_index=$((remediation_index + 1))
     fi
-    if [[ " ${failed_steps[*]} " == *" workbench-live-accessibility "* ]]; then
-        printf '%s. **Live accessibility**: complete manual Tab/Shift+Tab, Enter/Space, VoiceOver, high-contrast, resize, and missing-template fallback review. Evidence: updated live accessibility packet; static accessibility alone is insufficient.\n' "$remediation_index"
+    if [[ " $failed_step_text " == *" workbench-live-accessibility "* ]]; then
+        printf '%s. **Live accessibility**: review tmp/product-completion/live-accessibility-checklist.md, then complete manual Tab/Shift+Tab, Enter/Space, VoiceOver, high-contrast, resize, and missing-template fallback review. Evidence: tmp/product-completion/live-accessibility-proof.md plus tmp/product-completion/live-accessibility-validation.json; static accessibility and checklist-only evidence are insufficient.\n' "$remediation_index"
         remediation_index=$((remediation_index + 1))
     fi
     printf '%s. **Regression sweep**: rerun this beta gate wrapper and retain logs for all previously failed blockers.\n\n' "$remediation_index"

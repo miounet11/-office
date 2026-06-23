@@ -1,0 +1,104 @@
+name: V3 contract harnesses
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/product/v3/**'
+      - 'docs/schemas/connector-manifest.schema.json'
+      - 'docs/schemas/localcloud-config.schema.json'
+      - 'docs/schemas/perf-baseline-targets.schema.json'
+      - 'docs/schemas/crash-recovery-targets.schema.json'
+      - 'docs/schemas/knowledge-index-chunk.schema.json'
+      - 'docs/schemas/knowledge-index-query.schema.json'
+      - 'docs/schemas/knowledge-index-result.schema.json'
+      - 'docs/schemas/policy-rule.schema.json'
+      - 'docs/schemas/tenant-context.schema.json'
+      - 'docs/schemas/eval-report.schema.json'
+      - 'docs/schemas/eval-capability-fixture.schema.json'
+      - 'docs/schemas/eval-expected-patch.schema.json'
+      - 'docs/schemas/eval-regression-fixture.schema.json'
+      - 'docs/schemas/agent-step-plan.schema.json'
+      - 'docs/schemas/agent-step-result.schema.json'
+      - 'docs/schemas/agent-task-state.schema.json'
+      - 'docs/schemas/companion-pairing-token.schema.json'
+      - 'docs/schemas/companion-diff-summary.schema.json'
+      - 'docs/schemas/companion-approval-request.schema.json'
+      - 'docs/schemas/sync-message.schema.json'
+      - 'docs/schemas/onboarding-flow.schema.json'
+      - 'docs/schemas/starter-pack-manifest.schema.json'
+      - 'docs/schemas/edition-policy.schema.json'
+      - 'docs/schemas/i18n-locale-policy.schema.json'
+      - 'docs/schemas/manual-docs-manifest.schema.json'
+      - 'docs/schemas/distribution-update.schema.json'
+      - 'docs/schemas/error-recovery-ux.schema.json'
+      - 'docs/schemas/release-ga-checklist.schema.json'
+      - 'docs/schemas/audit-log-entry.schema.json'
+      - 'docs/qa/fixtures/v3/**'
+      - 'tests/v3-*.sh'
+      - 'bin/v3-eval-sweep.sh'
+      - '.github/workflows/v3-contract-harnesses.yml'
+  pull_request:
+    paths:
+      - 'docs/product/v3/**'
+      - 'docs/schemas/connector-manifest.schema.json'
+      - 'docs/schemas/localcloud-config.schema.json'
+      - 'docs/schemas/perf-baseline-targets.schema.json'
+      - 'docs/schemas/crash-recovery-targets.schema.json'
+      - 'docs/schemas/knowledge-index-chunk.schema.json'
+      - 'docs/schemas/knowledge-index-query.schema.json'
+      - 'docs/schemas/knowledge-index-result.schema.json'
+      - 'docs/schemas/policy-rule.schema.json'
+      - 'docs/schemas/tenant-context.schema.json'
+      - 'docs/schemas/eval-report.schema.json'
+      - 'docs/schemas/eval-capability-fixture.schema.json'
+      - 'docs/schemas/eval-expected-patch.schema.json'
+      - 'docs/schemas/eval-regression-fixture.schema.json'
+      - 'docs/schemas/agent-step-plan.schema.json'
+      - 'docs/schemas/agent-step-result.schema.json'
+      - 'docs/schemas/agent-task-state.schema.json'
+      - 'docs/schemas/companion-pairing-token.schema.json'
+      - 'docs/schemas/companion-diff-summary.schema.json'
+      - 'docs/schemas/companion-approval-request.schema.json'
+      - 'docs/schemas/sync-message.schema.json'
+      - 'docs/schemas/onboarding-flow.schema.json'
+      - 'docs/schemas/starter-pack-manifest.schema.json'
+      - 'docs/schemas/edition-policy.schema.json'
+      - 'docs/schemas/i18n-locale-policy.schema.json'
+      - 'docs/schemas/manual-docs-manifest.schema.json'
+      - 'docs/schemas/distribution-update.schema.json'
+      - 'docs/schemas/error-recovery-ux.schema.json'
+      - 'docs/schemas/release-ga-checklist.schema.json'
+      - 'docs/schemas/audit-log-entry.schema.json'
+      - 'docs/qa/fixtures/v3/**'
+      - 'tests/v3-*.sh'
+      - 'bin/v3-eval-sweep.sh'
+      - '.github/workflows/v3-contract-harnesses.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: v3-contract-harnesses-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  harnesses:
+    name: V3 contract harnesses
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Show python3 version
+        run: python3 --version
+
+      - name: H8-H12 — V3 contract sweep
+        run: bash bin/v3-eval-sweep.sh --v3-only
+
+      - name: V3 meta self-tests
+        run: bash bin/v3-eval-sweep.sh --self-test

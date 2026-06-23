@@ -15,12 +15,13 @@
 #      branches (writer-paragraph / calc-cell / impress-slide-element)
 #      each carry an action enum locked to the spec §"Action enum lock"
 #      table order.
-#   2. C++ ParagraphAction tokens in
-#      ${KDOFFICE_SRC_ROOT}/sw/source/uibase/inline-actions/ParagraphActions.hxx
-#   3. C++ CellAction tokens in
-#      ${KDOFFICE_SRC_ROOT}/sc/source/ui/inline-actions/CellActions.hxx
-#   4. C++ SlideElementAction tokens in
-#      ${KDOFFICE_SRC_ROOT}/sd/source/ui/inline-actions/SlideElementActions.hxx
+#   2. C++ ParagraphAction string literals in
+#      ${KDOFFICE_SRC_ROOT}/sw/source/uibase/inline-actions/ParagraphActions.cxx
+#      (.hxx existence triggers full-enforce; .cxx is the literal source-of-truth.)
+#   3. C++ CellAction string literals in
+#      ${KDOFFICE_SRC_ROOT}/sc/source/ui/inline-actions/CellActions.cxx
+#   4. C++ SlideElementAction string literals in
+#      ${KDOFFICE_SRC_ROOT}/sd/source/ui/inline-actions/SlideElementActions.cxx
 #   5. Fixtures docs/schemas/fixtures/inline-action-request.*.json
 #      enforce expected validity via canonical fixture validator.
 #
@@ -60,6 +61,13 @@ expected_validity=("valid" "invalid" "valid" "valid")
 paragraph_actions_hxx="$src_root/sw/source/uibase/inline-actions/ParagraphActions.hxx"
 cell_actions_hxx="$src_root/sc/source/ui/inline-actions/CellActions.hxx"
 slide_actions_hxx="$src_root/sd/source/ui/inline-actions/SlideElementActions.hxx"
+
+# String literals live in the matching .cxx (enum-to-token helpers); .hxx is
+# enum-only. Full-enforce mode reads literals from .cxx — matches the H7
+# pattern of grepping literal strings rather than enum declarations.
+paragraph_actions_cxx="$src_root/sw/source/uibase/inline-actions/ParagraphActions.cxx"
+cell_actions_cxx="$src_root/sc/source/ui/inline-actions/CellActions.cxx"
+slide_actions_cxx="$src_root/sd/source/ui/inline-actions/SlideElementActions.cxx"
 
 EXPECTED_PARAGRAPH="rewrite expand shorten translate-en format-clean explain custom"
 EXPECTED_CELL="explain-data suggest-chart generate-formula format-clean format-change"
@@ -108,7 +116,8 @@ if (( hxx_count == 3 )); then
     mode="full-enforce"
 fi
 
-python3 - "$schema" "$mode" "$paragraph_actions_hxx" "$cell_actions_hxx" "$slide_actions_hxx" \
+python3 - "$schema" "$mode" \
+    "$paragraph_actions_cxx" "$cell_actions_cxx" "$slide_actions_cxx" \
     "$EXPECTED_PARAGRAPH" "$EXPECTED_CELL" "$EXPECTED_SLIDE" \
     "${fixtures[@]}" "----" "${expected_validity[@]}" <<'PY'
 from __future__ import annotations
@@ -120,9 +129,9 @@ from pathlib import Path
 
 schema_path = Path(sys.argv[1])
 mode = sys.argv[2]
-paragraph_hxx = Path(sys.argv[3])
-cell_hxx = Path(sys.argv[4])
-slide_hxx = Path(sys.argv[5])
+paragraph_cxx = Path(sys.argv[3])
+cell_cxx = Path(sys.argv[4])
+slide_cxx = Path(sys.argv[5])
 expected_paragraph = sys.argv[6].split()
 expected_cell = sys.argv[7].split()
 expected_slide = sys.argv[8].split()
@@ -211,11 +220,13 @@ if mode == "full-enforce":
                 out.append(item)
         return out
 
-    def extract(hxx: Path, expected: list[str], label: str) -> list[str]:
-        text = hxx.read_text(encoding="utf-8", errors="ignore")
+    def extract(cxx: Path, expected: list[str], label: str) -> list[str]:
+        text = cxx.read_text(encoding="utf-8", errors="ignore")
         # Build alternation pattern from expected tokens, escaped.
+        # Match u"token"_ustr or "token" — .cxx carries the literal mapping
+        # tables (enum<->string helpers); .hxx is enum-only.
         pat = "|".join(re.escape(t) for t in expected)
-        found = re.findall(rf'"({pat})"', text)
+        found = re.findall(rf'u?"({pat})"', text)
         unique = stable_unique(found)
         if set(unique) != set(expected):
             print(f"FAIL: {label} tokens drift from W4 spec §'Action enum lock'",
@@ -230,11 +241,11 @@ if mode == "full-enforce":
             sys.exit(1)
         return unique
 
-    cpp_paragraph_unique = extract(paragraph_hxx, expected_paragraph,
-                                    "ParagraphActions.hxx")
-    cpp_cell_unique = extract(cell_hxx, expected_cell, "CellActions.hxx")
-    cpp_slide_unique = extract(slide_hxx, expected_slide,
-                                "SlideElementActions.hxx")
+    cpp_paragraph_unique = extract(paragraph_cxx, expected_paragraph,
+                                    "ParagraphActions.cxx")
+    cpp_cell_unique = extract(cell_cxx, expected_cell, "CellActions.cxx")
+    cpp_slide_unique = extract(slide_cxx, expected_slide,
+                                "SlideElementActions.cxx")
 
 # 3. Fixtures: validity assertion. Detailed reasons for invalids.
 TOP_REQUIRED = {"schema_version", "request_id", "surface", "action",
@@ -304,9 +315,9 @@ print(f"  ParagraphAction enum:    {len(writer_actions)} tokens, order matches t
 print(f"  CellAction enum:         {len(calc_actions)} tokens, order matches table")
 print(f"  SlideElementAction enum: {len(slide_actions)} tokens, order matches table")
 if mode == "full-enforce":
-    print(f"C++ ParagraphActions.hxx:    {cpp_paragraph_unique}")
-    print(f"C++ CellActions.hxx:         {cpp_cell_unique}")
-    print(f"C++ SlideElementActions.hxx: {cpp_slide_unique}")
+    print(f"C++ ParagraphActions.cxx:    {cpp_paragraph_unique}")
+    print(f"C++ CellActions.cxx:         {cpp_cell_unique}")
+    print(f"C++ SlideElementActions.cxx: {cpp_slide_unique}")
 else:
     print(f"C++ headers: not yet landed (skipped); will auto-promote on arrival")
 print(f"Fixtures checked: {len(fixture_status)}")

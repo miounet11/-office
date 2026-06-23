@@ -8,6 +8,8 @@ on:
       - 'docs/product/v2/**'
       - 'docs/CLAUDE-NOTES.md'
       - 'kqoffice/source/ai/provider/**'
+      - 'kqoffice/source/ai/cowork/**'
+      - 'kqoffice/qa/cppunit/test_cowork.cxx'
       - 'tests/v2-*.sh'
       - 'bin/intelligent-contract-fixtures.sh'
       - 'bin/v2-harness-sweep.sh'
@@ -19,6 +21,8 @@ on:
       - 'docs/product/v2/**'
       - 'docs/CLAUDE-NOTES.md'
       - 'kqoffice/source/ai/provider/**'
+      - 'kqoffice/source/ai/cowork/**'
+      - 'kqoffice/qa/cppunit/test_cowork.cxx'
       - 'tests/v2-*.sh'
       - 'bin/intelligent-contract-fixtures.sh'
       - 'bin/v2-harness-sweep.sh'
@@ -50,25 +54,37 @@ jobs:
       - name: H1 — provider-evidence schema ↔ C++ drift lock
         run: bash tests/v2-provider-evidence-schema-test.sh
 
-      - name: H2 — V2 plan baseline (specs + 36 fixtures + goals + roster locks)
+      - name: H2 — V2 plan baseline (specs + 40 fixtures + goals + roster locks)
         run: bash tests/v2-plan-baseline-test.sh
 
       - name: H3 — V2 Day-0 skeleton doc coherence
         run: bash tests/v2-day0-skeleton-test.sh
 
-      - name: H4 — W5 async-task schema ↔ spec token lock (partial-enforce)
+      - name: H4 — W5 async-task schema ↔ spec token lock (full-enforce since L96)
         run: bash tests/v2-async-task-schema-test.sh
 
-      - name: H5 — W4 inline-action-request schema ↔ spec action lock (partial-enforce)
+      - name: H5 — W4 inline-action-request schema ↔ spec action lock (full-enforce since L97)
         run: bash tests/v2-inline-action-request-schema-test.sh
 
       - name: H6 — V2 reader's-manual fact-block ↔ schema body coherence
         run: bash tests/v2-schema-manual-coherence-test.sh
 
-      - name: H7 — W3 apply-plan-runtime schema ↔ spec patch-kind lock (partial-enforce)
+      - name: H7 — W3 apply-plan-runtime schema ↔ spec patch-kind lock (full-enforce since L98)
         run: bash tests/v2-apply-plan-runtime-schema-test.sh
 
-      - name: V1.5 m3-02 intelligent-contract fixtures (36 across 13 schemas)
+      - name: H8 — V2 product-entry app-bundle smoke (since L127)
+        if: runner.os == 'macOS' || env.KDOFFICE_APP_BUNDLE != ''
+        run: bash tests/v2-product-entry-smoke-test.sh
+
+      - name: H9 — W5 worker-thread/UI/visible-review/apply/native notification backend evidence (since L144)
+        if: runner.os == 'macOS' || env.KDOFFICE_SRC_ROOT != ''
+        run: bash tests/v2-worker-ui-lifecycle-test.sh
+
+      - name: H10 — V2 source archive boundary (since L145)
+        if: env.KDOFFICE_SRC_ROOT != ''
+        run: bash tests/v2-source-archive-boundary-test.sh
+
+      - name: V1.5 m3-02 intelligent-contract fixtures (40 across 13 schemas, post-L95)
         run: |
           bash bin/intelligent-contract-fixtures.sh
           # Fail loudly if any fixture entry didn't pass.
@@ -80,6 +96,9 @@ jobs:
             exit 1
           fi
           if [ "${pass_count}" -lt 36 ]; then
+            # Floor is intentionally below current baseline (40 post-L95)
+            # so single-fixture experiments don't break CI. Tighten only
+            # if a regression of >4 fixtures becomes plausible.
             echo "::error::Expected ≥36 fixtures to pass; got ${pass_count}"
             exit 1
           fi

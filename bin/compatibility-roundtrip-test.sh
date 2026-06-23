@@ -114,6 +114,31 @@ PY
     exit 1
 fi
 
+app_bundle_override="$tmp_root/override-app/可圈office.app"
+app_bundle_report_path="$fake_repo/tmp/app-bundle-report.md"
+mkdir -p "$app_bundle_override/Contents/MacOS" "$(dirname "$app_bundle_report_path")"
+cp "$override_soffice_bin" "$app_bundle_override/Contents/MacOS/soffice"
+KDOFFICE_SRC_ROOT="$override_src_root" KDOFFICE_APP_BUNDLE="$app_bundle_override" \
+    "$fake_repo/bin/compatibility-roundtrip.sh" --manifest "$override_manifest_path" --run-name "app-bundle-override" --report "$app_bundle_report_path" > "$tmp_root/app-bundle-stdout.log" 2> "$tmp_root/app-bundle-stderr.log"
+
+if ! grep -q -- '- successes: 1' "$app_bundle_report_path" ||
+    ! grep -F -q -- "Packaged app: $app_bundle_override/Contents/MacOS/soffice" "$app_bundle_report_path"; then
+    printf 'Expected KDOFFICE_APP_BUNDLE to select the bundle soffice executable\n' >&2
+    printf 'stdout:\n' >&2
+    python3 - "$tmp_root/app-bundle-stdout.log" <<'PY' >&2
+from pathlib import Path
+import sys
+print(Path(sys.argv[1]).read_text())
+PY
+    printf 'stderr:\n' >&2
+    python3 - "$tmp_root/app-bundle-stderr.log" <<'PY' >&2
+from pathlib import Path
+import sys
+print(Path(sys.argv[1]).read_text())
+PY
+    exit 1
+fi
+
 fallback_repo="$tmp_root/fallback-repo"
 fallback_report_path="$fallback_repo/tmp/fallback-report.md"
 mkdir -p "$fallback_repo/bin" "$fallback_repo/libreoffice-core/sw/qa/import" "$fallback_repo/test-install/可圈office.app/Contents/MacOS" "$(dirname "$fallback_report_path")"
@@ -237,5 +262,6 @@ fi
 
 printf 'compatibility-roundtrip failure exit test passed\n'
 printf 'compatibility-roundtrip source/soffice override test passed\n'
+printf 'compatibility-roundtrip app-bundle override test passed\n'
 printf 'compatibility-roundtrip test-install fallback test passed\n'
 printf 'compatibility-roundtrip strict validator readiness gap test passed\n'
