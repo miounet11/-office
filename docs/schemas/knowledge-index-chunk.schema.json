@@ -1,0 +1,312 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://kqoffice.example.com/schemas/knowledge-index-chunk.schema.json",
+  "title": "V3 Knowledge Index Chunk",
+  "description": "Retrieval chunk contract for V3 W3 Knowledge Index. Draft; covered by the W3 knowledge-index-chunk self-test before gated index runtime implementation exists.",
+  "type": "object",
+  "required": ["id", "schemaVersion", "createdAt", "workspace", "source", "chunk", "index", "modelAcquisitionPolicy", "vectorStorePolicy", "watcherPolicy", "extractionPolicy", "storagePolicy", "boundary", "evidence"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^kbch-[0-9a-f]{16}$"
+    },
+    "schemaVersion": {
+      "const": "v3-knowledge-index-chunk/0.1"
+    },
+    "createdAt": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+    },
+    "workspace": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{2,63}$"
+    },
+    "source": {
+      "type": "object",
+      "required": ["kind", "uri", "sourceId", "snapshotId", "contentHash", "modifiedAt"],
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": ["document", "connector"]
+        },
+        "uri": {
+          "type": "string",
+          "minLength": 8,
+          "maxLength": 512
+        },
+        "sourceId": {
+          "type": "string",
+          "pattern": "^(doc|conn)-[0-9a-f]{16}$"
+        },
+        "snapshotId": {
+          "type": "string",
+          "pattern": "^(doc|conn)-snap-[0-9a-f]{16}$"
+        },
+        "contentHash": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "modifiedAt": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+        }
+      }
+    },
+    "chunk": {
+      "type": "object",
+      "required": ["granularity", "ordinal", "textHash", "tokenCount", "language", "storesDocumentContent"],
+      "additionalProperties": false,
+      "properties": {
+        "granularity": {
+          "enum": ["paragraph", "sentence-fallback"]
+        },
+        "ordinal": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "textHash": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "tokenCount": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2048
+        },
+        "language": {
+          "enum": ["zh-CN", "en-US", "mixed"]
+        },
+        "storesDocumentContent": {
+          "const": false
+        }
+      }
+    },
+    "index": {
+      "type": "object",
+      "required": ["scope", "retrievalMode", "backend", "embeddingModel", "embeddingDimensions", "topKMax", "incrementalUpdate"],
+      "additionalProperties": false,
+      "properties": {
+        "scope": {
+          "const": "per-workspace"
+        },
+        "retrievalMode": {
+          "enum": ["fts", "hybrid"]
+        },
+        "backend": {
+          "enum": ["sqlite-fts5", "lancedb-local"]
+        },
+        "embeddingModel": {
+          "enum": ["none", "bge-m3"]
+        },
+        "embeddingDimensions": {
+          "enum": [0, 1024]
+        },
+        "topKMax": {
+          "const": 10
+        },
+        "incrementalUpdate": {
+          "const": true
+        }
+      }
+    },
+    "modelAcquisitionPolicy": {
+      "type": "object",
+      "required": ["modelFamily", "bundledByDefault", "downloadPolicy", "userConfirmationRequired", "fallbackWhenMissing", "publicEgressByDefault", "runtimeDownloaderImplementation", "runtimeEmbeddingImplementation", "silentDownloadAllowed"],
+      "additionalProperties": false,
+      "properties": {
+        "modelFamily": {
+          "enum": ["none", "bge-m3"]
+        },
+        "bundledByDefault": {
+          "const": false
+        },
+        "downloadPolicy": {
+          "enum": ["not-required", "explicit-user-confirmed"]
+        },
+        "userConfirmationRequired": {
+          "type": "boolean"
+        },
+        "fallbackWhenMissing": {
+          "const": "sqlite-fts5"
+        },
+        "publicEgressByDefault": {
+          "const": false
+        },
+        "runtimeDownloaderImplementation": {
+          "const": "not-started"
+        },
+        "runtimeEmbeddingImplementation": {
+          "const": "not-started"
+        },
+        "silentDownloadAllowed": {
+          "const": false
+        }
+      }
+    },
+    "vectorStorePolicy": {
+      "type": "object",
+      "required": ["defaultBackend", "selectedBackend", "lancedbDefaultAllowed", "lancedbMacosArm64Status", "requiresPlatformSmokeBeforeDefault", "fallbackBackend", "runtimeVectorStoreImplementation"],
+      "additionalProperties": false,
+      "properties": {
+        "defaultBackend": {
+          "const": "sqlite-fts5"
+        },
+        "selectedBackend": {
+          "enum": ["sqlite-fts5", "lancedb-local"]
+        },
+        "lancedbDefaultAllowed": {
+          "const": false
+        },
+        "lancedbMacosArm64Status": {
+          "const": "pending-runtime-spike"
+        },
+        "requiresPlatformSmokeBeforeDefault": {
+          "type": "boolean"
+        },
+        "fallbackBackend": {
+          "const": "sqlite-fts5"
+        },
+        "runtimeVectorStoreImplementation": {
+          "const": "not-started"
+        }
+      }
+    },
+    "watcherPolicy": {
+      "type": "object",
+      "required": ["trigger", "debounceMs", "largeWorkspaceThresholdFiles", "largeWorkspaceStrategy", "perFileDescriptorWatch", "maxOpenFileDescriptors", "pollingFallbackIntervalSeconds", "overflowBehavior", "runtimeWatcherImplementation"],
+      "additionalProperties": false,
+      "properties": {
+        "trigger": {
+          "const": "background-watcher"
+        },
+        "debounceMs": {
+          "const": 5000
+        },
+        "largeWorkspaceThresholdFiles": {
+          "const": 10000
+        },
+        "largeWorkspaceStrategy": {
+          "const": "bounded-watch-plus-polling-fallback"
+        },
+        "perFileDescriptorWatch": {
+          "const": false
+        },
+        "maxOpenFileDescriptors": {
+          "const": 256
+        },
+        "pollingFallbackIntervalSeconds": {
+          "const": 60
+        },
+        "overflowBehavior": {
+          "const": "fail-closed-user-visible"
+        },
+        "runtimeWatcherImplementation": {
+          "const": "not-started"
+        }
+      }
+    },
+    "extractionPolicy": {
+      "type": "object",
+      "required": ["documentFamily", "inputFormat", "textExtractionPath", "usesLibreOfficeImportFilter", "usesDocumentModel", "standalonePptParserAllowed", "preservesSlideElementRefs", "runtimeExtractionImplementation"],
+      "additionalProperties": false,
+      "properties": {
+        "documentFamily": {
+          "enum": ["writer", "calc", "impress", "connector"]
+        },
+        "inputFormat": {
+          "enum": ["odt", "ods", "odp", "pptx", "connector-markdown"]
+        },
+        "textExtractionPath": {
+          "enum": ["document-model", "connector-normalized-markdown"]
+        },
+        "usesLibreOfficeImportFilter": {
+          "type": "boolean"
+        },
+        "usesDocumentModel": {
+          "type": "boolean"
+        },
+        "standalonePptParserAllowed": {
+          "const": false
+        },
+        "preservesSlideElementRefs": {
+          "type": "boolean"
+        },
+        "runtimeExtractionImplementation": {
+          "const": "not-started"
+        }
+      }
+    },
+    "storagePolicy": {
+      "type": "object",
+      "required": ["indexRoot", "workspacePartition", "pathIdentity", "colocatedWithUserDocuments", "syncsWithUserDocuments", "storesDocumentContent", "runtimeStorageImplementation"],
+      "additionalProperties": false,
+      "properties": {
+        "indexRoot": {
+          "const": "application-data-directory"
+        },
+        "workspacePartition": {
+          "const": "per-workspace"
+        },
+        "pathIdentity": {
+          "const": "workspace-hash"
+        },
+        "colocatedWithUserDocuments": {
+          "const": false
+        },
+        "syncsWithUserDocuments": {
+          "const": false
+        },
+        "storesDocumentContent": {
+          "const": false
+        },
+        "runtimeStorageImplementation": {
+          "const": "not-started"
+        }
+      }
+    },
+    "boundary": {
+      "type": "object",
+      "required": ["serviceMode", "publicEgress", "localEmbedding", "tenantPolicyRequired"],
+      "additionalProperties": false,
+      "properties": {
+        "serviceMode": {
+          "enum": ["offline", "private"]
+        },
+        "publicEgress": {
+          "const": false
+        },
+        "localEmbedding": {
+          "const": true
+        },
+        "tenantPolicyRequired": {
+          "const": true
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "required": ["required", "evidenceIds"],
+      "additionalProperties": false,
+      "properties": {
+        "required": {
+          "type": "array",
+          "minItems": 3,
+          "uniqueItems": true,
+          "items": {
+            "enum": ["document-snapshot", "index-update", "no-public-egress", "connector-fetch"]
+          }
+        },
+        "evidenceIds": {
+          "type": "array",
+          "minItems": 2,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^ev-[0-9a-f]{16}$"
+          }
+        }
+      }
+    }
+  }
+}

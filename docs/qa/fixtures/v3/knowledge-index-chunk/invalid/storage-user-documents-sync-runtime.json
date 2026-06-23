@@ -1,0 +1,91 @@
+{
+  "id": "kbch-0000000000000e05",
+  "schemaVersion": "v3-knowledge-index-chunk/0.1",
+  "createdAt": "2026-06-10T11:40:00Z",
+  "workspace": "legal",
+  "source": {
+    "kind": "document",
+    "uri": "file:///workspace/legal/synced-index.odt",
+    "sourceId": "doc-0000000000000e05",
+    "snapshotId": "doc-snap-0000000000000e05",
+    "contentHash": "abababababababababababababababababababababababababababababababab",
+    "modifiedAt": "2026-06-10T11:39:00Z"
+  },
+  "chunk": {
+    "granularity": "paragraph",
+    "ordinal": 9,
+    "textHash": "cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd",
+    "tokenCount": 144,
+    "language": "mixed",
+    "storesDocumentContent": false
+  },
+  "index": {
+    "scope": "per-workspace",
+    "retrievalMode": "fts",
+    "backend": "sqlite-fts5",
+    "embeddingModel": "none",
+    "embeddingDimensions": 0,
+    "topKMax": 10,
+    "incrementalUpdate": true
+  },
+  "modelAcquisitionPolicy": {
+    "modelFamily": "none",
+    "bundledByDefault": false,
+    "downloadPolicy": "not-required",
+    "userConfirmationRequired": false,
+    "fallbackWhenMissing": "sqlite-fts5",
+    "publicEgressByDefault": false,
+    "runtimeDownloaderImplementation": "not-started",
+    "runtimeEmbeddingImplementation": "not-started",
+    "silentDownloadAllowed": false
+  },
+  "vectorStorePolicy": {
+    "defaultBackend": "sqlite-fts5",
+    "selectedBackend": "sqlite-fts5",
+    "lancedbDefaultAllowed": false,
+    "lancedbMacosArm64Status": "pending-runtime-spike",
+    "requiresPlatformSmokeBeforeDefault": false,
+    "fallbackBackend": "sqlite-fts5",
+    "runtimeVectorStoreImplementation": "not-started"
+  },
+  "watcherPolicy": {
+    "trigger": "background-watcher",
+    "debounceMs": 5000,
+    "largeWorkspaceThresholdFiles": 10000,
+    "largeWorkspaceStrategy": "bounded-watch-plus-polling-fallback",
+    "perFileDescriptorWatch": false,
+    "maxOpenFileDescriptors": 256,
+    "pollingFallbackIntervalSeconds": 60,
+    "overflowBehavior": "fail-closed-user-visible",
+    "runtimeWatcherImplementation": "not-started"
+  },
+  "extractionPolicy": {
+    "documentFamily": "writer",
+    "inputFormat": "odt",
+    "textExtractionPath": "document-model",
+    "usesLibreOfficeImportFilter": true,
+    "usesDocumentModel": true,
+    "standalonePptParserAllowed": false,
+    "preservesSlideElementRefs": false,
+    "runtimeExtractionImplementation": "not-started"
+  },
+  "storagePolicy": {
+    "indexRoot": "user-document-directory",
+    "workspacePartition": "per-document",
+    "pathIdentity": "raw-path",
+    "colocatedWithUserDocuments": true,
+    "syncsWithUserDocuments": true,
+    "storesDocumentContent": true,
+    "runtimeStorageImplementation": "started"
+  },
+  "boundary": {
+    "serviceMode": "offline",
+    "publicEgress": false,
+    "localEmbedding": true,
+    "tenantPolicyRequired": true
+  },
+  "evidence": {
+    "required": ["document-snapshot", "index-update", "no-public-egress"],
+    "evidenceIds": ["ev-0000000000000e05", "ev-0000000000000e06"]
+  }
+}

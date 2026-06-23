@@ -1,0 +1,57 @@
+{
+  "id": "feishu-docs",
+  "version": "0.1.0",
+  "displayName": "Feishu Docs",
+  "vendor": "Feishu",
+  "trust": {
+    "source": "builtin",
+    "publisher": "kqoffice",
+    "manifestSha256": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "reviewState": "repo-reviewed",
+    "installScope": "builtin",
+    "signatureRequired": true,
+    "allowUnsigned": false
+  },
+  "operations": {
+    "mode": "read-only",
+    "allowedActions": ["read"],
+    "writeback": false,
+    "writeScopesAllowed": false,
+    "runtimeWriteImplementation": "not-started"
+  },
+  "auth": {
+    "type": "oauth2",
+    "scopes": ["docs:read"],
+    "tokenStorage": "keychain",
+    "flow": {
+      "strategy": "system-browser-loopback",
+      "embeddedWebView": false,
+      "callback": "loopback-127.0.0.1",
+      "runtimeAuthImplementation": "not-started"
+    },
+    "refreshPolicy": {
+      "strategy": "reauth-on-expiry",
+      "backgroundRefresh": false,
+      "storesRefreshToken": false,
+      "runtimeRefreshImplementation": "not-started"
+    }
+  },
+  "serviceModes": ["cloud"],
+  "scopes": [
+    {
+      "name": "read:docs",
+      "purpose": "Fetch approved cloud document content for prompt context.",
+      "dataClass": "internal"
+    }
+  ],
+  "rateLimit": {
+    "perMinute": 60,
+    "perDay": 5000
+  },
+  "evidence": {
+    "emit": true,
+    "category": "data-fetch"
+  },
+  "requiresTenantPolicy": false,
+  "cacheTTLSeconds": 300
+}

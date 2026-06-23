@@ -1,0 +1,30 @@
+{
+  "id": "aud-0000000000000d01",
+  "schemaVersion": "v3-audit-log-entry/0.1",
+  "timestamp": "2026-06-10T10:44:00Z",
+  "tenant": "acme",
+  "workspace": "legal",
+  "actor": {
+    "id": "user.li",
+    "role": "user"
+  },
+  "action": {
+    "type": "chat",
+    "target": "writer-sidebar",
+    "serviceMode": "private",
+    "dataClass": "internal",
+    "publicEgress": false
+  },
+  "policyDecision": "allow",
+  "approvalChain": [],
+  "redaction": {
+    "storesDocumentContent": false,
+    "promptStorage": "hash-only",
+    "hashAlgorithm": "sha256"
+  },
+  "chain": {
+    "algorithm": "sha256",
+    "previousHash": "GENESIS",
+    "entryHash": "4444444444444444444444444444444444444444444444444444444444444444"
+  }
+}

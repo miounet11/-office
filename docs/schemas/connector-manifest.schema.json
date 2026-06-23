@@ -1,0 +1,193 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://kqoffice.example.com/schemas/connector-manifest.schema.json",
+  "title": "V3 Connector Manifest",
+  "description": "Manifest schema for V3 connector layer (W2). Draft — not in V2 schema lock; covered by the V3 H8 connector contract harness.",
+  "type": "object",
+  "required": ["id", "version", "displayName", "trust", "operations", "auth", "serviceModes", "scopes", "rateLimit", "evidence"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{2,31}$",
+      "description": "Connector ID; lowercase, 3-32 chars, ASCII"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+      "description": "Semver MAJOR.MINOR.PATCH"
+    },
+    "displayName": {
+      "type": "string",
+      "maxLength": 64
+    },
+    "vendor": {
+      "type": "string",
+      "maxLength": 128
+    },
+    "trust": {
+      "type": "object",
+      "required": ["source", "publisher", "manifestSha256", "reviewState", "installScope", "signatureRequired", "allowUnsigned"],
+      "additionalProperties": false,
+      "properties": {
+        "source": {
+          "enum": ["builtin", "community", "enterprise-admin"]
+        },
+        "publisher": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]{2,63}$"
+        },
+        "manifestSha256": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "reviewState": {
+          "enum": ["repo-reviewed", "security-reviewed", "tenant-approved"]
+        },
+        "installScope": {
+          "enum": ["builtin", "user", "tenant"]
+        },
+        "signatureRequired": {
+          "type": "boolean"
+        },
+        "allowUnsigned": {
+          "const": false
+        }
+      }
+    },
+    "operations": {
+      "type": "object",
+      "required": ["mode", "allowedActions", "writeback", "writeScopesAllowed", "runtimeWriteImplementation"],
+      "additionalProperties": false,
+      "properties": {
+        "mode": {
+          "const": "read-only"
+        },
+        "allowedActions": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "const": "read"
+          }
+        },
+        "writeback": {
+          "const": false
+        },
+        "writeScopesAllowed": {
+          "const": false
+        },
+        "runtimeWriteImplementation": {
+          "const": "not-started"
+        }
+      }
+    },
+    "auth": {
+      "type": "object",
+      "required": ["type", "tokenStorage", "flow", "refreshPolicy"],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "enum": ["oauth2", "api-key", "none"]
+        },
+        "scopes": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string" }
+        },
+        "tokenStorage": {
+          "enum": ["keychain", "memory", "none"]
+        },
+        "flow": {
+          "type": "object",
+          "required": ["strategy", "embeddedWebView", "callback", "runtimeAuthImplementation"],
+          "additionalProperties": false,
+          "properties": {
+            "strategy": {
+              "enum": ["system-browser-loopback", "manual-secret-entry", "not-applicable"]
+            },
+            "embeddedWebView": {
+              "const": false
+            },
+            "callback": {
+              "enum": ["loopback-127.0.0.1", "manual-entry", "none"]
+            },
+            "runtimeAuthImplementation": {
+              "const": "not-started"
+            }
+          }
+        },
+        "refreshPolicy": {
+          "type": "object",
+          "required": ["strategy", "backgroundRefresh", "storesRefreshToken", "runtimeRefreshImplementation"],
+          "additionalProperties": false,
+          "properties": {
+            "strategy": {
+              "enum": ["reauth-on-expiry", "manual-rotate", "not-applicable"]
+            },
+            "backgroundRefresh": {
+              "const": false
+            },
+            "storesRefreshToken": {
+              "const": false
+            },
+            "runtimeRefreshImplementation": {
+              "const": "not-started"
+            }
+          }
+        }
+      }
+    },
+    "serviceModes": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "enum": ["private", "cloud"]
+      }
+    },
+    "scopes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["name", "purpose", "dataClass"],
+        "additionalProperties": false,
+        "properties": {
+          "name":      { "type": "string", "pattern": "^[a-z][a-z0-9:._-]{1,63}$" },
+          "purpose":   { "type": "string", "maxLength": 256 },
+          "dataClass": { "enum": ["public", "internal", "confidential", "secret"] }
+        }
+      }
+    },
+    "rateLimit": {
+      "type": "object",
+      "required": ["perMinute", "perDay"],
+      "additionalProperties": false,
+      "properties": {
+        "perMinute": { "type": "integer", "minimum": 1, "maximum": 600 },
+        "perDay":    { "type": "integer", "minimum": 1 }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "required": ["emit", "category"],
+      "additionalProperties": false,
+      "properties": {
+        "emit":     { "const": true },
+        "category": { "enum": ["data-fetch", "data-write", "auth", "metadata"] }
+      }
+    },
+    "requiresTenantPolicy": {
+      "type": "boolean",
+      "default": false
+    },
+    "cacheTTLSeconds": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 86400,
+      "default": 300
+    }
+  }
+}

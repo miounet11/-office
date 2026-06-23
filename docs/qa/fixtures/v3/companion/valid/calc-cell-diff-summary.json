@@ -1,0 +1,46 @@
+{
+  "id": "cds-1000000000000002",
+  "schemaVersion": "v3-companion-diff-summary/0.1",
+  "createdAt": "2026-06-10T12:13:00Z",
+  "taskId": "agt-1000000000000002",
+  "stepResultId": "agsr-1000000000000002",
+  "tenant": "acme",
+  "workspace": "finance-team",
+  "surface": "calc",
+  "diff": {
+    "summaryKind": "cell",
+    "applyPlanRef": "aprt-1000000000000002",
+    "actionKind": "CellAction",
+    "actionCount": 5,
+    "previewHash": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "humanSummary": "Normalize five date cells and preserve formulas.",
+    "storesDocumentContent": false,
+    "mobileParsesApplyPlan": false
+  },
+  "summary": {
+    "changedObjects": [
+      {
+        "kind": "cell",
+        "objectId": "Sheet1.B2",
+        "textHash": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+      }
+    ],
+    "riskLevel": "low",
+    "requiresApproval": true
+  },
+  "redaction": {
+    "hashAlgorithm": "sha256",
+    "snippetStorage": "hash-only",
+    "containsOriginalText": false
+  },
+  "mobile": {
+    "cacheMode": "diff-summary-plus-evidence",
+    "viewOnly": true,
+    "canEdit": false,
+    "offlineApproval": false
+  },
+  "evidence": {
+    "required": ["companion-diff-summary", "shadow-doc-diff", "apply-plan-runtime-validated", "evidence-record", "audit-log-entry"],
+    "evidenceIds": ["ev-1000000000000004"]
+  }
+}

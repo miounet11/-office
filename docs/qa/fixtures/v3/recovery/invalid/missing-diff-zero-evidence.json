@@ -1,0 +1,36 @@
+{
+  "id": "v3-crash-recovery-missing-evidence-001",
+  "wave": "w9",
+  "category": "crash-recovery",
+  "platform": "windows-x86_64",
+  "measurementMode": "target-contract",
+  "scenario": {
+    "documentSurface": "impress",
+    "crashTrigger": {
+      "mode": "sigkill",
+      "processState": "editing-unsaved"
+    },
+    "unsavedEdit": {
+      "documentId": "impress-roadshow-001",
+      "editKind": "slide-text-edit",
+      "minCharacters": 60,
+      "includesUnsavedState": true
+    },
+    "autosave": {
+      "intervalSeconds": 30,
+      "storage": "local-file-only",
+      "publicEgress": false
+    },
+    "recovery": {
+      "dialog": "RecoveryDialog",
+      "maxDialogSeconds": 30,
+      "oneClickRestore": true,
+      "diffExpected": "zero",
+      "dataLossTolerance": "none"
+    }
+  },
+  "evidence": {
+    "required": ["autosave-snapshot", "sigkill-marker", "recovery-dialog-shown", "restore-applied"],
+    "blocksGA": true
+  }
+}

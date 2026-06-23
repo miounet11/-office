@@ -1,0 +1,62 @@
+{
+  "id": "kbch-0000000000000d11",
+  "schemaVersion": "v3-knowledge-index-chunk/0.1",
+  "createdAt": "2026-06-10T11:03:00Z",
+  "workspace": "legal",
+  "source": {
+    "kind": "document",
+    "uri": "file:///workspace/legal/raw-text-leak.odt",
+    "sourceId": "doc-0000000000000d11",
+    "snapshotId": "doc-snap-0000000000000d11",
+    "contentHash": "1111111111111111111111111111111111111111111111111111111111111111",
+    "modifiedAt": "2026-06-10T11:01:00Z"
+  },
+  "chunk": {
+    "granularity": "paragraph",
+    "ordinal": 1,
+    "textHash": "2222222222222222222222222222222222222222222222222222222222222222",
+    "tokenCount": 24,
+    "language": "zh-CN",
+    "storesDocumentContent": true,
+    "contentText": "raw document content must never be embedded in the index chunk fixture"
+  },
+  "index": {
+    "scope": "per-workspace",
+    "retrievalMode": "fts",
+    "backend": "sqlite-fts5",
+    "embeddingModel": "none",
+    "embeddingDimensions": 0,
+    "topKMax": 10,
+    "incrementalUpdate": true
+  },
+  "modelAcquisitionPolicy": {
+    "modelFamily": "none",
+    "bundledByDefault": false,
+    "downloadPolicy": "not-required",
+    "userConfirmationRequired": false,
+    "fallbackWhenMissing": "sqlite-fts5",
+    "publicEgressByDefault": false,
+    "runtimeDownloaderImplementation": "not-started",
+    "runtimeEmbeddingImplementation": "not-started",
+    "silentDownloadAllowed": false
+  },
+  "vectorStorePolicy": {
+    "defaultBackend": "sqlite-fts5",
+    "selectedBackend": "sqlite-fts5",
+    "lancedbDefaultAllowed": false,
+    "lancedbMacosArm64Status": "pending-runtime-spike",
+    "requiresPlatformSmokeBeforeDefault": false,
+    "fallbackBackend": "sqlite-fts5",
+    "runtimeVectorStoreImplementation": "not-started"
+  },
+  "boundary": {
+    "serviceMode": "offline",
+    "publicEgress": false,
+    "localEmbedding": true,
+    "tenantPolicyRequired": true
+  },
+  "evidence": {
+    "required": ["document-snapshot", "index-update", "no-public-egress"],
+    "evidenceIds": ["ev-0000000000000d11", "ev-0000000000000d12"]
+  }
+}

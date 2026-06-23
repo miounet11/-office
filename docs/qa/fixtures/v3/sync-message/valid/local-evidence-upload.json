@@ -1,0 +1,39 @@
+{
+  "id": "sync-3000000000000001",
+  "schemaVersion": "v3-sync-message/0.1",
+  "createdAt": "2026-06-10T12:35:00Z",
+  "tenant": "acme",
+  "workspace": "risk-team",
+  "channel": "desktop-to-sync",
+  "direction": "upload",
+  "kind": "evidence-sync",
+  "payload": {
+    "refType": "evidence-record",
+    "refId": "ev-3000000000000001",
+    "hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "storesDocumentContent": false,
+    "containsRawPayload": false
+  },
+  "transport": {
+    "mode": "local-socket",
+    "endpointClass": "loopback",
+    "port": 17802,
+    "publicEgress": false,
+    "mTLSRequired": true
+  },
+  "ordering": {
+    "sequence": 1,
+    "idempotencyKey": "idem-3000000000000001",
+    "ackRequired": true
+  },
+  "boundary": {
+    "serviceMode": "offline",
+    "storesDocumentContent": false,
+    "hashOnly": true,
+    "defaultNoPublicEgress": true
+  },
+  "evidence": {
+    "required": ["localcloud-sync-message", "evidence-record", "audit-log-entry"],
+    "evidenceIds": ["ev-3000000000000002"]
+  }
+}

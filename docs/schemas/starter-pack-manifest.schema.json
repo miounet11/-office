@@ -1,0 +1,208 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://kqoffice.example.com/schemas/starter-pack-manifest.schema.json",
+  "title": "V3 Starter Pack Manifest",
+  "description": "Contract-first manifest for the V3 W9 starter pack. Draft; covered by the W9 starter-pack self-test before gated template assets or installer integration exist.",
+  "type": "object",
+  "required": ["id", "schemaVersion", "createdAt", "pack", "coverage", "templates", "installation", "evidence", "gates"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^spm-[0-9a-f]{16}$"
+    },
+    "schemaVersion": {
+      "const": "v3-starter-pack-manifest/0.1"
+    },
+    "createdAt": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+    },
+    "pack": {
+      "type": "object",
+      "required": ["name", "distribution", "embeddedDefault", "templateRoot", "localeStrategy"],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "const": "v3-starter-pack"
+        },
+        "distribution": {
+          "enum": ["embedded", "self-hosted-lan"]
+        },
+        "embeddedDefault": {
+          "const": true
+        },
+        "templateRoot": {
+          "const": "templates/v3-starter-pack/"
+        },
+        "localeStrategy": {
+          "enum": ["ui-locale-first", "bilingual-zh-en"]
+        }
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "required": ["templateCount", "businessScenarioCount", "perSurfaceCount", "patchSmokeRequired"],
+      "additionalProperties": false,
+      "properties": {
+        "templateCount": {
+          "const": 30
+        },
+        "businessScenarioCount": {
+          "const": 10
+        },
+        "perSurfaceCount": {
+          "type": "object",
+          "required": ["writer", "calc", "impress"],
+          "additionalProperties": false,
+          "properties": {
+            "writer": {
+              "const": 10
+            },
+            "calc": {
+              "const": 10
+            },
+            "impress": {
+              "const": 10
+            }
+          }
+        },
+        "patchSmokeRequired": {
+          "const": true
+        }
+      }
+    },
+    "templates": {
+      "type": "array",
+      "minItems": 30,
+      "maxItems": 30,
+      "items": {
+        "type": "object",
+        "required": ["id", "surface", "scenario", "path", "titleKey", "localeReady", "samplePatch", "dataBoundary"],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^tpl-(writer|calc|impress)-[a-z0-9-]+$"
+          },
+          "surface": {
+            "enum": ["writer", "calc", "impress"]
+          },
+          "scenario": {
+            "enum": ["meeting-notes", "okr", "prd", "weekly-report", "contract-brief", "budget", "sales-dashboard", "project-gantt", "roadshow", "retrospective"]
+          },
+          "path": {
+            "type": "string",
+            "pattern": "^templates/v3-starter-pack/(writer|calc|impress)/[a-z0-9-]+\\.(ott|ots|otp)$"
+          },
+          "titleKey": {
+            "type": "string",
+            "pattern": "^starter-pack\\.[a-z0-9-]+$"
+          },
+          "localeReady": {
+            "type": "array",
+            "minItems": 2,
+            "uniqueItems": true,
+            "items": {
+              "enum": ["zh-CN", "en-US", "ja-JP", "zh-TW"]
+            }
+          },
+          "samplePatch": {
+            "type": "object",
+            "required": ["required", "actionKind", "mustSucceed", "requiresUndo", "evidenceRequired"],
+            "additionalProperties": false,
+            "properties": {
+              "required": {
+                "const": true
+              },
+              "actionKind": {
+                "enum": ["ParagraphAction", "CellAction", "SlideElementAction"]
+              },
+              "mustSucceed": {
+                "const": true
+              },
+              "requiresUndo": {
+                "const": true
+              },
+              "evidenceRequired": {
+                "const": true
+              }
+            }
+          },
+          "dataBoundary": {
+            "type": "object",
+            "required": ["storesDocumentContent", "publicEgress", "localFirst"],
+            "additionalProperties": false,
+            "properties": {
+              "storesDocumentContent": {
+                "const": false
+              },
+              "publicEgress": {
+                "const": false
+              },
+              "localFirst": {
+                "const": true
+              }
+            }
+          }
+        }
+      }
+    },
+    "installation": {
+      "type": "object",
+      "required": ["installable", "requiresNetwork", "w8SelfHostedCompatible"],
+      "additionalProperties": false,
+      "properties": {
+        "installable": {
+          "const": true
+        },
+        "requiresNetwork": {
+          "const": false
+        },
+        "w8SelfHostedCompatible": {
+          "const": true
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "required": ["required", "evidenceIds"],
+      "additionalProperties": false,
+      "properties": {
+        "required": {
+          "type": "array",
+          "minItems": 4,
+          "uniqueItems": true,
+          "items": {
+            "enum": ["starter-pack-manifest", "template-install", "sample-patch-result", "evidence-record", "v2-regression-green"]
+          }
+        },
+        "evidenceIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^ev-[0-9a-f]{16}$"
+          }
+        }
+      }
+    },
+    "gates": {
+      "type": "object",
+      "required": ["blocksGA", "requiresV2RegressionGreen", "runtimeImplementation"],
+      "additionalProperties": false,
+      "properties": {
+        "blocksGA": {
+          "const": true
+        },
+        "requiresV2RegressionGreen": {
+          "const": true
+        },
+        "runtimeImplementation": {
+          "const": "not-started"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "id": "cds-1000000000000003",
+  "schemaVersion": "v3-companion-diff-summary/0.1",
+  "createdAt": "2026-06-10T12:14:00Z",
+  "taskId": "agt-1000000000000003",
+  "stepResultId": "agsr-1000000000000003",
+  "tenant": "acme",
+  "workspace": "sales-team",
+  "surface": "impress",
+  "diff": {
+    "summaryKind": "slide",
+    "applyPlanRef": "aprt-1000000000000003",
+    "actionKind": "SlideElementAction",
+    "actionCount": 4,
+    "previewHash": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+    "humanSummary": "Condense four slide bullets into executive wording.",
+    "storesDocumentContent": false,
+    "mobileParsesApplyPlan": false
+  },
+  "summary": {
+    "changedObjects": [
+      {
+        "kind": "slide",
+        "objectId": "slide-7-title",
+        "textHash": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+      }
+    ],
+    "riskLevel": "high",
+    "requiresApproval": true
+  },
+  "redaction": {
+    "hashAlgorithm": "sha256",
+    "snippetStorage": "redacted-summary",
+    "containsOriginalText": false
+  },
+  "mobile": {
+    "cacheMode": "diff-summary-plus-evidence",
+    "viewOnly": true,
+    "canEdit": false,
+    "offlineApproval": false
+  },
+  "evidence": {
+    "required": ["companion-diff-summary", "shadow-doc-diff", "apply-plan-runtime-validated", "evidence-record", "audit-log-entry"],
+    "evidenceIds": ["ev-1000000000000005"]
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "id": "onb-6000000000000001",
+  "schemaVersion": "v3-onboarding-flow/0.1",
+  "createdAt": "2026-06-10T13:10:00Z",
+  "locale": "zh-CN",
+  "edition": "personal-free",
+  "durationBudget": {
+    "maxMinutes": 5,
+    "expectedMinutes": 5,
+    "fromDownloadToPatch": true
+  },
+  "steps": [
+    {"order": 1, "kind": "welcome", "titleKey": "onboarding.welcome", "required": true, "maxSeconds": 30, "evidenceRequired": true},
+    {"order": 2, "kind": "local-model", "titleKey": "onboarding.local-model", "required": true, "maxSeconds": 75, "evidenceRequired": true},
+    {"order": 3, "kind": "connector", "titleKey": "onboarding.connector", "required": false, "maxSeconds": 45, "evidenceRequired": true},
+    {"order": 4, "kind": "privacy", "titleKey": "onboarding.privacy", "required": true, "maxSeconds": 60, "evidenceRequired": true},
+    {"order": 5, "kind": "demo-patch", "titleKey": "onboarding.demo-patch", "required": true, "maxSeconds": 75, "evidenceRequired": true},
+    {"order": 6, "kind": "welcome", "titleKey": "onboarding.payment", "required": true, "maxSeconds": 30, "evidenceRequired": true}
+  ],
+  "privacy": {
+    "noSilentUpload": true,
+    "localFirst": true,
+    "explicitCloudOptIn": true,
+    "storesDocumentContent": false
+  },
+  "localModel": {
+    "mode": "select-or-skip",
+    "provider": "ollama-local",
+    "canSkip": true,
+    "defaultModel": "llama3.2:3b",
+    "offlineCapable": true
+  },
+  "connector": {
+    "required": false,
+    "maxInitialConnectors": 1,
+    "optionalKinds": ["local-fs"],
+    "requiresEvidence": true
+  },
+  "demoPatch": {
+    "sampleDocument": "starter-writer-brief",
+    "surfaces": ["writer"],
+    "mustSucceed": true,
+    "requiresUndo": true,
+    "resultEvidence": true
+  },
+  "evidence": {
+    "required": ["onboarding-flow", "evidence-record", "local-model-choice", "privacy-confirmation", "demo-patch-result"],
+    "evidenceIds": ["ev-6000000000000001"]
+  },
+  "gates": {
+    "blocksGA": true,
+    "requiresV2RegressionGreen": true,
+    "runtimeImplementation": "not-started"
+  }
+}

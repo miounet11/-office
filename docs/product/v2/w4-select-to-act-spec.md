@@ -383,3 +383,94 @@ Drift is caught by `tests/v2-inline-action-request-schema-test.sh`
 - [ ] Calc / Impress 浮窗同样 work
 - [ ] UITest 全部 pass
 - [ ] V1.5 8/9 beta gate 不退化
+
+## Popover Invocation Contract (L102 入册, design-only)
+
+> 这一章是 **接口冻结**，不是 GUI 实装路径，不入 SRCDIR。
+> 目的是在 W4 scope 授权之前，把"selection → popover 触发 → action 选择 → ApplyPlan 提交"这一条核心链路的协议表达式锁下来；scope 放行后只做 VCL 层实现。
+> 这一条契约同时被 W5 任务"awaiting-review"复用（W5 spec §"通知" + diff review 浮窗与本 popover 共享 entry surface）。
+
+### 1. Invocation 三态
+
+popover 三种触发态，任意一态都必须能 100% 复现到 H5 inline-action-request fixture：
+
+| 触发态 | 入口 | 默认 capability（W1 矩阵） | 备注 |
+|---|---|---|---|
+| `manual` | 用户选区 + 鼠标右键 / Cmd+. | 不预选 | 用户手动主动；spec §"全局快捷键" |
+| `auto-hover` | 选区稳定 ≥ 400ms 且超过 minLen 字符 | 不预选 | 默认 off，需 Settings → AI 开启 |
+| `programmatic` | 上层调用 `SelectToActPopover::invoke(req)` | 由 caller 指定 | W5 cowork "awaiting-review" 走这条 |
+
+三态在 `inline-action-request.schema.json` 里的差异 = `triggerSource` 枚举（schema v1 当前为 3 token：`manual | auto-hover | programmatic`，与本表对齐）。
+
+### 2. 输入契约（caller → popover）
+
+popover 接收的 request 必须能由 `inline-action-request.schema.json` (H5 full-enforce) 完整描述。即：
+
+```
+InlineActionRequest {
+  surface          : "writer" | "calc" | "impress"       // 与 W4 三 surface 对齐
+  triggerSource    : "manual" | "auto-hover" | "programmatic"
+  selection        : ParagraphRef | CellRangeRef | SlideElementRef
+                     // surface 决定子类型；3 套 ref schema 在 SRCDIR 已落
+  candidateActions : [TokenString, …]
+                     // 子集 of ParagraphAction(7) | CellAction(5) | SlideElementAction(4)
+                     // 空数组 = popover 自决（按 surface 默认全集展示）
+  evidenceCorrelationId? : string
+                     // W5 cowork 任务回触发时必填，闭合 evidence 链
+}
+```
+
+不变量：
+- `surface` 与 `selection` 子类型必须一致；不一致 = caller 错误，popover 拒绝调用并返回 `policy-denied` evidence。
+- `candidateActions` 元素必须在对应 surface 的 W4 token 集内（见 spec §"Writer/Calc/Impress 浮窗动作" 章节）。
+- `evidenceCorrelationId` 如果填了，必须能在 evidence store 里 join 到一个未关闭的 cowork task；否则视同没填，popover 自启新 evidence 链。
+
+### 3. 输出契约（popover → caller）
+
+popover 返回（点击 action 或 ESC 关闭）：
+
+```
+PopoverOutcome {
+  decision       : "applied" | "rejected" | "cancelled"
+  chosenAction?  : TokenString   // decision=applied 时必填
+  applyPlanRef?  : PlanIdString  // decision=applied 时必填，对应 H7 apply-plan-runtime
+  evidenceId     : string        // 始终必填，包括 cancelled
+}
+```
+
+不变量：
+- `decision=cancelled`（ESC / 焦点丢） → 不触发 W3 ApplyPlan，不调 W1 provider，但仍记 evidence（用于审计 user-side abandonment 率）。
+- `decision=rejected`（用户看了候选 + 显式叉掉） → 同 cancelled，但 evidence reason 字段标 `user-rejected`，与"无意取消"区分。
+- `decision=applied` → caller 必须立即在 ≤ 100ms 内把 `applyPlanRef` 派给 W3 `SwDocShell::applyDiagnosticsPlan`（或对应 Calc/Impress entry），不允许中间用户再编辑文档。否则 plan 失效（`doc_snapshot_hash` 不一致），W3 会 reject。
+
+### 4. 时序约束
+
+```
+T+0     : caller invoke(req)
+T+50ms  : popover frame 必须可见（VCL render budget）
+T+50ms..选 action : 用户停留任意时长（无超时）
+T+选action+100ms : caller 必须 dispatch applyPlanRef → W3
+T+5s    : 如果 5s 内 W3 没回 applied/failed，evidence 标 stale，UI 可降级到 progress indicator
+```
+
+`auto-hover` 模式额外：触发到 frame 可见之间允许 200ms 渲染 budget（比 manual 宽松，因为不需要响应用户操作）。
+
+### 5. 与 W3 / W5 的耦合点
+
+- **W3 wiring**：popover applied 路径 = `ApplyPlanValidator.validate(plan)` → `SwDocShell::applyDiagnosticsPlan(plan)`。当前 D1 阻 wiring，所以 popover 也只能 stub。W3 spec §"Apply Runtime" 的 7 patch kind 是 popover applied → W3 这一条 hop 的唯一 payload schema。
+- **W5 wiring**：`programmatic` 触发态由 W5 cowork "awaiting-review" task 调用。popover 不知道 W5 的存在，只看到一个普通 InlineActionRequest with `evidenceCorrelationId` 已填。W5 不该往 popover 里偷塞 task-specific UI；如果 W5 需要展示任务上下文（"周报第 3 段，置信度 0.82"），由 caller 在 popover 外的容器里显示。
+
+### 6. 不在本契约内（避免范围爆炸）
+
+- VCL widget 实现层（gated W4 scope）
+- popover 视觉规范（spacing / 配色 / animation） — 设计稿层面，不在 spec
+- popover 多语言 strings — locale 层面，与 W1.G/W2.G 一起算
+- popover 与系统级 menubar 焦点抢夺策略 — VCL 集成挑战 §"VCL 集成挑战与方案" 已记，本契约不重复
+
+### 7. Gate
+
+- W4 source/link：sc/sd `S{C,D}_DLLPUBLIC` 修复后才能跑通 popover 信号路径单元测试。
+- W4 scope：popover VCL 实装、selection 监听、按钮触发 ApplyPlan 落地都在 W4 scope 范围内。
+- D1：popover applied → W3 wiring 那一 hop 受 D1 阻。
+
+本契约本身是 docs/product/v2 spec 增量，不带任何代码改动。落地顺序建议：W4 source/link 解开 → 跑通 popover 信号 cppunit → W4 scope 解开 → VCL 实装 → D1 解开 → 接 W3 → 端到端 UITest。

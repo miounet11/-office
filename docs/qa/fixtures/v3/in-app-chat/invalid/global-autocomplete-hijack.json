@@ -1,0 +1,90 @@
+{
+  "id": "chat-global-autocomplete-hijack",
+  "schemaVersion": 1,
+  "scenarioType": "document-chat",
+  "surface": "writer",
+  "entry": {
+    "shortcut": "Cmd+Shift+K",
+    "route": "command-palette-chat-fallback",
+    "container": "sfx2-sidebar",
+    "directAcceleratorRegistration": false,
+    "standaloneApp": false
+  },
+  "context": {
+    "defaultScope": "none",
+    "explicitMentions": ["@selection"],
+    "historyScope": "per-doc-local",
+    "storesCloudHistory": false
+  },
+  "mentionsUi": {
+    "trigger": "@",
+    "scope": "global-office",
+    "suggestions": ["@selection", "@doc", "@connector:<id>"],
+    "officeAutocompletePolicy": "intercept-existing-controls",
+    "hijacksGlobalAutocomplete": true,
+    "requiresExplicitCommit": true,
+    "connectorSuggestionsRequireW2Manifest": true,
+    "unknownConnectorSuggestions": false,
+    "rawPreviewContent": false,
+    "rawContentInFixture": false,
+    "runtimeParserImplementation": "not-started"
+  },
+  "history": {
+    "scope": "per-doc-local",
+    "storage": "local-sqlite-sidecar",
+    "documentBinding": "document-id-hash",
+    "cloudSync": false,
+    "globalIndex": false,
+    "crossDocumentRestore": false,
+    "rawContentInFixture": false,
+    "requiresUserClearControl": true,
+    "deleteWithDocument": true
+  },
+  "provider": {
+    "usesV2Provider": true,
+    "serviceMode": "offline",
+    "streaming": "chunk"
+  },
+  "streamingUi": {
+    "source": "v2-provider-chunk",
+    "states": ["idle", "requesting", "streaming", "awaiting-approval", "applied", "failed", "cancelled"],
+    "appendOnlyDuringStream": true,
+    "mainDocumentUnchangedWhileStreaming": true,
+    "cancelSupported": true,
+    "retrySupported": true,
+    "partialChunksPersisted": false,
+    "chunkContentInFixture": false,
+    "evidenceOnTerminalState": true
+  },
+  "output": {
+    "kind": "apply-plan",
+    "actionKind": "ParagraphAction",
+    "applyPlanRuntimeValidation": true,
+    "v2TokenLock": {
+      "ParagraphAction": 7,
+      "CellAction": 5,
+      "SlideElementAction": 4
+    },
+    "rendering": {
+      "format": "markdown-subset",
+      "renderer": "native-rich-text",
+      "allowedBlocks": ["paragraph", "heading", "list", "code-fence", "table"],
+      "webView": false,
+      "allowsRawHtml": false,
+      "allowsRemoteImages": false
+    }
+  },
+  "approval": {
+    "humanRequired": true,
+    "mainDocumentUnchangedUntilApproval": true
+  },
+  "evidence": {
+    "usesV2EvidenceRecord": true,
+    "storesPromptContent": false,
+    "localOnly": true
+  },
+  "gates": {
+    "runtimeImplementation": "not-started",
+    "requiresExplicitUserAuthorization": true
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "id": "v3-regression-v2-sweep-downgrade-001",
+  "wave": "regression",
+  "category": "regression",
+  "requires": {
+    "v15StrictRoundtrip": "27/27",
+    "v2Sweep": "H1-H7",
+    "v2FixtureFloor": 36
+  },
+  "command": "bash bin/v2-harness-sweep.sh --with-fixtures",
+  "expected": {
+    "status": "passed",
+    "fixtureFailures": 0
+  }
+}

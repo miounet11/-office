@@ -1,0 +1,55 @@
+{
+  "id": "bad-offline-mode",
+  "version": "0.1.0",
+  "displayName": "Bad Offline Mode",
+  "trust": {
+    "source": "community",
+    "publisher": "community-docs",
+    "manifestSha256": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+    "reviewState": "security-reviewed",
+    "installScope": "user",
+    "signatureRequired": true,
+    "allowUnsigned": false
+  },
+  "operations": {
+    "mode": "read-only",
+    "allowedActions": ["read"],
+    "writeback": false,
+    "writeScopesAllowed": false,
+    "runtimeWriteImplementation": "not-started"
+  },
+  "auth": {
+    "type": "none",
+    "tokenStorage": "none",
+    "flow": {
+      "strategy": "not-applicable",
+      "embeddedWebView": false,
+      "callback": "none",
+      "runtimeAuthImplementation": "not-started"
+    },
+    "refreshPolicy": {
+      "strategy": "not-applicable",
+      "backgroundRefresh": false,
+      "storesRefreshToken": false,
+      "runtimeRefreshImplementation": "not-started"
+    }
+  },
+  "serviceModes": ["offline"],
+  "scopes": [
+    {
+      "name": "read:docs",
+      "purpose": "Invalid because offline mode must disable connectors.",
+      "dataClass": "public"
+    }
+  ],
+  "rateLimit": {
+    "perMinute": 60,
+    "perDay": 1000
+  },
+  "evidence": {
+    "emit": true,
+    "category": "data-fetch"
+  },
+  "requiresTenantPolicy": false,
+  "cacheTTLSeconds": 300
+}

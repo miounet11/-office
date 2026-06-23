@@ -1,0 +1,7 @@
+{
+  "patchType": "CellAction",
+  "tokenCount": 5,
+  "inlineAction": "format-change",
+  "requiredEvidence": ["provider-call", "inline-action-request", "user-approval"],
+  "mustPreserveUndo": true
+}

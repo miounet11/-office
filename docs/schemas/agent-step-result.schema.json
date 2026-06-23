@@ -1,0 +1,140 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://kqoffice.example.com/schemas/agent-step-result.schema.json",
+  "title": "V3 Agent Step Result",
+  "description": "Per-step result contract for V3 W6 Plan-Act-Observe. Draft; covered by the W6 agent-step-result-state self-test before gated agent runtime implementation exists.",
+  "type": "object",
+  "required": ["id", "schemaVersion", "taskId", "stepIndex", "kind", "status", "startedAt", "finishedAt", "output", "sandbox", "policy", "evidence"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^agsr-[0-9a-f]{16}$"
+    },
+    "schemaVersion": {
+      "const": "v3-agent-step-result/0.1"
+    },
+    "taskId": {
+      "type": "string",
+      "pattern": "^agt-[0-9a-f]{16}$"
+    },
+    "stepIndex": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 24
+    },
+    "kind": {
+      "enum": ["fetch", "query", "transform", "patch", "review"]
+    },
+    "status": {
+      "enum": ["completed", "failed", "cancelled"]
+    },
+    "startedAt": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+    },
+    "finishedAt": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+    },
+    "output": {
+      "type": "object",
+      "required": ["kind", "schemaRef", "refId", "storesDocumentContent", "applyPlanRuntimeValidated"],
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": ["connector-payload", "knowledge-chunks", "analysis-summary", "apply-plan-runtime", "approval-decision", "none"]
+        },
+        "schemaRef": {
+          "enum": ["connector-manifest", "knowledge-index-result", "agent-step-result", "apply-plan-runtime", "user-approval", "none"]
+        },
+        "refId": {
+          "type": "string",
+          "pattern": "^(conn|kbr|agsr|aprt|appr|none)-[0-9a-f]{16}$"
+        },
+        "storesDocumentContent": {
+          "const": false
+        },
+        "applyPlanRuntimeValidated": {
+          "type": "boolean"
+        }
+      }
+    },
+    "sandbox": {
+      "type": "object",
+      "required": ["mode", "branchId", "mainDocumentUnchanged", "failureIsolation"],
+      "additionalProperties": false,
+      "properties": {
+        "mode": {
+          "const": "shadow-doc"
+        },
+        "branchId": {
+          "type": "string",
+          "pattern": "^shadow-[0-9a-f]{16}$"
+        },
+        "mainDocumentUnchanged": {
+          "const": true
+        },
+        "failureIsolation": {
+          "const": "discard-step-branch"
+        }
+      }
+    },
+    "policy": {
+      "type": "object",
+      "required": ["preflight", "auditLog", "decision"],
+      "additionalProperties": false,
+      "properties": {
+        "preflight": {
+          "const": true
+        },
+        "auditLog": {
+          "const": true
+        },
+        "decision": {
+          "enum": ["allow", "deny", "require-approval"]
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "required": ["required", "evidenceIds"],
+      "additionalProperties": false,
+      "properties": {
+        "required": {
+          "type": "array",
+          "minItems": 3,
+          "uniqueItems": true,
+          "items": {
+            "enum": ["policy-decision", "audit-log-entry", "evidence-record", "shadow-doc-diff", "apply-plan-runtime-validated", "user-approval", "cancel-request", "failure-record"]
+          }
+        },
+        "evidenceIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^ev-[0-9a-f]{16}$"
+          }
+        }
+      }
+    },
+    "failure": {
+      "type": "object",
+      "required": ["code", "recoverable", "retryAllowed"],
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "enum": ["none", "provider-error", "policy-denied", "schema-invalid", "user-cancelled"]
+        },
+        "recoverable": {
+          "type": "boolean"
+        },
+        "retryAllowed": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}

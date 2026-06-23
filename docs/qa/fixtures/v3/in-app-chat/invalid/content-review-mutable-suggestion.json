@@ -1,0 +1,219 @@
+{
+  "id": "content-review-mutable-suggestion",
+  "schemaVersion": 1,
+  "scenarioType": "document-chat",
+  "surface": "writer",
+  "entry": {
+    "shortcut": "Cmd+Shift+K",
+    "route": "command-palette-chat-fallback",
+    "container": "sfx2-sidebar",
+    "directAcceleratorRegistration": false,
+    "standaloneApp": false
+  },
+  "context": {
+    "defaultScope": "none",
+    "explicitMentions": [
+      "@selection"
+    ],
+    "historyScope": "per-doc-local",
+    "storesCloudHistory": false
+  },
+  "mentionsUi": {
+    "trigger": "@",
+    "scope": "chat-input-only",
+    "suggestions": [
+      "@selection",
+      "@doc",
+      "@connector:<id>"
+    ],
+    "officeAutocompletePolicy": "delegate-existing-controls",
+    "hijacksGlobalAutocomplete": false,
+    "requiresExplicitCommit": true,
+    "connectorSuggestionsRequireW2Manifest": true,
+    "unknownConnectorSuggestions": false,
+    "rawPreviewContent": false,
+    "rawContentInFixture": false,
+    "runtimeParserImplementation": "not-started"
+  },
+  "history": {
+    "scope": "per-doc-local",
+    "storage": "local-sqlite-sidecar",
+    "documentBinding": "document-id-hash",
+    "cloudSync": false,
+    "globalIndex": false,
+    "crossDocumentRestore": false,
+    "rawContentInFixture": false,
+    "requiresUserClearControl": true,
+    "deleteWithDocument": true
+  },
+  "provider": {
+    "usesV2Provider": true,
+    "serviceMode": "offline",
+    "streaming": "chunk"
+  },
+  "streamingUi": {
+    "source": "v2-provider-chunk",
+    "states": [
+      "idle",
+      "requesting",
+      "streaming",
+      "awaiting-approval",
+      "applied",
+      "failed",
+      "cancelled"
+    ],
+    "appendOnlyDuringStream": true,
+    "mainDocumentUnchangedWhileStreaming": true,
+    "cancelSupported": true,
+    "retrySupported": true,
+    "partialChunksPersisted": false,
+    "chunkContentInFixture": false,
+    "evidenceOnTerminalState": true
+  },
+  "workspaceUi": {
+    "shell": "ai-workspace-sidebar",
+    "container": "sfx2-sidebar",
+    "interactionModel": "conversation-plus-progress",
+    "conversationPanelVisible": true,
+    "taskProgress": {
+      "visible": true,
+      "states": [
+        "pending",
+        "running",
+        "awaiting-review",
+        "applied",
+        "failed",
+        "cancelled"
+      ],
+      "stepListVisible": true,
+      "evidenceLinksVisible": true
+    },
+    "reviewSurface": {
+      "visible": true,
+      "supportsContentReview": true,
+      "supportsFormattingReview": true,
+      "usesDiffReview": true,
+      "requiresEvidenceLink": true
+    },
+    "contentReview": {
+      "scope": [
+        "selection",
+        "document-section",
+        "connector-result",
+        "knowledge-index-result",
+        "evidence-record",
+        "task-step"
+      ],
+      "reviewMode": "direct-rewrite",
+      "visible": true,
+      "usesDiffReview": true,
+      "requiresEvidenceLink": true,
+      "requiresHumanApproval": false,
+      "mainDocumentUnchangedUntilApproval": false,
+      "rawContentInFixture": false,
+      "suggestionContentInFixture": false,
+      "failureBehavior": "fail-closed-user-visible",
+      "runtimeContentReviewImplementation": "not-started"
+    },
+    "layoutPreview": {
+      "visible": true,
+      "mode": "before-after-preview",
+      "surfaces": [
+        "writer",
+        "calc",
+        "impress"
+      ],
+      "mainDocumentUnchangedUntilApproval": true
+    },
+    "formattingReview": {
+      "scope": [
+        "paragraph-style",
+        "character-style",
+        "table-layout",
+        "cell-format",
+        "slide-layout"
+      ],
+      "reviewMode": "before-after-layout-diff",
+      "visible": true,
+      "usesDiffReview": true,
+      "requiresEvidenceLink": true,
+      "requiresHumanApproval": true,
+      "mainDocumentUnchangedUntilApproval": true,
+      "rawContentInFixture": false,
+      "previewContentInFixture": false,
+      "failureBehavior": "fail-closed-user-visible",
+      "runtimeFormattingImplementation": "not-started"
+    },
+    "contentOpeners": {
+      "supportedTypes": [
+        "document",
+        "selection",
+        "connector-result",
+        "knowledge-index-result",
+        "evidence-record",
+        "task-step"
+      ],
+      "opensIn": [
+        "main-document-window",
+        "sidebar-preview",
+        "diff-review"
+      ],
+      "rawContentInFixture": false,
+      "runtimeOpenImplementation": "not-started",
+      "routePolicy": {
+        "document": "main-document-window",
+        "selection": "sidebar-preview",
+        "connector-result": "sidebar-preview",
+        "knowledge-index-result": "sidebar-preview",
+        "evidence-record": "sidebar-preview",
+        "task-step": "diff-review"
+      },
+      "requiresEvidenceLink": true,
+      "readOnlyPreview": true,
+      "mainDocumentMutationAllowed": false,
+      "openFailureBehavior": "fail-closed-user-visible"
+    },
+    "stylePolicy": {
+      "denseUtilityUi": true,
+      "usesNativeControls": true,
+      "modalChatOnly": false
+    }
+  },
+  "output": {
+    "kind": "apply-plan",
+    "actionKind": "ParagraphAction",
+    "applyPlanRuntimeValidation": true,
+    "v2TokenLock": {
+      "ParagraphAction": 7,
+      "CellAction": 5,
+      "SlideElementAction": 4
+    },
+    "rendering": {
+      "format": "markdown-subset",
+      "renderer": "native-rich-text",
+      "allowedBlocks": [
+        "paragraph",
+        "heading",
+        "list",
+        "code-fence",
+        "table"
+      ],
+      "webView": false,
+      "allowsRawHtml": false,
+      "allowsRemoteImages": false
+    }
+  },
+  "approval": {
+    "humanRequired": true,
+    "mainDocumentUnchangedUntilApproval": true
+  },
+  "evidence": {
+    "usesV2EvidenceRecord": true,
+    "storesPromptContent": false,
+    "localOnly": true
+  },
+  "gates": {
+    "runtimeImplementation": "not-started",
+    "requiresExplicitUserAuthorization": true
+  }
+}

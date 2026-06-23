@@ -1,0 +1,39 @@
+{
+  "id": "sync-4000000000000004",
+  "schemaVersion": "v3-sync-message/0.1",
+  "createdAt": "2026-06-10T12:42:00Z",
+  "tenant": "acme",
+  "workspace": "risk-team",
+  "channel": "companion-to-sync",
+  "direction": "upload",
+  "kind": "approval-decision-sync",
+  "payload": {
+    "refType": "companion-approval-request",
+    "refId": "car-4000000000000001",
+    "hash": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+    "storesDocumentContent": false,
+    "containsRawPayload": true
+  },
+  "transport": {
+    "mode": "lan-grpc",
+    "endpointClass": "private-lan",
+    "port": 17802,
+    "publicEgress": false,
+    "mTLSRequired": true
+  },
+  "ordering": {
+    "sequence": 4,
+    "idempotencyKey": "idem-4000000000000004",
+    "ackRequired": true
+  },
+  "boundary": {
+    "serviceMode": "private",
+    "storesDocumentContent": false,
+    "hashOnly": true,
+    "defaultNoPublicEgress": true
+  },
+  "evidence": {
+    "required": ["localcloud-sync-message", "evidence-record", "audit-log-entry", "companion-approval-request"],
+    "evidenceIds": ["ev-4000000000000005"]
+  }
+}

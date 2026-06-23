@@ -1,0 +1,23 @@
+{
+  "id": "errux-3333333333333333",
+  "schemaVersion": "v3-error-recovery-ux/0.1",
+  "createdAt": "2026-06-10T16:00:00Z",
+  "policy": {
+    "presentation": "inline-guidance",
+    "nextStepRequired": true,
+    "evidenceOpenable": false,
+    "deadEndAllowed": false,
+    "mainDocumentUnchangedUntilApply": true,
+    "humanReadableCauseRequired": true
+  },
+  "scenarios": [],
+  "evidence": {
+    "required": ["error-recovery-ux", "inline-guidance", "next-step-action", "evidence-record"],
+    "evidenceIds": ["ev-3300000000000001"]
+  },
+  "gates": {
+    "blocksGA": true,
+    "requiresV2RegressionGreen": true,
+    "runtimeImplementation": "not-started"
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://kqoffice.example.com/schemas/eval-regression-fixture.schema.json",
+  "title": "V3 Eval Regression Fixture",
+  "description": "Regression eval fixture contract for V3 W5/H9. Draft; covered by tests/v3-eval-baseline-test.sh before runtime scoring exists.",
+  "type": "object",
+  "required": ["id", "wave", "category", "requires", "command", "expected"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^v3-regression-[a-z0-9-]+-[0-9]{3}$"
+    },
+    "wave": {
+      "const": "regression"
+    },
+    "category": {
+      "const": "regression"
+    },
+    "requires": {
+      "type": "object",
+      "required": ["v15StrictRoundtrip", "v2Sweep", "v2FixtureFloor"],
+      "additionalProperties": false,
+      "properties": {
+        "v15StrictRoundtrip": {
+          "const": "27/27"
+        },
+        "v2Sweep": {
+          "const": "H1-H10"
+        },
+        "v2FixtureFloor": {
+          "type": "integer",
+          "minimum": 36
+        }
+      }
+    },
+    "command": {
+      "const": "bash bin/v2-harness-sweep.sh --with-fixtures"
+    },
+    "expected": {
+      "type": "object",
+      "required": ["status", "fixtureFailures"],
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "const": "passed"
+        },
+        "fixtureFailures": {
+          "const": 0
+        }
+      }
+    }
+  }
+}

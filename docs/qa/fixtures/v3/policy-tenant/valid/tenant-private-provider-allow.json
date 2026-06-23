@@ -1,0 +1,62 @@
+{
+  "tenantContext": {
+    "id": "tctx-0000000000000f02",
+    "schemaVersion": "v3-tenant-context/0.1",
+    "createdAt": "2026-06-10T11:41:00Z",
+    "tenant": {
+      "id": "beta-corp",
+      "name": "Beta Corp",
+      "plan": "team"
+    },
+    "workspace": {
+      "id": "research",
+      "name": "Research Workspace",
+      "dataClasses": ["public", "internal"]
+    },
+    "users": [
+      {
+        "id": "user.wang",
+        "role": "user",
+        "status": "active"
+      }
+    ],
+    "dataBoundary": {
+      "defaultServiceMode": "private",
+      "allowedServiceModes": ["private"],
+      "publicEgressDefault": false,
+      "tenantIsolation": true,
+      "localOnlyAdminPanel": true
+    },
+    "audit": {
+      "appendOnly": true,
+      "hashChainRequired": true,
+      "sink": "local-file",
+      "sinkPort": 17803
+    }
+  },
+  "policyRule": {
+    "id": "pol-allow-private-provider",
+    "schemaVersion": "v3-policy-rule/0.1",
+    "priority": 100,
+    "phase": "pre-flight",
+    "effect": "allow",
+    "when": {
+      "tenants": ["beta-corp"],
+      "serviceModes": ["private"],
+      "actorRoles": ["user", "admin"],
+      "targetTypes": ["provider"],
+      "dataClasses": ["public", "internal"]
+    },
+    "enforcement": {
+      "blocksAction": false,
+      "approvalRequired": false,
+      "auditLogRequired": true,
+      "reasonCode": "private-provider-allowed"
+    },
+    "evidence": {
+      "required": ["policy-decision", "audit-log-entry", "evidence-record"],
+      "emitsAuditLog": true,
+      "evidenceRecordRequired": true
+    }
+  }
+}

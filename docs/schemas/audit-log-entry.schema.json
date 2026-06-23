@@ -1,0 +1,134 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://kqoffice.example.com/schemas/audit-log-entry.schema.json",
+  "title": "V3 Audit Log Entry",
+  "description": "Append-only audit log entry contract for V3 W4 tenant/policy/audit. Draft; covered by the W4 audit-log-entry self-test before gated policy/audit runtime exists.",
+  "type": "object",
+  "required": ["id", "schemaVersion", "timestamp", "tenant", "workspace", "actor", "action", "evidenceId", "policyDecision", "approvalChain", "redaction", "chain"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^aud-[0-9a-f]{16}$"
+    },
+    "schemaVersion": {
+      "const": "v3-audit-log-entry/0.1"
+    },
+    "timestamp": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+    },
+    "tenant": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{2,63}$"
+    },
+    "workspace": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{2,63}$"
+    },
+    "actor": {
+      "type": "object",
+      "required": ["id", "role"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9._-]{2,80}$"
+        },
+        "role": {
+          "enum": ["user", "admin", "service"]
+        }
+      }
+    },
+    "action": {
+      "type": "object",
+      "required": ["type", "target", "serviceMode", "dataClass", "publicEgress"],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "enum": ["chat", "patch-apply", "connector-fetch", "kb-query", "agent-step"]
+        },
+        "target": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "serviceMode": {
+          "enum": ["offline", "private", "cloud"]
+        },
+        "dataClass": {
+          "enum": ["public", "internal", "confidential", "secret"]
+        },
+        "publicEgress": {
+          "const": false
+        }
+      }
+    },
+    "evidenceId": {
+      "type": "string",
+      "pattern": "^ev-[0-9a-f]{16}$"
+    },
+    "policyDecision": {
+      "enum": ["allow", "deny", "require-approval"]
+    },
+    "approvalChain": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["approverId", "decision", "timestamp", "evidenceId"],
+        "additionalProperties": false,
+        "properties": {
+          "approverId": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9._-]{2,80}$"
+          },
+          "decision": {
+            "enum": ["approved", "rejected"]
+          },
+          "timestamp": {
+            "type": "string",
+            "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+          },
+          "evidenceId": {
+            "type": "string",
+            "pattern": "^ev-[0-9a-f]{16}$"
+          }
+        }
+      }
+    },
+    "redaction": {
+      "type": "object",
+      "required": ["storesDocumentContent", "promptStorage", "hashAlgorithm"],
+      "additionalProperties": false,
+      "properties": {
+        "storesDocumentContent": {
+          "const": false
+        },
+        "promptStorage": {
+          "enum": ["none", "hash-only"]
+        },
+        "hashAlgorithm": {
+          "const": "sha256"
+        }
+      }
+    },
+    "chain": {
+      "type": "object",
+      "required": ["algorithm", "previousHash", "entryHash"],
+      "additionalProperties": false,
+      "properties": {
+        "algorithm": {
+          "const": "sha256"
+        },
+        "previousHash": {
+          "type": "string",
+          "pattern": "^(GENESIS|[0-9a-f]{64})$"
+        },
+        "entryHash": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    }
+  }
+}

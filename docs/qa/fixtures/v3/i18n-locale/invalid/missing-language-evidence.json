@@ -1,0 +1,55 @@
+{
+  "id": "i18n-b000000000000003",
+  "schemaVersion": "v3-i18n-locale-policy/0.1",
+  "createdAt": "2026-06-10T14:45:00Z",
+  "locale": {
+    "osLocale": "ja-JP",
+    "uiLocale": "ja-JP",
+    "supportedLaunchLocales": [
+      "zh-CN",
+      "en-US",
+      "ja-JP",
+      "zh-TW"
+    ],
+    "fallbackLocale": "en-US"
+  },
+  "ui": {
+    "followsSystemLocale": true,
+    "usesExistingI18nPool": true,
+    "silentSwitchAllowed": false
+  },
+  "aiOutput": {
+    "defaultLocale": "ja-JP",
+    "matchesUiLocale": true,
+    "inlineOverride": {
+      "enabled": true,
+      "commandPattern": "^/lang (zh-CN|en-US|ja-JP|zh-TW|zh|en|ja)$",
+      "explicitOnly": true,
+      "persistsWithoutUserAction": false
+    },
+    "outputLanguage": "Japanese",
+    "evidenceRequired": false
+  },
+  "manual": {
+    "embedded": true,
+    "onlineMirror": true,
+    "requiredLocales": [
+      "zh-CN",
+      "en-US"
+    ]
+  },
+  "evidence": {
+    "required": [
+      "i18n-locale-policy",
+      "locale-selection"
+    ],
+    "evidenceIds": [
+      "ev-b000000000000003"
+    ]
+  },
+  "gates": {
+    "blocksGA": true,
+    "requiresV2RegressionGreen": true,
+    "runtimeImplementation": "not-started"
+  }
+}

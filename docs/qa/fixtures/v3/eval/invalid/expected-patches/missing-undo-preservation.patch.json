@@ -1,0 +1,7 @@
+{
+  "patchType": "ParagraphAction",
+  "tokenCount": 7,
+  "applyPlanKind": "paragraph-replace",
+  "requiredEvidence": ["provider-call", "apply-plan-runtime", "user-approval"],
+  "mustPreserveUndo": false
+}

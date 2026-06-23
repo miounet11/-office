@@ -1,0 +1,48 @@
+{
+  "id": "v3-eval-w1-llm-gate-writer-001",
+  "wave": "w1",
+  "category": "capability",
+  "surface": "writer",
+  "referenceBaseline": {
+    "id": "v2-ga-acceptance",
+    "source": "v2-ga",
+    "versionPolicy": "frozen-at-v2-ga",
+    "frozenAtLedger": "L211",
+    "requiresV2RegressionGreen": true,
+    "runtimeReferenceImplementation": "not-started"
+  },
+  "llmJudgePolicy": {
+    "enabled": false,
+    "promptLibrary": "docs/product/v3/w5-judge-prompt-library.md",
+    "promptId": "judge-v3-capability-v1",
+    "promptVersion": "v1",
+    "deterministicParameters": {
+      "temperature": 0,
+      "topP": 1,
+      "seedRequired": true
+    },
+    "defaultReleaseGate": true,
+    "requiresHumanReviewForPublish": true,
+    "runtimeJudgeImplementation": "not-started"
+  },
+  "input": {
+    "documentSnapshot": "fixtures/v3/eval/samples/writer-short-prd.odt",
+    "selection": {
+      "kind": "paragraph",
+      "id": "swpara-2"
+    },
+    "userPrompt": "把第二段改成正式语气",
+    "context": []
+  },
+  "expected": {
+    "patchRef": "docs/qa/fixtures/v3/eval/expected-patches/w1-rewrite-formal-writer.patch.json",
+    "patchType": "ParagraphAction",
+    "tokenCount": 7,
+    "diffSimilarity": ">= 0.85",
+    "applyPlanKind": "paragraph-replace"
+  },
+  "scoring": {
+    "method": "fuzzy",
+    "threshold": 0.85
+  }
+}

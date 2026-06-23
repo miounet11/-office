@@ -1,0 +1,56 @@
+{
+  "id": "bad-tenant-scope",
+  "version": "0.1.0",
+  "displayName": "Bad Tenant Scope",
+  "trust": {
+    "source": "enterprise-admin",
+    "publisher": "acme-admin",
+    "manifestSha256": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+    "reviewState": "security-reviewed",
+    "installScope": "tenant",
+    "signatureRequired": true,
+    "allowUnsigned": false
+  },
+  "operations": {
+    "mode": "read-only",
+    "allowedActions": ["read"],
+    "writeback": false,
+    "writeScopesAllowed": false,
+    "runtimeWriteImplementation": "not-started"
+  },
+  "auth": {
+    "type": "oauth2",
+    "scopes": ["sites.read.all"],
+    "tokenStorage": "keychain",
+    "flow": {
+      "strategy": "system-browser-loopback",
+      "embeddedWebView": false,
+      "callback": "loopback-127.0.0.1",
+      "runtimeAuthImplementation": "not-started"
+    },
+    "refreshPolicy": {
+      "strategy": "reauth-on-expiry",
+      "backgroundRefresh": false,
+      "storesRefreshToken": false,
+      "runtimeRefreshImplementation": "not-started"
+    }
+  },
+  "serviceModes": ["cloud"],
+  "scopes": [
+    {
+      "name": "read:sites",
+      "purpose": "Invalid because tenant-wide connector installs need tenant approval.",
+      "dataClass": "internal"
+    }
+  ],
+  "rateLimit": {
+    "perMinute": 45,
+    "perDay": 5000
+  },
+  "evidence": {
+    "emit": true,
+    "category": "data-fetch"
+  },
+  "requiresTenantPolicy": true,
+  "cacheTTLSeconds": 300
+}

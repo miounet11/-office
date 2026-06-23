@@ -1,0 +1,142 @@
+{
+  "id": "manual-1111222233334444",
+  "schemaVersion": "v3-manual-docs/0.1",
+  "createdAt": "2026-06-10T15:05:00Z",
+  "manual": {
+    "rootPath": "docs/manual/",
+    "embedded": true,
+    "onlineMirror": true,
+    "helpKey": "?",
+    "helpMenuEntry": true,
+    "searchEnabled": true,
+    "noExternalDependency": true
+  },
+  "locales": {
+    "requiredLocales": ["zh-CN", "en-US"],
+    "launchLocales": ["zh-CN", "en-US", "ja-JP", "zh-TW"],
+    "fallbackLocale": "en-US",
+    "fallbackForUntranslated": ["ja-JP", "zh-TW"]
+  },
+  "topics": [
+    {
+      "id": "index",
+      "titleToken": "manual.index",
+      "required": true,
+      "embedded": true,
+      "onlineMirror": true,
+      "locales": ["zh-CN", "en-US"],
+      "pathByLocale": {
+        "zh-CN": "docs/manual/zh-CN/index.md",
+        "en-US": "docs/manual/en-US/index.md"
+      },
+      "evidenceId": "ev-1000000000000001"
+    },
+    {
+      "id": "quickstart",
+      "titleToken": "manual.quickstart",
+      "required": true,
+      "embedded": true,
+      "onlineMirror": true,
+      "locales": ["zh-CN", "en-US"],
+      "pathByLocale": {
+        "zh-CN": "docs/manual/zh-CN/quickstart.md",
+        "en-US": "docs/manual/en-US/quickstart.md"
+      },
+      "evidenceId": "ev-1000000000000002"
+    },
+    {
+      "id": "ai-features",
+      "titleToken": "manual.ai-features",
+      "required": true,
+      "embedded": true,
+      "onlineMirror": true,
+      "locales": ["zh-CN", "en-US"],
+      "pathByLocale": {
+        "zh-CN": "docs/manual/zh-CN/ai-features.md",
+        "en-US": "docs/manual/en-US/ai-features.md"
+      },
+      "evidenceId": "ev-1000000000000003"
+    },
+    {
+      "id": "connectors",
+      "titleToken": "manual.connectors",
+      "required": true,
+      "embedded": true,
+      "onlineMirror": true,
+      "locales": ["zh-CN", "en-US"],
+      "pathByLocale": {
+        "zh-CN": "docs/manual/zh-CN/connectors.md",
+        "en-US": "docs/manual/en-US/connectors.md"
+      },
+      "evidenceId": "ev-1000000000000004"
+    },
+    {
+      "id": "tenant-admin",
+      "titleToken": "manual.tenant-admin",
+      "required": true,
+      "embedded": true,
+      "onlineMirror": true,
+      "locales": ["zh-CN", "en-US"],
+      "pathByLocale": {
+        "zh-CN": "docs/manual/zh-CN/tenant-admin.md",
+        "en-US": "docs/manual/en-US/tenant-admin.md"
+      },
+      "evidenceId": "ev-1000000000000005"
+    },
+    {
+      "id": "companion",
+      "titleToken": "manual.companion",
+      "required": true,
+      "embedded": true,
+      "onlineMirror": true,
+      "locales": ["zh-CN", "en-US"],
+      "pathByLocale": {
+        "zh-CN": "docs/manual/zh-CN/companion.md",
+        "en-US": "docs/manual/en-US/companion.md"
+      },
+      "evidenceId": "ev-1000000000000006"
+    },
+    {
+      "id": "localcloud",
+      "titleToken": "manual.localcloud",
+      "required": true,
+      "embedded": true,
+      "onlineMirror": true,
+      "locales": ["zh-CN", "en-US"],
+      "pathByLocale": {
+        "zh-CN": "docs/manual/zh-CN/localcloud.md",
+        "en-US": "docs/manual/en-US/localcloud.md"
+      },
+      "evidenceId": "ev-1000000000000007"
+    },
+    {
+      "id": "troubleshooting",
+      "titleToken": "manual.troubleshooting",
+      "required": true,
+      "embedded": true,
+      "onlineMirror": true,
+      "locales": ["zh-CN", "en-US"],
+      "pathByLocale": {
+        "zh-CN": "docs/manual/zh-CN/troubleshooting.md",
+        "en-US": "docs/manual/en-US/troubleshooting.md"
+      },
+      "evidenceId": "ev-1000000000000008"
+    }
+  ],
+  "delivery": {
+    "embeddedBundle": true,
+    "onlineMirrorSource": true,
+    "offlineReadable": true,
+    "requiresPublicInternet": false,
+    "updateChannel": "w8-self-host-or-release-bundle"
+  },
+  "evidence": {
+    "required": ["manual-docs-manifest", "embedded-help-open", "online-mirror-sync", "locale-coverage", "evidence-record", "v2-regression-green"],
+    "evidenceIds": ["ev-1000000000000009"]
+  },
+  "gates": {
+    "blocksGA": true,
+    "requiresV2RegressionGreen": true,
+    "runtimeImplementation": "not-started"
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://kqoffice.example.com/schemas/eval-expected-patch.schema.json",
+  "title": "V3 Eval Expected Patch",
+  "description": "Expected patch reference contract for V3 W5/H9 capability eval fixtures. Draft; covered by tests/v3-eval-baseline-test.sh before runtime scoring exists.",
+  "type": "object",
+  "required": ["patchType", "tokenCount", "requiredEvidence", "mustPreserveUndo"],
+  "additionalProperties": false,
+  "properties": {
+    "patchType": {
+      "enum": ["ParagraphAction", "CellAction", "SlideElementAction"]
+    },
+    "tokenCount": {
+      "enum": [7, 5, 4]
+    },
+    "applyPlanKind": {
+      "enum": ["paragraph-replace"]
+    },
+    "inlineAction": {
+      "enum": ["format-change", "rewrite-text"]
+    },
+    "requiredEvidence": {
+      "type": "array",
+      "minItems": 2,
+      "uniqueItems": true,
+      "items": {
+        "enum": ["provider-call", "apply-plan-runtime", "inline-action-request", "user-approval"]
+      }
+    },
+    "mustPreserveUndo": {
+      "const": true
+    }
+  }
+}

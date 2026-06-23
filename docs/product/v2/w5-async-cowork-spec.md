@@ -443,3 +443,137 @@ W5 v2（4 scenarios + companion）单独立项。
 W5 v1 完成时，可圈office V2 完整理念已交付。
 后续 V2.x 持续完善 W5 + 其它 scenario。
 V3 路线由那时再制定。
+
+## Worker Queue Scheduling Contract (L102 入册, design-only)
+
+> 这一章是 **调度协议冻结**，不是 worker 实装路径，不入 SRCDIR。
+> 目的是在 W5 scope 续期之前，把"任务排队 / 并发上限 / cancel propagation / refine 路径"锁死，让落地阶段只做实装。
+> 与 H4 async-task schema full-enforce（L96）配套：本契约描述 schema 状态机的 _动态行为_，schema 描述 _数据形态_。
+
+### 1. Queue 拓扑
+
+```
+TaskStore (persistent, JSON-backed)
+   │
+   ▼
+Scheduler (single-threaded coordinator)
+   │
+   ├──→ Worker[0]  ─┐
+   ├──→ Worker[1]  ─┤  parallelism budget = N (默认 1, offline 模式)
+   ├──→ Worker[2]  ─┤  通过 Settings → AI → 并发上限 配置
+   └──→ Worker[N-1] ─┘
+        │
+        ▼
+   ProviderRouter (W1 ServiceModePolicy 决定 capability)
+```
+
+- Scheduler 是单线程协调器；不并发处理任务自身，只决定哪个 Worker 拿哪条 task。
+- Worker 是 OS thread；但 W5 v1 默认 N=1（offline 单线程也满足）；spec §"Stop Conditions" 已暗示这一点。
+- TaskStore append-only；任何状态变化都先落盘再变内存（防 crash 丢任务）。
+
+### 2. State machine 边界（与 H4 schema 对齐）
+
+H4 schema 已锁 6 token：`pending | running | awaiting-review | applied | failed | cancelled`。本契约补充每次 transition 的 **触发源** 与 **副作用**：
+
+| from → to | 触发源 | 必带 evidence reason | Worker 行为 |
+|---|---|---|---|
+| (none) → `pending` | TaskStore.enqueue() | `enqueued` | Worker 不参与 |
+| `pending` → `running` | Scheduler.dispatch() | `dispatched` | Worker 接 task，调 W1 Provider |
+| `running` → `awaiting-review` | Worker 收到 Provider response 且生成 ApplyPlan | `apply-plan-ready` | Worker 释放（idle）；UI 收到通知 |
+| `awaiting-review` → `applied` | User 在 W4 popover accept | `user-accepted` | 触发 W3 `applyDiagnosticsPlan`，记录 plan_id |
+| `awaiting-review` → `cancelled` | User 在 W4 popover reject / ESC | `user-rejected` 或 `user-cancelled` | 不触发 W3 |
+| `running` → `failed` | Provider 超时 / 返回 error | `provider-error` / `provider-timeout` | Worker 释放；UI 提示重试或 refine |
+| `pending` → `cancelled` | User 在 task list 取消未启动任务 | `user-cancelled-before-dispatch` | TaskStore 直接标 cancelled，不分派 Worker |
+| `running` → `cancelled` | User 在 task list 取消运行中任务 | `user-cancelled-mid-run` | Worker 收 cancel 信号，主动 abort Provider call |
+| `failed` → `pending` | User refine 后 re-submit | `refined-resubmit` | 创建新 task_id，原 task 保留为审计行 |
+
+不允许的 transition（schema 不写，本契约显式列）：
+- `applied` → 任何 → `applied` 是终态；只能 Cmd+Z 走 W3 undo path，与状态机无关
+- `cancelled` → 任何 → 终态
+- `awaiting-review` → `running` → user 不接受需 refine = 新 task，不复用旧 task 状态
+
+### 3. Cancel propagation
+
+cancel 信号必须在 ≤ 500ms 内让 Worker 真正释放：
+
+```
+User click Cancel
+   │
+   ▼
+TaskStore.markCancelling(task_id)    // ≤ 10ms (in-memory)
+   │
+   ▼
+Scheduler 检测到 cancelling 标记
+   │
+   ▼ ≤ 50ms
+Worker[i].interrupt()                // 实现：closed-flag 共享原子位
+   │
+   ▼ ≤ 400ms
+Worker 在下次 IO 边界（Provider HTTP recv 或 ApplyPlan 序列化）检测到位
+   │
+   ▼
+Worker 释放 socket + 写 evidence `cancelled-mid-run` + 调 TaskStore.markCancelled
+```
+
+总预算 500ms。**不允许** Worker 强 kill thread（会泄漏 socket / 部分写 doc）；只能通过 cooperative cancel 点退出。Provider HTTP 调用必须可中断（W1 OllamaAdapter 已用 BSD-socket + bounded read 时机，天然有边界）。
+
+### 4. Refine 路径
+
+`failed` 状态下用户可以编辑 prompt / context 后 re-submit。规则：
+
+- refine = 创建新 task；原 task 保留为审计行（不删）。
+- 新 task 在 evidence 上记 `refined_from_task_id`，闭合溯源链。
+- 新 task 默认 `pending`，进入正常队列；不允许 jump queue 即时执行。
+- W5 v1 不支持 partial refine（只改 context 一段）；要么整体重提，要么 cancel。partial refine 留 v2。
+
+### 5. 并发预算与公平性
+
+```
+Scheduler.dispatch() 策略（W5 v1）:
+  1. 取最老 pending task（FIFO，task_id lexical sort）
+  2. 检查 Worker pool 有空闲，否则 wait
+  3. 检查 ServiceModePolicy（W1）是否允许该 capability
+  4. 检查并发预算：同一 capability 同时 running ≤ ceil(N/2)
+     （防 5 个 rewrite 把 worker 占满，summarize 饿死）
+  5. 分派
+```
+
+不变量：
+- 任何时刻 `count(running) ≤ N`
+- 任何时刻 `count(running[capability=X]) ≤ ceil(N/2)`，除非只有 X 一种待执行
+- pending 任意时刻 ≤ 100（达到上限新 enqueue 被拒，记 evidence `queue-full`）
+
+### 6. Persistence 与 crash recovery
+
+```
+TaskStore 写入策略：
+  - 每次状态 transition 同步 fsync 到 ~/.config/kqoffice/cowork/tasks.jsonl
+  - 文件 append-only，每行一个 transition record
+  - 重启时 replay 所有行，恢复内存模型
+  - 任何 running 任务在重启后强制变 failed（reason=`process-restart-during-run`），UI 提示重试
+```
+
+不变量：
+- 重启后不会有任何任务停在 `running` 状态
+- `applied` 状态可信（已落盘 + Writer 文档也写完 = 双 confirm）
+- `awaiting-review` 状态可信，UI 重启后能恢复 popover 候选
+
+### 7. 与 W3 / W4 的耦合点
+
+- **W4 wiring**：`awaiting-review` task 通过 `SelectToActPopover::invoke(req)` 走 W4 popover（W4 spec §"Popover Invocation Contract" §"programmatic" 触发态）。Scheduler 必须填 `evidenceCorrelationId`，闭合 evidence。
+- **W3 wiring**：`applied` 边触发 `SwDocShell::applyDiagnosticsPlan`。失败回 `failed`（不是 `running` 退回）。
+
+### 8. 不在本契约内（避免范围爆炸）
+
+- 实际 worker thread 框架（pthread / OSL / std::thread —— 与 W5 scope 实装一起决）
+- 分布式调度（多机协作）— V3 范围
+- task priority / SLA — V2 范围
+- ML-driven scheduling — 不在 V2 任何 wave 范围
+
+### 9. Gate
+
+- W5 scope（续期）：worker queue / scheduler / cancel 实装 SRCDIR。
+- W4 source/link + W4 scope：programmatic popover entry surface（与 §7 wiring 一起）。
+- D1：applied → W3 wiring（与 §7 wiring 一起）。
+
+本契约本身是 docs/product/v2 spec 增量，不带任何代码改动。落地顺序建议：W4 source/link + W4 scope 先解开（让 popover 跑通），再 W5 scope 续期 worker 实装，最后 D1 接 applied → W3。

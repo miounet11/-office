@@ -1,0 +1,46 @@
+{
+  "id": "cds-1000000000000001",
+  "schemaVersion": "v3-companion-diff-summary/0.1",
+  "createdAt": "2026-06-10T12:12:00Z",
+  "taskId": "agt-1000000000000001",
+  "stepResultId": "agsr-1000000000000001",
+  "tenant": "acme",
+  "workspace": "risk-team",
+  "surface": "writer",
+  "diff": {
+    "summaryKind": "paragraph",
+    "applyPlanRef": "aprt-1000000000000001",
+    "actionKind": "ParagraphAction",
+    "actionCount": 3,
+    "previewHash": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "humanSummary": "Rewrite three selected risk paragraphs into formal register.",
+    "storesDocumentContent": false,
+    "mobileParsesApplyPlan": false
+  },
+  "summary": {
+    "changedObjects": [
+      {
+        "kind": "paragraph",
+        "objectId": "p-42",
+        "textHash": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+      }
+    ],
+    "riskLevel": "medium",
+    "requiresApproval": true
+  },
+  "redaction": {
+    "hashAlgorithm": "sha256",
+    "snippetStorage": "redacted-summary",
+    "containsOriginalText": false
+  },
+  "mobile": {
+    "cacheMode": "diff-summary-plus-evidence",
+    "viewOnly": true,
+    "canEdit": false,
+    "offlineApproval": false
+  },
+  "evidence": {
+    "required": ["companion-diff-summary", "shadow-doc-diff", "apply-plan-runtime-validated", "evidence-record", "audit-log-entry"],
+    "evidenceIds": ["ev-1000000000000003"]
+  }
+}

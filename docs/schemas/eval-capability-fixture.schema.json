@@ -1,0 +1,169 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://kqoffice.example.com/schemas/eval-capability-fixture.schema.json",
+  "title": "V3 Eval Capability Fixture",
+  "description": "Capability eval fixture contract for V3 W5/H9. Draft; covered by tests/v3-eval-baseline-test.sh before runtime scoring exists.",
+  "type": "object",
+  "required": ["id", "wave", "category", "surface", "referenceBaseline", "llmJudgePolicy", "input", "expected", "scoring"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^v3-eval-w[0-9]-[a-z0-9-]+-(writer|calc|impress)-[0-9]{3}$"
+    },
+    "wave": {
+      "enum": ["w1", "w2", "w3", "w4", "w5", "w6", "w7", "w8", "w9"]
+    },
+    "category": {
+      "const": "capability"
+    },
+    "surface": {
+      "enum": ["writer", "calc", "impress"]
+    },
+    "referenceBaseline": {
+      "type": "object",
+      "required": ["id", "source", "versionPolicy", "frozenAtLedger", "requiresV2RegressionGreen", "runtimeReferenceImplementation"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "const": "v2-ga-acceptance"
+        },
+        "source": {
+          "const": "v2-ga"
+        },
+        "versionPolicy": {
+          "const": "frozen-at-v2-ga"
+        },
+        "frozenAtLedger": {
+          "type": "string",
+          "pattern": "^L[0-9]+$"
+        },
+        "requiresV2RegressionGreen": {
+          "const": true
+        },
+        "runtimeReferenceImplementation": {
+          "const": "not-started"
+        }
+      }
+    },
+    "llmJudgePolicy": {
+      "type": "object",
+      "required": ["enabled", "promptLibrary", "promptId", "promptVersion", "deterministicParameters", "defaultReleaseGate", "requiresHumanReviewForPublish", "runtimeJudgeImplementation"],
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "const": false
+        },
+        "promptLibrary": {
+          "const": "docs/product/v3/w5-judge-prompt-library.md"
+        },
+        "promptId": {
+          "const": "judge-v3-capability-v1"
+        },
+        "promptVersion": {
+          "const": "v1"
+        },
+        "deterministicParameters": {
+          "type": "object",
+          "required": ["temperature", "topP", "seedRequired"],
+          "additionalProperties": false,
+          "properties": {
+            "temperature": {
+              "const": 0
+            },
+            "topP": {
+              "const": 1
+            },
+            "seedRequired": {
+              "const": true
+            }
+          }
+        },
+        "defaultReleaseGate": {
+          "const": false
+        },
+        "requiresHumanReviewForPublish": {
+          "const": true
+        },
+        "runtimeJudgeImplementation": {
+          "const": "not-started"
+        }
+      }
+    },
+    "input": {
+      "type": "object",
+      "required": ["documentSnapshot", "selection", "userPrompt", "context"],
+      "additionalProperties": false,
+      "properties": {
+        "documentSnapshot": {
+          "type": "string",
+          "pattern": "^fixtures/v3/eval/samples/[A-Za-z0-9._/-]+\\.(odt|ods|odp)$"
+        },
+        "selection": {
+          "type": "object",
+          "required": ["kind"],
+          "additionalProperties": true,
+          "properties": {
+            "kind": {
+              "enum": ["paragraph", "cell-range", "slide-element"]
+            }
+          }
+        },
+        "userPrompt": {
+          "type": "string",
+          "minLength": 4,
+          "maxLength": 512
+        },
+        "context": {
+          "type": "array",
+          "maxItems": 8,
+          "items": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "expected": {
+      "type": "object",
+      "required": ["patchRef", "patchType", "tokenCount", "diffSimilarity"],
+      "additionalProperties": false,
+      "properties": {
+        "patchRef": {
+          "type": "string",
+          "pattern": "^docs/qa/fixtures/v3/eval/expected-patches/[a-z0-9-]+\\.patch\\.json$"
+        },
+        "patchType": {
+          "enum": ["ParagraphAction", "CellAction", "SlideElementAction"]
+        },
+        "tokenCount": {
+          "enum": [7, 5, 4]
+        },
+        "diffSimilarity": {
+          "type": "string",
+          "pattern": "^>= 0\\.[0-9]+$"
+        },
+        "applyPlanKind": {
+          "enum": ["paragraph-replace"]
+        },
+        "inlineAction": {
+          "enum": ["format-change", "rewrite-text"]
+        }
+      }
+    },
+    "scoring": {
+      "type": "object",
+      "required": ["method", "threshold"],
+      "additionalProperties": false,
+      "properties": {
+        "method": {
+          "enum": ["exact", "fuzzy", "llm-judge"]
+        },
+        "threshold": {
+          "type": "number",
+          "minimum": 0.1,
+          "maximum": 1
+        }
+      }
+    }
+  }
+}

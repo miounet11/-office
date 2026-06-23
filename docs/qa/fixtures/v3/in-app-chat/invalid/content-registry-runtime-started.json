@@ -1,0 +1,794 @@
+{
+  "id": "content-registry-runtime-started",
+  "schemaVersion": 1,
+  "scenarioType": "document-chat",
+  "surface": "writer",
+  "entry": {
+    "shortcut": "Cmd+Shift+K",
+    "route": "command-palette-chat-fallback",
+    "container": "sfx2-sidebar",
+    "directAcceleratorRegistration": false,
+    "standaloneApp": false
+  },
+  "context": {
+    "defaultScope": "none",
+    "explicitMentions": [
+      "@doc"
+    ],
+    "historyScope": "per-doc-local",
+    "storesCloudHistory": false
+  },
+  "mentionsUi": {
+    "trigger": "@",
+    "scope": "chat-input-only",
+    "suggestions": [
+      "@selection",
+      "@doc",
+      "@connector:<id>"
+    ],
+    "officeAutocompletePolicy": "delegate-existing-controls",
+    "hijacksGlobalAutocomplete": false,
+    "requiresExplicitCommit": true,
+    "connectorSuggestionsRequireW2Manifest": true,
+    "unknownConnectorSuggestions": false,
+    "rawPreviewContent": false,
+    "rawContentInFixture": false,
+    "runtimeParserImplementation": "not-started"
+  },
+  "history": {
+    "scope": "per-doc-local",
+    "storage": "local-sqlite-sidecar",
+    "documentBinding": "document-id-hash",
+    "cloudSync": false,
+    "globalIndex": false,
+    "crossDocumentRestore": false,
+    "rawContentInFixture": false,
+    "requiresUserClearControl": true,
+    "deleteWithDocument": true
+  },
+  "provider": {
+    "usesV2Provider": true,
+    "serviceMode": "offline",
+    "streaming": "chunk"
+  },
+  "streamingUi": {
+    "source": "v2-provider-chunk",
+    "states": [
+      "idle",
+      "requesting",
+      "streaming",
+      "awaiting-approval",
+      "applied",
+      "failed",
+      "cancelled"
+    ],
+    "appendOnlyDuringStream": true,
+    "mainDocumentUnchangedWhileStreaming": true,
+    "cancelSupported": true,
+    "retrySupported": true,
+    "partialChunksPersisted": false,
+    "chunkContentInFixture": false,
+    "evidenceOnTerminalState": true
+  },
+  "workspaceUi": {
+    "shell": "ai-workspace-sidebar",
+    "container": "sfx2-sidebar",
+    "interactionModel": "conversation-plus-progress",
+    "conversationPanelVisible": true,
+    "taskProgress": {
+      "visible": true,
+      "states": [
+        "pending",
+        "running",
+        "awaiting-review",
+        "applied",
+        "failed",
+        "cancelled"
+      ],
+      "stepListVisible": true,
+      "evidenceLinksVisible": true
+    },
+    "reviewSurface": {
+      "visible": true,
+      "supportsContentReview": true,
+      "supportsFormattingReview": true,
+      "usesDiffReview": true,
+      "requiresEvidenceLink": true
+    },
+    "contentReview": {
+      "scope": [
+        "selection",
+        "document-section",
+        "connector-result",
+        "knowledge-index-result",
+        "evidence-record",
+        "task-step"
+      ],
+      "reviewMode": "evidence-linked-content-diff",
+      "visible": true,
+      "usesDiffReview": true,
+      "requiresEvidenceLink": true,
+      "requiresHumanApproval": true,
+      "mainDocumentUnchangedUntilApproval": true,
+      "rawContentInFixture": false,
+      "suggestionContentInFixture": false,
+      "failureBehavior": "fail-closed-user-visible",
+      "runtimeContentReviewImplementation": "not-started"
+    },
+    "layoutPreview": {
+      "visible": true,
+      "mode": "before-after-preview",
+      "surfaces": [
+        "writer",
+        "calc",
+        "impress"
+      ],
+      "mainDocumentUnchangedUntilApproval": true
+    },
+    "formattingReview": {
+      "scope": [
+        "paragraph-style",
+        "character-style",
+        "table-layout",
+        "cell-format",
+        "slide-layout"
+      ],
+      "reviewMode": "before-after-layout-diff",
+      "visible": true,
+      "usesDiffReview": true,
+      "requiresEvidenceLink": true,
+      "requiresHumanApproval": true,
+      "mainDocumentUnchangedUntilApproval": true,
+      "rawContentInFixture": false,
+      "previewContentInFixture": false,
+      "failureBehavior": "fail-closed-user-visible",
+      "runtimeFormattingImplementation": "not-started"
+    },
+    "contentOpeners": {
+      "supportedTypes": [
+        "document",
+        "selection",
+        "connector-result",
+        "knowledge-index-result",
+        "evidence-record",
+        "task-step"
+      ],
+      "opensIn": [
+        "main-document-window",
+        "sidebar-preview",
+        "diff-review"
+      ],
+      "rawContentInFixture": false,
+      "runtimeOpenImplementation": "not-started",
+      "routePolicy": {
+        "document": "main-document-window",
+        "selection": "sidebar-preview",
+        "connector-result": "sidebar-preview",
+        "knowledge-index-result": "sidebar-preview",
+        "evidence-record": "sidebar-preview",
+        "task-step": "diff-review"
+      },
+      "requiresEvidenceLink": true,
+      "readOnlyPreview": true,
+      "mainDocumentMutationAllowed": false,
+      "openFailureBehavior": "fail-closed-user-visible"
+    },
+    "contentRegistry": {
+      "visible": true,
+      "scope": [
+        "current-workspace",
+        "current-document"
+      ],
+      "types": [
+        "document",
+        "selection",
+        "connector-result",
+        "knowledge-index-result",
+        "evidence-record",
+        "task-step",
+        "review-item",
+        "formatting-preview",
+        "content-suggestion"
+      ],
+      "states": [
+        "registered",
+        "opened",
+        "previewed",
+        "in-review",
+        "applied",
+        "failed",
+        "archived"
+      ],
+      "requiredFields": [
+        "object-id",
+        "type",
+        "source-surface",
+        "state",
+        "evidence-id",
+        "hash-reference",
+        "open-target",
+        "preview-mode"
+      ],
+      "openTargets": [
+        "main-document-window",
+        "sidebar-preview",
+        "diff-review",
+        "evidence-inspector",
+        "review-queue"
+      ],
+      "previewModes": [
+        "metadata-summary",
+        "read-only-preview",
+        "diff-preview",
+        "evidence-summary"
+      ],
+      "usesContentOpeners": true,
+      "usesPreviewMatrix": true,
+      "usesEvidenceInspector": true,
+      "usesReviewQueue": true,
+      "metadataOnly": true,
+      "hashOnlyReferences": true,
+      "redactsRawPayload": true,
+      "rawContentInFixture": false,
+      "previewContentInFixture": false,
+      "transcriptContentInFixture": false,
+      "mainDocumentMutationAllowed": false,
+      "autoOpenAllowed": false,
+      "autoApplyAllowed": false,
+      "failureBehavior": "fail-closed-user-visible",
+      "runtimeContentRegistryImplementation": "started"
+    },
+    "artifactNavigator": {
+      "visible": true,
+      "scope": [
+        "current-workspace",
+        "current-document"
+      ],
+      "managedTypes": [
+        "document",
+        "selection",
+        "connector-result",
+        "knowledge-index-result",
+        "evidence-record",
+        "task-step"
+      ],
+      "groupBy": [
+        "type",
+        "task"
+      ],
+      "sort": "recent-first",
+      "evidenceBadgeVisible": true,
+      "openUsesContentOpeners": true,
+      "readOnlyDetails": true,
+      "rawContentInFixture": false,
+      "mainDocumentMutationAllowed": false,
+      "failureBehavior": "fail-closed-user-visible",
+      "runtimeArtifactNavigatorImplementation": "not-started"
+    },
+    "stylePolicy": {
+      "denseUtilityUi": true,
+      "usesNativeControls": true,
+      "modalChatOnly": false
+    },
+    "reviewQueue": {
+      "visible": true,
+      "itemTypes": [
+        "content-review",
+        "formatting-review",
+        "task-step"
+      ],
+      "states": [
+        "queued",
+        "open",
+        "approved",
+        "rejected",
+        "applied",
+        "failed"
+      ],
+      "filterBy": [
+        "state",
+        "type",
+        "surface"
+      ],
+      "openUsesDiffReview": true,
+      "requiresEvidenceLink": true,
+      "bulkActions": [
+        "approve-selected",
+        "reject-selected"
+      ],
+      "bulkApplyRequiresExplicitHumanApproval": true,
+      "mainDocumentMutationAllowed": false,
+      "rawContentInFixture": false,
+      "failureBehavior": "fail-closed-user-visible",
+      "runtimeReviewQueueImplementation": "not-started"
+    },
+    "evidenceInspector": {
+      "visible": true,
+      "sourceTypes": [
+        "evidence-record",
+        "connector-result",
+        "knowledge-index-result",
+        "task-step",
+        "review-item"
+      ],
+      "showsCitationLinks": true,
+      "showsAuditTrail": true,
+      "openUsesContentOpeners": true,
+      "redactsRawPayload": true,
+      "hashOnlyReferences": true,
+      "requiresEvidenceLink": true,
+      "rawContentInFixture": false,
+      "mainDocumentMutationAllowed": false,
+      "failureBehavior": "fail-closed-user-visible",
+      "runtimeEvidenceInspectorImplementation": "not-started"
+    },
+    "interactionChrome": {
+      "layout": "sidebar-workbench",
+      "navigation": "segmented-tabs",
+      "panels": [
+        "chat",
+        "tasks",
+        "artifacts",
+        "reviews",
+        "evidence"
+      ],
+      "defaultPanel": "chat",
+      "persistentComposer": true,
+      "taskRailVisible": true,
+      "artifactRailVisible": true,
+      "reviewRailVisible": true,
+      "evidenceRailVisible": true,
+      "keyboardNavigation": {
+        "tabOrder": [
+          "composer",
+          "panel-tabs",
+          "active-panel",
+          "review-actions"
+        ],
+        "escapeReturnsFocus": true,
+        "focusTrap": false
+      },
+      "density": "compact-utility",
+      "usesNativeControls": true,
+      "modalChatOnly": false,
+      "rawContentInFixture": false,
+      "failureBehavior": "fail-closed-user-visible",
+      "runtimeInteractionChromeImplementation": "not-started"
+    },
+    "previewMatrix": {
+      "visible": true,
+      "contentTypes": [
+        "document",
+        "selection",
+        "connector-result",
+        "knowledge-index-result",
+        "evidence-record",
+        "task-step",
+        "review-item"
+      ],
+      "previewTargets": {
+        "document": "main-document-window",
+        "selection": "sidebar-preview",
+        "connector-result": "sidebar-preview",
+        "knowledge-index-result": "sidebar-preview",
+        "evidence-record": "sidebar-preview",
+        "task-step": "diff-review",
+        "review-item": "diff-review"
+      },
+      "previewModes": [
+        "metadata-summary",
+        "read-only-preview",
+        "diff-preview",
+        "evidence-summary"
+      ],
+      "showsEvidenceBadge": true,
+      "showsSourceMetadata": true,
+      "openUsesContentOpeners": true,
+      "readOnlyPreview": true,
+      "redactsRawPayload": true,
+      "hashOnlyReferences": true,
+      "rawContentInFixture": false,
+      "previewContentInFixture": false,
+      "mainDocumentMutationAllowed": false,
+      "failureBehavior": "fail-closed-user-visible",
+      "runtimePreviewMatrixImplementation": "not-started"
+    },
+    "actionBar": {
+      "visible": true,
+      "placement": "sidebar-workbench-header",
+      "commands": [
+        "open-preview",
+        "open-diff-review",
+        "approve-selected",
+        "reject-selected",
+        "copy-reference",
+        "export-evidence",
+        "filter",
+        "sort",
+        "retry",
+        "cancel"
+      ],
+      "commandTargets": [
+        "task-step",
+        "review-item",
+        "artifact",
+        "evidence-record",
+        "preview"
+      ],
+      "keyboardAccessible": true,
+      "usesNativeControls": true,
+      "requiresVisibleState": true,
+      "requiresEvidenceLink": true,
+      "usesContentOpeners": true,
+      "usesDiffReview": true,
+      "bulkApplyRequiresExplicitHumanApproval": true,
+      "autoApplyAllowed": false,
+      "hiddenActionsAllowed": false,
+      "mouseOnlyActionsAllowed": false,
+      "rawContentInFixture": false,
+      "mainDocumentMutationAllowed": false,
+      "failureBehavior": "fail-closed-user-visible",
+      "runtimeActionBarImplementation": "not-started"
+    },
+    "filterSearch": {
+      "visible": true,
+      "scope": [
+        "current-workspace",
+        "current-document"
+      ],
+      "surfaces": [
+        "tasks",
+        "artifacts",
+        "reviews",
+        "evidence",
+        "previews"
+      ],
+      "filterBy": [
+        "state",
+        "type",
+        "surface",
+        "source",
+        "evidence-status"
+      ],
+      "searchFields": [
+        "id",
+        "type",
+        "state",
+        "source-metadata",
+        "evidence-id",
+        "hash-reference"
+      ],
+      "sortOptions": [
+        "recent-first",
+        "type",
+        "state",
+        "source"
+      ],
+      "metadataOnly": true,
+      "hashOnlyReferences": true,
+      "redactsRawPayload": true,
+      "rawContentIndexed": false,
+      "rawContentInFixture": false,
+      "crossDocumentSearch": false,
+      "globalIndex": false,
+      "usesContentOpeners": true,
+      "requiresEvidenceLink": true,
+      "failureBehavior": "fail-closed-user-visible",
+      "runtimeFilterSearchImplementation": "not-started"
+    },
+    "contextHandoff": {
+      "visible": true,
+      "entrySurfaces": [
+        "filter-search-result",
+        "artifact-navigator-item",
+        "review-queue-item",
+        "evidence-inspector-link",
+        "preview-matrix-item",
+        "action-bar-command"
+      ],
+      "handoffTargets": [
+        "preview",
+        "diff-review",
+        "evidence-inspector",
+        "review-queue",
+        "task-progress",
+        "composer"
+      ],
+      "preserves": [
+        "active-task-id",
+        "source-surface",
+        "evidence-id",
+        "hash-reference",
+        "preview-mode",
+        "review-state"
+      ],
+      "requiresVisibleBreadcrumb": true,
+      "requiresBackNavigation": true,
+      "requiresFocusReturn": true,
+      "requiresEvidenceLink": true,
+      "usesContentOpeners": true,
+      "usesDiffReview": true,
+      "metadataOnly": true,
+      "hashOnlyReferences": true,
+      "redactsRawPayload": true,
+      "rawContentInFixture": false,
+      "previewContentInFixture": false,
+      "mainDocumentMutationAllowed": false,
+      "autoApplyAllowed": false,
+      "failureBehavior": "fail-closed-user-visible",
+      "runtimeContextHandoffImplementation": "not-started"
+    },
+    "reviewStateSync": {
+      "visible": true,
+      "stateSources": [
+        "review-queue",
+        "diff-review",
+        "preview-matrix",
+        "evidence-inspector",
+        "task-progress",
+        "action-bar"
+      ],
+      "states": [
+        "queued",
+        "open",
+        "approved",
+        "rejected",
+        "applied",
+        "failed"
+      ],
+      "syncTargets": [
+        "review-queue",
+        "diff-review",
+        "preview-matrix",
+        "evidence-inspector",
+        "task-progress",
+        "action-bar"
+      ],
+      "transitionEvents": [
+        "open",
+        "approve",
+        "reject",
+        "apply",
+        "fail"
+      ],
+      "requiresEvidenceLink": true,
+      "requiresVisibleState": true,
+      "requiresHumanApproval": true,
+      "bulkApplyRequiresExplicitHumanApproval": true,
+      "usesDiffReview": true,
+      "usesContentOpeners": true,
+      "metadataOnly": true,
+      "hashOnlyReferences": true,
+      "redactsRawPayload": true,
+      "rawContentInFixture": false,
+      "mainDocumentMutationAllowed": false,
+      "autoApplyAllowed": false,
+      "conflictBehavior": "fail-closed-user-visible",
+      "failureBehavior": "fail-closed-user-visible",
+      "runtimeReviewStateSyncImplementation": "not-started"
+    },
+    "activityTimeline": {
+      "visible": true,
+      "events": [
+        "chat-requested",
+        "task-started",
+        "artifact-created",
+        "content-opened",
+        "review-opened",
+        "review-state-changed",
+        "evidence-linked",
+        "action-invoked",
+        "failure-reported"
+      ],
+      "surfaces": [
+        "chat",
+        "tasks",
+        "artifacts",
+        "reviews",
+        "evidence",
+        "previews",
+        "action-bar"
+      ],
+      "links": [
+        "task-id",
+        "artifact-id",
+        "review-id",
+        "evidence-id",
+        "hash-reference"
+      ],
+      "order": "chronological",
+      "appendOnly": true,
+      "requiresEvidenceLink": true,
+      "requiresVisibleTimestamp": true,
+      "requiresVisibleActor": true,
+      "requiresOpenTarget": true,
+      "usesContentOpeners": true,
+      "usesDiffReview": true,
+      "usesEvidenceInspector": true,
+      "metadataOnly": true,
+      "hashOnlyReferences": true,
+      "redactsRawPayload": true,
+      "rawContentInFixture": false,
+      "previewContentInFixture": false,
+      "transcriptContentInFixture": false,
+      "mainDocumentMutationAllowed": false,
+      "autoApplyAllowed": false,
+      "failureBehavior": "fail-closed-user-visible",
+      "runtimeActivityTimelineImplementation": "not-started"
+    },
+    "sessionSnapshot": {
+      "visible": true,
+      "scope": [
+        "current-workspace",
+        "current-document"
+      ],
+      "restores": [
+        "active-task-id",
+        "open-artifact-id",
+        "open-review-id",
+        "active-evidence-id",
+        "preview-mode",
+        "review-state",
+        "activity-cursor",
+        "failure-state"
+      ],
+      "surfaces": [
+        "chat",
+        "tasks",
+        "artifacts",
+        "reviews",
+        "evidence",
+        "previews",
+        "activity-timeline"
+      ],
+      "resumeSummaryVisible": true,
+      "requiresExplicitResume": true,
+      "requiresVisibleTimestamp": true,
+      "requiresVisibleDocumentBinding": true,
+      "usesContentOpeners": true,
+      "usesDiffReview": true,
+      "usesEvidenceInspector": true,
+      "usesActivityTimeline": true,
+      "metadataOnly": true,
+      "hashOnlyReferences": true,
+      "redactsRawPayload": true,
+      "rawContentInFixture": false,
+      "previewContentInFixture": false,
+      "transcriptContentInFixture": false,
+      "crossDocumentRestore": false,
+      "cloudSync": false,
+      "mainDocumentMutationAllowed": false,
+      "autoApplyAllowed": false,
+      "failureBehavior": "fail-closed-user-visible",
+      "runtimeSessionSnapshotImplementation": "not-started"
+    },
+    "attentionRouting": {
+      "visible": true,
+      "scope": [
+        "current-workspace",
+        "current-document"
+      ],
+      "triggers": [
+        "approval-required",
+        "review-ready",
+        "task-failed",
+        "evidence-missing",
+        "resume-available"
+      ],
+      "surfaces": [
+        "sidebar-badge",
+        "tab-badge",
+        "task-row-highlight",
+        "review-queue-badge",
+        "activity-timeline-event",
+        "resume-banner"
+      ],
+      "routesTo": [
+        "task-progress",
+        "review-queue",
+        "diff-review",
+        "evidence-inspector",
+        "activity-timeline",
+        "session-snapshot"
+      ],
+      "requiresOpenTarget": true,
+      "requiresVisibleReason": true,
+      "requiresVisibleTimestamp": true,
+      "requiresKeyboardAccess": true,
+      "usesNativeControls": true,
+      "usesActionBar": true,
+      "usesActivityTimeline": true,
+      "usesSessionSnapshot": true,
+      "usesEvidenceInspector": true,
+      "usesDiffReview": true,
+      "metadataOnly": true,
+      "hashOnlyReferences": true,
+      "redactsRawPayload": true,
+      "rawContentInFixture": false,
+      "previewContentInFixture": false,
+      "transcriptContentInFixture": false,
+      "systemNotificationRuntime": "not-started",
+      "cloudPush": false,
+      "autoOpenAllowed": false,
+      "autoApplyAllowed": false,
+      "mainDocumentMutationAllowed": false,
+      "failureBehavior": "fail-closed-user-visible",
+      "runtimeAttentionRoutingImplementation": "not-started"
+    },
+    "nativeStyle": {
+      "layout": "sidebar-workbench",
+      "density": "compact-utility",
+      "surfaces": [
+        "composer",
+        "panel-tabs",
+        "task-rail",
+        "artifact-rail",
+        "review-queue",
+        "evidence-inspector",
+        "preview-matrix",
+        "action-bar"
+      ],
+      "navigation": "segmented-tabs",
+      "usesNativeControls": true,
+      "stableDimensions": [
+        "toolbar-buttons",
+        "tab-badges",
+        "task-rows",
+        "review-rows",
+        "evidence-rows",
+        "preview-tiles"
+      ],
+      "textOverflowPolicy": "wrap-or-ellipsize-no-overlap",
+      "cardPileLayout": false,
+      "modalOnly": false,
+      "marketingHero": false,
+      "keyboardAccessible": true,
+      "focusReturn": true,
+      "metadataOnly": true,
+      "rawContentInFixture": false,
+      "previewContentInFixture": false,
+      "transcriptContentInFixture": false,
+      "mainDocumentMutationAllowed": false,
+      "autoApplyAllowed": false,
+      "failureBehavior": "fail-closed-user-visible",
+      "runtimeNativeStyleImplementation": "not-started"
+    }
+  },
+  "output": {
+    "kind": "apply-plan",
+    "actionKind": "ParagraphAction",
+    "applyPlanRuntimeValidation": true,
+    "v2TokenLock": {
+      "ParagraphAction": 7,
+      "CellAction": 5,
+      "SlideElementAction": 4
+    },
+    "rendering": {
+      "format": "markdown-subset",
+      "renderer": "native-rich-text",
+      "allowedBlocks": [
+        "paragraph",
+        "heading",
+        "list",
+        "code-fence",
+        "table"
+      ],
+      "webView": false,
+      "allowsRawHtml": false,
+      "allowsRemoteImages": false
+    }
+  },
+  "approval": {
+    "humanRequired": true,
+    "mainDocumentUnchangedUntilApproval": true
+  },
+  "evidence": {
+    "usesV2EvidenceRecord": true,
+    "storesPromptContent": false,
+    "localOnly": true
+  },
+  "gates": {
+    "runtimeImplementation": "not-started",
+    "requiresExplicitUserAuthorization": true
+  }
+}

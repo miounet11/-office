@@ -1,0 +1,122 @@
+{
+  "id": "v3-eval-report-contract-self-test",
+  "version": "0.1.0",
+  "generatedAt": "2026-06-10T10:05:00+00:00",
+  "scope": {
+    "mode": "v3-contract-sweep",
+    "wave": "all",
+    "contractOnly": true,
+    "runtimeImplementation": "not-started"
+  },
+  "baseline": {
+    "v15StrictRoundtrip": "27/27",
+    "v2Sweep": "H1-H10",
+    "v3Harnesses": ["H8", "H9", "H10", "H11", "H12"],
+    "v3TotalChecks": 52
+  },
+  "harnesses": [
+    {
+      "id": "H8",
+      "name": "connector-manifest contract",
+      "wave": "w2",
+      "status": "passed",
+      "checks": 16,
+      "contractType": "schema-fixture",
+      "command": "bash tests/v3-connector-manifest-contract-test.sh",
+      "artifacts": [
+        "docs/schemas/connector-manifest.schema.json",
+        "docs/qa/fixtures/v3/connector/"
+      ]
+    },
+    {
+      "id": "H9",
+      "name": "eval-baseline seed",
+      "wave": "w5",
+      "status": "passed",
+      "checks": 9,
+      "contractType": "schema-fixture",
+      "command": "bash tests/v3-eval-baseline-test.sh",
+      "artifacts": [
+        "docs/schemas/eval-capability-fixture.schema.json",
+        "docs/schemas/eval-expected-patch.schema.json",
+        "docs/schemas/eval-regression-fixture.schema.json",
+        "docs/qa/fixtures/v3/eval/"
+      ]
+    },
+    {
+      "id": "H10",
+      "name": "LocalCloud no-egress contract",
+      "wave": "w8",
+      "status": "passed",
+      "checks": 10,
+      "contractType": "config-contract",
+      "command": "bash tests/v3-local-cloud-no-egress-test.sh",
+      "artifacts": [
+        "docs/schemas/localcloud-config.schema.json",
+        "docs/qa/fixtures/v3/localcloud/"
+      ]
+    },
+    {
+      "id": "H11",
+      "name": "perf-baseline target contract",
+      "wave": "w9",
+      "status": "passed",
+      "checks": 8,
+      "contractType": "target-contract",
+      "command": "bash tests/v3-perf-baseline-test.sh",
+      "artifacts": [
+        "docs/schemas/perf-baseline-targets.schema.json",
+        "docs/qa/fixtures/v3/perf/"
+      ]
+    },
+    {
+      "id": "H12",
+      "name": "crash-recovery target contract",
+      "wave": "w9",
+      "status": "passed",
+      "checks": 9,
+      "contractType": "target-contract",
+      "command": "bash tests/v3-crash-recovery-test.sh",
+      "artifacts": [
+        "docs/schemas/crash-recovery-targets.schema.json",
+        "docs/qa/fixtures/v3/recovery/"
+      ]
+    }
+  ],
+  "summary": {
+    "status": "passed",
+    "totalChecks": 52,
+    "failedHarnesses": 0,
+    "pendingHarnesses": 0,
+    "regressions": false
+  },
+  "artifacts": {
+    "jsonReport": "docs/product/v3/eval-reports/v3-contract-self-test.json",
+    "markdownReport": "docs/product/v3/eval-reports/template.md",
+    "schema": "docs/schemas/eval-report.schema.json",
+    "sourceFixtureRoots": [
+      "docs/qa/fixtures/v3/connector/",
+      "docs/qa/fixtures/v3/eval/",
+      "docs/qa/fixtures/v3/localcloud/",
+      "docs/qa/fixtures/v3/perf/",
+      "docs/qa/fixtures/v3/recovery/"
+    ]
+  },
+  "archivePolicy": {
+    "policyDoc": "docs/product/v3/w5-report-archive-policy.md",
+    "perReleaseDirectory": "docs/product/v3/eval-reports/<release>/",
+    "gitTrackedReports": ["json", "markdown"],
+    "heavyArtifactsInGit": false,
+    "largeArtifactPolicy": "release-artifact-or-lfs",
+    "requiresLfsDecisionForLargeArtifacts": true,
+    "maxGitReportBytes": 262144,
+    "runtimeArchiveAutomation": "not-started"
+  },
+  "gates": {
+    "blocksReleaseOnFailure": true,
+    "requiresV2RegressionGreen": true,
+    "allowsPublicEgress": false,
+    "requiresRuntimeSamplesBeforeGA": true,
+    "publishable": false
+  }
+}

@@ -1,0 +1,92 @@
+{
+  "id": "errux-1111222233334444",
+  "schemaVersion": "v3-error-recovery-ux/0.1",
+  "createdAt": "2026-06-10T16:00:00Z",
+  "policy": {
+    "presentation": "inline-guidance",
+    "nextStepRequired": true,
+    "evidenceOpenable": true,
+    "deadEndAllowed": false,
+    "mainDocumentUnchangedUntilApply": true,
+    "humanReadableCauseRequired": true
+  },
+  "scenarios": [
+    {
+      "kind": "provider-timeout",
+      "surface": "writer",
+      "causeToken": "error.provider-timeout",
+      "nextSteps": ["retry", "choose-local-model", "open-evidence", "export-diagnostics"],
+      "evidence": {
+        "openable": true,
+        "evidenceId": "ev-1100000000000001",
+        "diagnosticsExportable": true
+      },
+      "recoveryGuarantee": {
+        "mainDocumentUnchanged": true,
+        "canRetry": true,
+        "canRollback": true,
+        "requiresUserChoice": true
+      }
+    },
+    {
+      "kind": "connector-auth-expired",
+      "surface": "calc",
+      "causeToken": "error.connector-auth-expired",
+      "nextSteps": ["reconnect-connector", "open-evidence", "open-help", "export-diagnostics"],
+      "evidence": {
+        "openable": true,
+        "evidenceId": "ev-1100000000000002",
+        "diagnosticsExportable": true
+      },
+      "recoveryGuarantee": {
+        "mainDocumentUnchanged": true,
+        "canRetry": true,
+        "canRollback": true,
+        "requiresUserChoice": true
+      }
+    },
+    {
+      "kind": "policy-denied",
+      "surface": "companion",
+      "causeToken": "error.policy-denied",
+      "nextSteps": ["request-approval", "open-evidence", "open-help", "export-diagnostics"],
+      "evidence": {
+        "openable": true,
+        "evidenceId": "ev-1100000000000003",
+        "diagnosticsExportable": true
+      },
+      "recoveryGuarantee": {
+        "mainDocumentUnchanged": true,
+        "canRetry": true,
+        "canRollback": true,
+        "requiresUserChoice": true
+      }
+    },
+    {
+      "kind": "patch-apply-failed",
+      "surface": "impress",
+      "causeToken": "error.patch-apply-failed",
+      "nextSteps": ["rollback-preview", "retry", "open-evidence", "export-diagnostics"],
+      "evidence": {
+        "openable": true,
+        "evidenceId": "ev-1100000000000004",
+        "diagnosticsExportable": true
+      },
+      "recoveryGuarantee": {
+        "mainDocumentUnchanged": true,
+        "canRetry": true,
+        "canRollback": true,
+        "requiresUserChoice": true
+      }
+    }
+  ],
+  "evidence": {
+    "required": ["error-recovery-ux", "inline-guidance", "next-step-action", "openable-evidence", "diagnostics-export", "evidence-record", "v2-regression-green"],
+    "evidenceIds": ["ev-1100000000000005"]
+  },
+  "gates": {
+    "blocksGA": true,
+    "requiresV2RegressionGreen": true,
+    "runtimeImplementation": "not-started"
+  }
+}

@@ -1,0 +1,151 @@
+{
+  "taskId": "agt-0000000000000b09",
+  "schemaVersion": "v3-agent-step-plan/0.1",
+  "goal": "Invalid plan that enables public prompt egress and runtime execution.",
+  "createdAt": "2026-06-10T10:31:00Z",
+  "ownerSurface": "writer",
+  "maxSteps": 2,
+  "approvalMode": "whole-task",
+  "approvalPolicy": {
+    "policyDoc": "docs/product/v3/w6-approval-policy.md",
+    "defaultMode": "whole-task",
+    "selectedModeSource": "default-whole-task",
+    "perStepRequiresExplicitUserChoice": true,
+    "implicitPerStepPromptsAllowed": false,
+    "promptStrategy": "final-review-only",
+    "reviewStepRequired": true,
+    "approvalEvidence": "user-approval",
+    "runtimeApprovalUiImplementation": "not-started"
+  },
+  "resumePolicy": {
+    "policyDoc": "docs/product/v3/w6-resume-policy.md",
+    "crossSessionResumeAllowed": true,
+    "resumePoint": "evidence-complete-checkpoint",
+    "requiresUserConfirmation": true,
+    "requiresDocumentHashMatch": true,
+    "requiresShadowSnapshot": true,
+    "requiresAuditReplay": true,
+    "autoResumeAllowed": false,
+    "staleCheckpointBehavior": "fail-closed-user-visible",
+    "checkpointEvidence": "required",
+    "runtimeResumeImplementation": "not-started"
+  },
+  "dataBoundary": {
+    "defaultServiceMode": "private",
+    "allowPublicEgress": false,
+    "requiresPolicyPreflight": true
+  },
+  "sandbox": {
+    "mode": "shadow-doc",
+    "mergeTarget": "main-doc",
+    "failureIsolation": "discard-step-branch"
+  },
+  "shadowDocPolicy": {
+    "policyDoc": "docs/product/v3/w6-shadow-doc-policy.md",
+    "shadowDocMode": "per-step-compatible-branch",
+    "writerCompatibilityTarget": "v2-w3-swdocshell",
+    "requiresExistingSwDocShellCompatibility": true,
+    "createsNewDocShellType": false,
+    "mergePath": "v2-apply-plan-runtime",
+    "mainDocMutationBeforeApprovalAllowed": false,
+    "mergeRequiresApproval": true,
+    "runtimeShadowDocImplementation": "not-started"
+  },
+  "dependencyPolicy": {
+    "policyDoc": "docs/product/v3/w6-dependency-policy.md",
+    "graphType": "forward-only-dag",
+    "executionOrder": "topological-index",
+    "allowsFanIn": true,
+    "allowsFanOut": true,
+    "allowsCycles": false,
+    "allowsFutureDependencies": false,
+    "allowsParallelRuntime": false,
+    "runtimeSchedulerImplementation": "not-started"
+  },
+  "plannerValidation": {
+    "policyDoc": "docs/product/v3/w6-plan-validation-policy.md",
+    "validationPhase": "before-execution",
+    "onInvalidPlan": "fail-closed-user-visible",
+    "blocksExecution": true,
+    "autoRetryAllowed": false,
+    "autoSimplificationAllowed": false,
+    "userRetryAllowed": true,
+    "invalidPlanEvidence": "required",
+    "runtimePlannerImplementation": "not-started"
+  },
+  "promptPolicy": {
+    "policyDoc": "docs/product/v3/w6-prompt-library.md",
+    "promptSetId": "w6-plan-act-observe-v1",
+    "promptSetVersion": "draft",
+    "plannerPromptId": "planner-v2",
+    "actorPromptId": "actor-v2",
+    "observerPromptId": "observer-v2",
+    "deterministicParameters": {
+      "temperature": 0.7,
+      "topP": 0.9,
+      "seedRequired": false
+    },
+    "publicEgressAllowed": true,
+    "runtimePromptExecution": "started"
+  },
+  "tokenLock": {
+    "patchStepMustUseApplyPlanRuntime": true,
+    "tokenCounts": {
+      "ParagraphAction": 7,
+      "CellAction": 5,
+      "SlideElementAction": 4
+    }
+  },
+  "steps": [
+    {
+      "index": 0,
+      "kind": "patch",
+      "title": "Patch draft",
+      "description": "Create a Writer patch while claiming prompt execution has already started.",
+      "dependencies": [],
+      "expectedOutput": {
+        "kind": "apply-plan-runtime",
+        "schemaRef": "apply-plan-runtime"
+      },
+      "evidence": [
+        "policy-decision",
+        "provider-call",
+        "shadow-doc-diff",
+        "apply-plan-runtime-validated"
+      ],
+      "policy": {
+        "preflight": true,
+        "auditLog": true
+      }
+    },
+    {
+      "index": 1,
+      "kind": "review",
+      "title": "Review",
+      "description": "Ask for approval after the invalid prompt policy drift.",
+      "dependencies": [
+        0
+      ],
+      "expectedOutput": {
+        "kind": "approval-decision",
+        "schemaRef": "user-approval"
+      },
+      "evidence": [
+        "policy-decision",
+        "user-approval"
+      ],
+      "policy": {
+        "preflight": true,
+        "auditLog": true
+      }
+    }
+  ],
+  "evidence": {
+    "requiredForEveryStep": [
+      "policy-decision",
+      "evidence-record"
+    ],
+    "auditLogRequired": true,
+    "blocksMergeOnMissingEvidence": true
+  }
+}

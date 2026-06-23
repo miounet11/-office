@@ -1,0 +1,48 @@
+{
+  "id": "car-2000000000000002",
+  "schemaVersion": "v3-companion-approval-request/0.1",
+  "createdAt": "2026-06-10T12:16:00Z",
+  "expiresAt": "2026-06-10T12:31:00Z",
+  "taskId": "agt-2000000000000002",
+  "summaryId": "cds-2000000000000002",
+  "pairingId": "cpt-2000000000000002",
+  "tenant": "acme",
+  "workspace": "sales-team",
+  "actor": {
+    "userId": "bruno",
+    "role": "user"
+  },
+  "channel": "companion",
+  "request": {
+    "state": "failure-recovery",
+    "availableActions": ["reject", "rollback"],
+    "requiresOnline": true
+  },
+  "transport": {
+    "mode": "enterprise-push",
+    "localGatewayPort": 17801,
+    "publicEgress": true,
+    "cloudPushOptIn": false
+  },
+  "approval": {
+    "biometricRequired": true,
+    "secondConfirmRequired": true,
+    "mobileMayEdit": false,
+    "decisionWritesAudit": true
+  },
+  "dataBoundary": {
+    "storesDocumentContent": false,
+    "storesDiffSummaryOnly": true,
+    "allowApprovalOffline": false
+  },
+  "audit": {
+    "auditLogRequired": true,
+    "actorRole": "user",
+    "channel": "companion",
+    "evidenceRequired": true
+  },
+  "evidence": {
+    "required": ["companion-approval-request", "user-approval", "biometric-confirmation", "audit-log-entry", "evidence-record"],
+    "evidenceIds": ["ev-2000000000000004"]
+  }
+}

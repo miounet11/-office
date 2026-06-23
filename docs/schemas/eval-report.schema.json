@@ -1,0 +1,224 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://kqoffice.example.com/schemas/eval-report.schema.json",
+  "title": "V3 Eval Report",
+  "description": "Markdown/JSON report contract for V3 W5 eval harness output. Draft; covered by the V3 W5 report self-test before runtime scoring exists.",
+  "type": "object",
+  "required": ["id", "version", "generatedAt", "scope", "baseline", "harnesses", "summary", "artifacts", "archivePolicy", "gates"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^v3-eval-report-[a-z0-9._-]+$"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "generatedAt": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(Z|[+-][0-9]{2}:[0-9]{2})$"
+    },
+    "scope": {
+      "type": "object",
+      "required": ["mode", "wave", "contractOnly", "runtimeImplementation"],
+      "additionalProperties": false,
+      "properties": {
+        "mode": {
+          "enum": ["v3-contract-sweep", "nightly", "release-candidate"]
+        },
+        "wave": {
+          "enum": ["w1", "w2", "w3", "w4", "w5", "w6", "w7", "w8", "w9", "all"]
+        },
+        "contractOnly": {
+          "type": "boolean"
+        },
+        "runtimeImplementation": {
+          "enum": ["not-started", "partial", "active"]
+        }
+      }
+    },
+    "baseline": {
+      "type": "object",
+      "required": ["v15StrictRoundtrip", "v2Sweep", "v3Harnesses", "v3TotalChecks"],
+      "additionalProperties": false,
+      "properties": {
+        "v15StrictRoundtrip": {
+          "const": "27/27"
+        },
+        "v2Sweep": {
+          "const": "H1-H10"
+        },
+        "v3Harnesses": {
+          "type": "array",
+          "minItems": 5,
+          "maxItems": 5,
+          "uniqueItems": true,
+          "items": {
+            "enum": ["H8", "H9", "H10", "H11", "H12"]
+          }
+        },
+        "v3TotalChecks": {
+          "type": "integer",
+          "minimum": 52
+        }
+      }
+    },
+    "harnesses": {
+      "type": "array",
+      "minItems": 5,
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "wave", "status", "checks", "contractType", "command", "artifacts"],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "enum": ["H8", "H9", "H10", "H11", "H12"]
+          },
+          "name": {
+            "type": "string",
+            "minLength": 4,
+            "maxLength": 96
+          },
+          "wave": {
+            "enum": ["w2", "w5", "w8", "w9"]
+          },
+          "status": {
+            "enum": ["passed", "failed", "pending", "blocked"]
+          },
+          "checks": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "contractType": {
+            "enum": ["schema-fixture", "config-contract", "target-contract"]
+          },
+          "command": {
+            "type": "string",
+            "minLength": 8
+          },
+          "artifacts": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "required": ["status", "totalChecks", "failedHarnesses", "pendingHarnesses", "regressions"],
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "enum": ["passed", "failed", "blocked"]
+        },
+        "totalChecks": {
+          "type": "integer",
+          "minimum": 52
+        },
+        "failedHarnesses": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "pendingHarnesses": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "regressions": {
+          "type": "boolean"
+        }
+      }
+    },
+    "artifacts": {
+      "type": "object",
+      "required": ["jsonReport", "markdownReport", "schema", "sourceFixtureRoots"],
+      "additionalProperties": false,
+      "properties": {
+        "jsonReport": {
+          "type": "string",
+          "minLength": 1
+        },
+        "markdownReport": {
+          "type": "string",
+          "minLength": 1
+        },
+        "schema": {
+          "const": "docs/schemas/eval-report.schema.json"
+        },
+        "sourceFixtureRoots": {
+          "type": "array",
+          "minItems": 5,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "archivePolicy": {
+      "type": "object",
+      "required": ["policyDoc", "perReleaseDirectory", "gitTrackedReports", "heavyArtifactsInGit", "largeArtifactPolicy", "requiresLfsDecisionForLargeArtifacts", "maxGitReportBytes", "runtimeArchiveAutomation"],
+      "additionalProperties": false,
+      "properties": {
+        "policyDoc": {
+          "const": "docs/product/v3/w5-report-archive-policy.md"
+        },
+        "perReleaseDirectory": {
+          "const": "docs/product/v3/eval-reports/<release>/"
+        },
+        "gitTrackedReports": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "uniqueItems": true,
+          "items": {
+            "enum": ["json", "markdown"]
+          }
+        },
+        "heavyArtifactsInGit": {
+          "const": false
+        },
+        "largeArtifactPolicy": {
+          "const": "release-artifact-or-lfs"
+        },
+        "requiresLfsDecisionForLargeArtifacts": {
+          "const": true
+        },
+        "maxGitReportBytes": {
+          "const": 262144
+        },
+        "runtimeArchiveAutomation": {
+          "const": "not-started"
+        }
+      }
+    },
+    "gates": {
+      "type": "object",
+      "required": ["blocksReleaseOnFailure", "requiresV2RegressionGreen", "allowsPublicEgress", "requiresRuntimeSamplesBeforeGA", "publishable"],
+      "additionalProperties": false,
+      "properties": {
+        "blocksReleaseOnFailure": {
+          "type": "boolean"
+        },
+        "requiresV2RegressionGreen": {
+          "const": true
+        },
+        "allowsPublicEgress": {
+          "const": false
+        },
+        "requiresRuntimeSamplesBeforeGA": {
+          "const": true
+        },
+        "publishable": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,413 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://kqoffice.example.com/schemas/agent-step-plan.schema.json",
+  "title": "V3 Agent Step Plan",
+  "description": "Plan-Act-Observe step-plan contract for V3 W6. Draft; covered by the W6 agent-step-plan self-test before gated agent runtime implementation exists.",
+  "type": "object",
+  "required": ["taskId", "schemaVersion", "goal", "createdAt", "ownerSurface", "maxSteps", "approvalMode", "approvalPolicy", "resumePolicy", "dataBoundary", "sandbox", "shadowDocPolicy", "dependencyPolicy", "plannerValidation", "promptPolicy", "tokenLock", "steps", "evidence"],
+  "additionalProperties": false,
+  "properties": {
+    "taskId": {
+      "type": "string",
+      "pattern": "^agt-[0-9a-f]{16}$"
+    },
+    "schemaVersion": {
+      "const": "v3-agent-step-plan/0.1"
+    },
+    "goal": {
+      "type": "string",
+      "minLength": 8,
+      "maxLength": 1024
+    },
+    "createdAt": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+    },
+    "ownerSurface": {
+      "enum": ["writer", "calc", "impress"]
+    },
+    "maxSteps": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 25
+    },
+    "approvalMode": {
+      "enum": ["per-step", "whole-task"]
+    },
+    "approvalPolicy": {
+      "type": "object",
+      "required": ["policyDoc", "defaultMode", "selectedModeSource", "perStepRequiresExplicitUserChoice", "implicitPerStepPromptsAllowed", "promptStrategy", "reviewStepRequired", "approvalEvidence", "runtimeApprovalUiImplementation"],
+      "additionalProperties": false,
+      "properties": {
+        "policyDoc": {
+          "const": "docs/product/v3/w6-approval-policy.md"
+        },
+        "defaultMode": {
+          "const": "whole-task"
+        },
+        "selectedModeSource": {
+          "enum": ["default-whole-task", "explicit-user-choice"]
+        },
+        "perStepRequiresExplicitUserChoice": {
+          "const": true
+        },
+        "implicitPerStepPromptsAllowed": {
+          "const": false
+        },
+        "promptStrategy": {
+          "enum": ["final-review-only", "explicit-per-step-review"]
+        },
+        "reviewStepRequired": {
+          "const": true
+        },
+        "approvalEvidence": {
+          "const": "user-approval"
+        },
+        "runtimeApprovalUiImplementation": {
+          "const": "not-started"
+        }
+      }
+    },
+    "resumePolicy": {
+      "type": "object",
+      "required": ["policyDoc", "crossSessionResumeAllowed", "resumePoint", "requiresUserConfirmation", "requiresDocumentHashMatch", "requiresShadowSnapshot", "requiresAuditReplay", "autoResumeAllowed", "staleCheckpointBehavior", "checkpointEvidence", "runtimeResumeImplementation"],
+      "additionalProperties": false,
+      "properties": {
+        "policyDoc": {
+          "const": "docs/product/v3/w6-resume-policy.md"
+        },
+        "crossSessionResumeAllowed": {
+          "const": true
+        },
+        "resumePoint": {
+          "const": "evidence-complete-checkpoint"
+        },
+        "requiresUserConfirmation": {
+          "const": true
+        },
+        "requiresDocumentHashMatch": {
+          "const": true
+        },
+        "requiresShadowSnapshot": {
+          "const": true
+        },
+        "requiresAuditReplay": {
+          "const": true
+        },
+        "autoResumeAllowed": {
+          "const": false
+        },
+        "staleCheckpointBehavior": {
+          "const": "fail-closed-user-visible"
+        },
+        "checkpointEvidence": {
+          "const": "required"
+        },
+        "runtimeResumeImplementation": {
+          "const": "not-started"
+        }
+      }
+    },
+    "dataBoundary": {
+      "type": "object",
+      "required": ["defaultServiceMode", "allowPublicEgress", "requiresPolicyPreflight"],
+      "additionalProperties": false,
+      "properties": {
+        "defaultServiceMode": {
+          "enum": ["offline", "private"]
+        },
+        "allowPublicEgress": {
+          "const": false
+        },
+        "requiresPolicyPreflight": {
+          "const": true
+        }
+      }
+    },
+    "sandbox": {
+      "type": "object",
+      "required": ["mode", "mergeTarget", "failureIsolation"],
+      "additionalProperties": false,
+      "properties": {
+        "mode": {
+          "const": "shadow-doc"
+        },
+        "mergeTarget": {
+          "const": "main-doc"
+        },
+        "failureIsolation": {
+          "const": "discard-step-branch"
+        }
+      }
+    },
+    "shadowDocPolicy": {
+      "type": "object",
+      "required": ["policyDoc", "shadowDocMode", "writerCompatibilityTarget", "requiresExistingSwDocShellCompatibility", "createsNewDocShellType", "mergePath", "mainDocMutationBeforeApprovalAllowed", "mergeRequiresApproval", "runtimeShadowDocImplementation"],
+      "additionalProperties": false,
+      "properties": {
+        "policyDoc": {
+          "const": "docs/product/v3/w6-shadow-doc-policy.md"
+        },
+        "shadowDocMode": {
+          "const": "per-step-compatible-branch"
+        },
+        "writerCompatibilityTarget": {
+          "const": "v2-w3-swdocshell"
+        },
+        "requiresExistingSwDocShellCompatibility": {
+          "const": true
+        },
+        "createsNewDocShellType": {
+          "const": false
+        },
+        "mergePath": {
+          "const": "v2-apply-plan-runtime"
+        },
+        "mainDocMutationBeforeApprovalAllowed": {
+          "const": false
+        },
+        "mergeRequiresApproval": {
+          "const": true
+        },
+        "runtimeShadowDocImplementation": {
+          "const": "not-started"
+        }
+      }
+    },
+    "dependencyPolicy": {
+      "type": "object",
+      "required": ["policyDoc", "graphType", "executionOrder", "allowsFanIn", "allowsFanOut", "allowsCycles", "allowsFutureDependencies", "allowsParallelRuntime", "runtimeSchedulerImplementation"],
+      "additionalProperties": false,
+      "properties": {
+        "policyDoc": {
+          "const": "docs/product/v3/w6-dependency-policy.md"
+        },
+        "graphType": {
+          "const": "forward-only-dag"
+        },
+        "executionOrder": {
+          "const": "topological-index"
+        },
+        "allowsFanIn": {
+          "const": true
+        },
+        "allowsFanOut": {
+          "const": true
+        },
+        "allowsCycles": {
+          "const": false
+        },
+        "allowsFutureDependencies": {
+          "const": false
+        },
+        "allowsParallelRuntime": {
+          "const": false
+        },
+        "runtimeSchedulerImplementation": {
+          "const": "not-started"
+        }
+      }
+    },
+    "plannerValidation": {
+      "type": "object",
+      "required": ["policyDoc", "validationPhase", "onInvalidPlan", "blocksExecution", "autoRetryAllowed", "autoSimplificationAllowed", "userRetryAllowed", "invalidPlanEvidence", "runtimePlannerImplementation"],
+      "additionalProperties": false,
+      "properties": {
+        "policyDoc": {
+          "const": "docs/product/v3/w6-plan-validation-policy.md"
+        },
+        "validationPhase": {
+          "const": "before-execution"
+        },
+        "onInvalidPlan": {
+          "const": "fail-closed-user-visible"
+        },
+        "blocksExecution": {
+          "const": true
+        },
+        "autoRetryAllowed": {
+          "const": false
+        },
+        "autoSimplificationAllowed": {
+          "const": false
+        },
+        "userRetryAllowed": {
+          "const": true
+        },
+        "invalidPlanEvidence": {
+          "const": "required"
+        },
+        "runtimePlannerImplementation": {
+          "const": "not-started"
+        }
+      }
+    },
+    "promptPolicy": {
+      "type": "object",
+      "required": ["policyDoc", "promptSetId", "promptSetVersion", "plannerPromptId", "actorPromptId", "observerPromptId", "deterministicParameters", "publicEgressAllowed", "runtimePromptExecution"],
+      "additionalProperties": false,
+      "properties": {
+        "policyDoc": {
+          "const": "docs/product/v3/w6-prompt-library.md"
+        },
+        "promptSetId": {
+          "const": "w6-plan-act-observe-v1"
+        },
+        "promptSetVersion": {
+          "const": "v1"
+        },
+        "plannerPromptId": {
+          "const": "planner-v1"
+        },
+        "actorPromptId": {
+          "const": "actor-v1"
+        },
+        "observerPromptId": {
+          "const": "observer-v1"
+        },
+        "deterministicParameters": {
+          "type": "object",
+          "required": ["temperature", "topP", "seedRequired"],
+          "additionalProperties": false,
+          "properties": {
+            "temperature": {
+              "const": 0
+            },
+            "topP": {
+              "const": 1
+            },
+            "seedRequired": {
+              "const": true
+            }
+          }
+        },
+        "publicEgressAllowed": {
+          "const": false
+        },
+        "runtimePromptExecution": {
+          "const": "not-started"
+        }
+      }
+    },
+    "tokenLock": {
+      "type": "object",
+      "required": ["patchStepMustUseApplyPlanRuntime", "tokenCounts"],
+      "additionalProperties": false,
+      "properties": {
+        "patchStepMustUseApplyPlanRuntime": {
+          "const": true
+        },
+        "tokenCounts": {
+          "type": "object",
+          "required": ["ParagraphAction", "CellAction", "SlideElementAction"],
+          "additionalProperties": false,
+          "properties": {
+            "ParagraphAction": {
+              "const": 7
+            },
+            "CellAction": {
+              "const": 5
+            },
+            "SlideElementAction": {
+              "const": 4
+            }
+          }
+        }
+      }
+    },
+    "steps": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 25,
+      "items": {
+        "type": "object",
+        "required": ["index", "kind", "title", "description", "dependencies", "expectedOutput", "evidence", "policy"],
+        "additionalProperties": false,
+        "properties": {
+          "index": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 24
+          },
+          "kind": {
+            "enum": ["fetch", "query", "transform", "patch", "review"]
+          },
+          "title": {
+            "type": "string",
+            "minLength": 4,
+            "maxLength": 96
+          },
+          "description": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 512
+          },
+          "dependencies": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 24
+            }
+          },
+          "expectedOutput": {
+            "type": "object",
+            "required": ["kind", "schemaRef"],
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "enum": ["connector-payload", "knowledge-chunks", "analysis-summary", "apply-plan-runtime", "approval-decision"]
+              },
+              "schemaRef": {
+                "enum": ["connector-manifest", "knowledge-index-result", "agent-step-result", "apply-plan-runtime", "user-approval"]
+              }
+            }
+          },
+          "evidence": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "enum": ["provider-call", "connector-fetch", "kb-query", "policy-decision", "user-approval", "shadow-doc-diff", "apply-plan-runtime-validated"]
+            }
+          },
+          "policy": {
+            "type": "object",
+            "required": ["preflight", "auditLog"],
+            "additionalProperties": false,
+            "properties": {
+              "preflight": {
+                "const": true
+              },
+              "auditLog": {
+                "const": true
+              }
+            }
+          }
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "required": ["requiredForEveryStep", "auditLogRequired", "blocksMergeOnMissingEvidence"],
+      "additionalProperties": false,
+      "properties": {
+        "requiredForEveryStep": {
+          "type": "array",
+          "minItems": 2,
+          "uniqueItems": true,
+          "items": {
+            "enum": ["policy-decision", "evidence-record"]
+          }
+        },
+        "auditLogRequired": {
+          "const": true
+        },
+        "blocksMergeOnMissingEvidence": {
+          "const": true
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "query": {
+    "id": "kbq-0000000000000e03",
+    "schemaVersion": "v3-knowledge-index-query/0.1",
+    "createdAt": "2026-06-10T11:22:00Z",
+    "workspace": "research",
+    "query": {
+      "intent": "semantic",
+      "textHash": "4444444444444444444444444444444444444444444444444444444444444444",
+      "language": "mixed",
+      "topK": 10,
+      "includeMetadata": false,
+      "storesQueryText": false
+    },
+    "retrieval": {
+      "mode": "hybrid",
+      "sourceKinds": ["document"],
+      "backends": ["sqlite-fts5", "lancedb-local"],
+      "rerank": "bge-m3",
+      "timeoutMs": 500
+    },
+    "boundary": {
+      "serviceMode": "offline",
+      "publicEgress": false,
+      "localEmbedding": true,
+      "tenantPolicyRequired": true
+    },
+    "evidence": {
+      "required": ["policy-decision", "no-public-egress", "kb-query"],
+      "evidenceIds": ["ev-0000000000000e09"]
+    }
+  },
+  "result": {
+    "id": "kbr-0000000000000e03",
+    "schemaVersion": "v3-knowledge-index-result/0.1",
+    "queryId": "kbq-0000000000000e03",
+    "createdAt": "2026-06-10T11:22:01Z",
+    "workspace": "research",
+    "summary": {
+      "resultCount": 1,
+      "latencyMs": 411,
+      "retrievalMode": "hybrid",
+      "truncated": false,
+      "storesDocumentContent": false
+    },
+    "chunks": [
+      {
+        "chunkId": "kbch-0000000000000d02",
+        "rank": 1,
+        "scoreBasisPoints": 9022,
+        "sourceKind": "document",
+        "textHash": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+        "snippetHash": "5555555555555555555555555555555555555555555555555555555555555555",
+        "evidenceIds": ["ev-0000000000000e10"]
+      }
+    ],
+    "boundary": {
+      "publicEgress": false,
+      "hashAlgorithm": "sha256",
+      "storesDocumentContent": false
+    },
+    "evidence": {
+      "required": ["kb-query", "chunk-read", "no-public-egress"],
+      "evidenceIds": ["ev-0000000000000e11"]
+    }
+  }
+}

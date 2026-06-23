@@ -1,0 +1,79 @@
+{
+  "stepResult": {
+    "id": "agsr-0000000000001002",
+    "schemaVersion": "v3-agent-step-result/0.1",
+    "taskId": "agt-0000000000001002",
+    "stepIndex": 4,
+    "kind": "review",
+    "status": "completed",
+    "startedAt": "2026-06-10T12:01:00Z",
+    "finishedAt": "2026-06-10T12:01:08Z",
+    "output": {
+      "kind": "approval-decision",
+      "schemaRef": "user-approval",
+      "refId": "appr-0000000000001002",
+      "storesDocumentContent": false,
+      "applyPlanRuntimeValidated": false
+    },
+    "sandbox": {
+      "mode": "shadow-doc",
+      "branchId": "shadow-0000000000001002",
+      "mainDocumentUnchanged": true,
+      "failureIsolation": "discard-step-branch"
+    },
+    "policy": {
+      "preflight": true,
+      "auditLog": true,
+      "decision": "require-approval"
+    },
+    "evidence": {
+      "required": ["policy-decision", "audit-log-entry", "evidence-record", "user-approval"],
+      "evidenceIds": ["ev-0000000000001005", "ev-0000000000001006"]
+    },
+    "failure": {
+      "code": "none",
+      "recoverable": false,
+      "retryAllowed": false
+    }
+  },
+  "taskState": {
+    "taskId": "agt-0000000000001002",
+    "schemaVersion": "v3-agent-task-state/0.1",
+    "updatedAt": "2026-06-10T12:01:09Z",
+    "ownerSurface": "calc",
+    "state": "awaiting-review",
+    "currentStepIndex": 4,
+    "maxSteps": 5,
+    "progress": {
+      "completedSteps": 5,
+      "failedSteps": 0,
+      "cancelledSteps": 0
+    },
+    "cowork": {
+      "usesV2AsyncCowork": true,
+      "taskKind": "agent-multistep",
+      "taskState": "awaiting-review"
+    },
+    "approval": {
+      "mode": "whole-task",
+      "wholeTaskApprovalRequired": true,
+      "perStepApprovalSupported": true
+    },
+    "recovery": {
+      "softCancelSupported": true,
+      "hardCancelSupported": true,
+      "userDecisionRequired": true,
+      "mainDocumentUnchangedOnFailure": true
+    },
+    "merge": {
+      "target": "main-doc",
+      "requiresApproval": true,
+      "requiresApplyPlanRuntimeValidation": true
+    },
+    "evidence": {
+      "auditLogRequired": true,
+      "requiredForEveryStep": ["policy-decision", "evidence-record", "audit-log-entry"],
+      "taskEvidenceIds": ["ev-0000000000001007"]
+    }
+  }
+}

@@ -1,0 +1,157 @@
+{
+  "id": "relga-1111222233334444",
+  "schemaVersion": "v3-release-ga-checklist/0.1",
+  "createdAt": "2026-06-10T16:30:00Z",
+  "gaScope": {
+    "product": "kqoffice-v3",
+    "releasePhase": "ga-blocking-contract",
+    "supportedPlatforms": ["macos", "windows", "linux", "self-hosted"],
+    "defaultDataBoundary": "local-first"
+  },
+  "readinessGates": [
+    {
+      "id": "v2-regression-green",
+      "title": "V2 H1-H10 regression sweep green",
+      "status": "contract-active",
+      "owner": "qa-owner",
+      "blocksGA": true,
+      "requiredEvidence": ["v2-harness-sweep"]
+    },
+    {
+      "id": "h8-connector-contract",
+      "title": "H8 connector manifest contract green",
+      "status": "contract-active",
+      "owner": "qa-owner",
+      "blocksGA": true,
+      "requiredEvidence": ["tests/v3-connector-manifest-contract-test.sh"]
+    },
+    {
+      "id": "h9-eval-baseline",
+      "title": "H9 eval baseline seed green",
+      "status": "contract-active",
+      "owner": "qa-owner",
+      "blocksGA": true,
+      "requiredEvidence": ["tests/v3-eval-baseline-test.sh"]
+    },
+    {
+      "id": "h10-localcloud-no-egress",
+      "title": "H10 LocalCloud no-egress contract green",
+      "status": "contract-active",
+      "owner": "qa-owner",
+      "blocksGA": true,
+      "requiredEvidence": ["tests/v3-local-cloud-no-egress-test.sh"]
+    },
+    {
+      "id": "h11-perf-baseline",
+      "title": "H11 performance baseline target green",
+      "status": "contract-active",
+      "owner": "qa-owner",
+      "blocksGA": true,
+      "requiredEvidence": ["tests/v3-perf-baseline-test.sh"]
+    },
+    {
+      "id": "h12-crash-recovery",
+      "title": "H12 crash recovery target green",
+      "status": "contract-active",
+      "owner": "qa-owner",
+      "blocksGA": true,
+      "requiredEvidence": ["tests/v3-crash-recovery-test.sh"]
+    },
+    {
+      "id": "w9-onboarding-flow",
+      "title": "W9 onboarding flow self-test green",
+      "status": "contract-active",
+      "owner": "qa-owner",
+      "blocksGA": true,
+      "requiredEvidence": ["tests/v3-onboarding-flow-test.sh"]
+    },
+    {
+      "id": "w9-starter-pack",
+      "title": "W9 starter pack self-test green",
+      "status": "contract-active",
+      "owner": "qa-owner",
+      "blocksGA": true,
+      "requiredEvidence": ["tests/v3-starter-pack-test.sh"]
+    },
+    {
+      "id": "w9-edition-policy",
+      "title": "W9 edition policy self-test green",
+      "status": "contract-active",
+      "owner": "release-owner",
+      "blocksGA": true,
+      "requiredEvidence": ["tests/v3-edition-policy-test.sh"]
+    },
+    {
+      "id": "w9-i18n-locale",
+      "title": "W9 locale policy self-test green",
+      "status": "contract-active",
+      "owner": "qa-owner",
+      "blocksGA": true,
+      "requiredEvidence": ["tests/v3-i18n-locale-test.sh"]
+    },
+    {
+      "id": "w9-manual-docs",
+      "title": "W9 manual docs self-test green",
+      "status": "contract-active",
+      "owner": "release-owner",
+      "blocksGA": true,
+      "requiredEvidence": ["tests/v3-manual-docs-test.sh"]
+    },
+    {
+      "id": "w9-distribution-update",
+      "title": "W9 distribution update self-test green",
+      "status": "contract-active",
+      "owner": "release-owner",
+      "blocksGA": true,
+      "requiredEvidence": ["tests/v3-distribution-update-test.sh"]
+    },
+    {
+      "id": "w9-error-recovery-ux",
+      "title": "W9 error recovery UX self-test green",
+      "status": "contract-active",
+      "owner": "qa-owner",
+      "blocksGA": true,
+      "requiredEvidence": ["tests/v3-error-recovery-ux-test.sh"]
+    },
+    {
+      "id": "source-archive-clean",
+      "title": "Source archive split and commit boundary clean",
+      "status": "pending-release-decision",
+      "owner": "repo-owner",
+      "blocksGA": true,
+      "requiredEvidence": ["source-archive-commits", "h10-boundary-clean"]
+    },
+    {
+      "id": "windows-toast-proof",
+      "title": "Windows notification toast proof complete",
+      "status": "pending-runtime",
+      "owner": "runtime-owner",
+      "blocksGA": true,
+      "requiredEvidence": ["windows-host-compile", "manual-toast-proof"]
+    },
+    {
+      "id": "release-policy-decisions",
+      "title": "Release policy decisions recorded",
+      "status": "pending-release-decision",
+      "owner": "repo-owner",
+      "blocksGA": true,
+      "requiredEvidence": ["d5-branding", "d8-team-identifier", "b3-push-strategy"]
+    }
+  ],
+  "releaseApprovals": {
+    "humanApprovalRequired": true,
+    "automatedApprovalAllowed": false,
+    "approvers": ["repo-owner", "release-owner", "qa-owner"],
+    "signoffEvidenceRequired": true
+  },
+  "evidence": {
+    "required": ["release-ga-checklist", "v2-regression-green", "v3-self-test-green", "v3-only-green", "human-approval", "evidence-record", "release-signoff"],
+    "evidenceIds": ["ev-6600000000000001"]
+  },
+  "gates": {
+    "blocksGA": true,
+    "canShip": false,
+    "requiresExplicitUserAuthorization": true,
+    "runtimeImplementation": "not-started"
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "query": {
+    "id": "kbq-0000000000000e02",
+    "schemaVersion": "v3-knowledge-index-query/0.1",
+    "createdAt": "2026-06-10T11:21:00Z",
+    "workspace": "legal",
+    "query": {
+      "intent": "hybrid",
+      "textHash": "1111111111111111111111111111111111111111111111111111111111111111",
+      "language": "en-US",
+      "topK": 3,
+      "includeMetadata": true,
+      "storesQueryText": false
+    },
+    "retrieval": {
+      "mode": "hybrid",
+      "sourceKinds": ["document", "connector"],
+      "backends": ["sqlite-fts5", "lancedb-local"],
+      "rerank": "bge-m3",
+      "timeoutMs": 450
+    },
+    "boundary": {
+      "serviceMode": "private",
+      "publicEgress": false,
+      "localEmbedding": true,
+      "tenantPolicyRequired": true
+    },
+    "evidence": {
+      "required": ["policy-decision", "no-public-egress", "kb-query"],
+      "evidenceIds": ["ev-0000000000000e05"]
+    }
+  },
+  "result": {
+    "id": "kbr-0000000000000e02",
+    "schemaVersion": "v3-knowledge-index-result/0.1",
+    "queryId": "kbq-0000000000000e02",
+    "createdAt": "2026-06-10T11:21:01Z",
+    "workspace": "legal",
+    "summary": {
+      "resultCount": 2,
+      "latencyMs": 336,
+      "retrievalMode": "hybrid",
+      "truncated": false,
+      "storesDocumentContent": false
+    },
+    "chunks": [
+      {
+        "chunkId": "kbch-0000000000000d03",
+        "rank": 1,
+        "scoreBasisPoints": 9210,
+        "sourceKind": "connector",
+        "textHash": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+        "snippetHash": "2222222222222222222222222222222222222222222222222222222222222222",
+        "evidenceIds": ["ev-0000000000000e06"]
+      },
+      {
+        "chunkId": "kbch-0000000000000d01",
+        "rank": 2,
+        "scoreBasisPoints": 8650,
+        "sourceKind": "document",
+        "textHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "snippetHash": "3333333333333333333333333333333333333333333333333333333333333333",
+        "evidenceIds": ["ev-0000000000000e07"]
+      }
+    ],
+    "boundary": {
+      "publicEgress": false,
+      "hashAlgorithm": "sha256",
+      "storesDocumentContent": false
+    },
+    "evidence": {
+      "required": ["kb-query", "chunk-read", "no-public-egress"],
+      "evidenceIds": ["ev-0000000000000e08"]
+    }
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "id": "dist-2222222222222222",
+  "schemaVersion": "v3-distribution-update/0.1",
+  "createdAt": "2026-06-10T15:35:00Z",
+  "distribution": {
+    "firstLaunchChannels": [
+      {
+        "platform": "macos",
+        "artifact": "DMG",
+        "primary": true,
+        "installerSmokeRequired": true,
+        "downloadToFirstPatchMaxMinutes": 5
+      }
+    ],
+    "artifactSigningRequired": true,
+    "checksumRequired": true,
+    "notarizationRequired": true,
+    "offlineInstallSupported": true,
+    "noPublicCloudRequired": true
+  },
+  "update": {
+    "mode": "prompt-one-click",
+    "promptRequired": true,
+    "oneClick": true,
+    "deferrable": true,
+    "forceUpdateAllowed": false,
+    "selfHostServer": "w8-update-server",
+    "lanSupported": true,
+    "publicInternetRequired": false,
+    "rollbackRequired": true
+  },
+  "onboarding": {
+    "downloadToFirstPatchMaxMinutes": 5,
+    "requiresStarterPack": true,
+    "requiresOnboardingFlow": true
+  },
+  "evidence": {
+    "required": ["distribution-update-policy", "artifact-signature", "installer-smoke", "update-prompt", "rollback-proof", "evidence-record"],
+    "evidenceIds": ["ev-2200000000000001"]
+  },
+  "gates": {
+    "blocksGA": true,
+    "requiresV2RegressionGreen": true,
+    "runtimeImplementation": "not-started"
+  }
+}

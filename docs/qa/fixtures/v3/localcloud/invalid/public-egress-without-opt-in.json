@@ -1,0 +1,56 @@
+{
+  "id": "localcloud",
+  "version": "0.1.0",
+  "mode": "enterprise-lan",
+  "endpoint": {
+    "baseUrl": "http://10.0.0.5:17802",
+    "bindAddress": "10.0.0.5",
+    "allowPrivateLan": true
+  },
+  "services": {
+    "oauthProxy": {
+      "bindAddress": "10.0.0.5",
+      "port": 0,
+      "protocol": "http",
+      "publicEgress": false
+    },
+    "pushGateway": {
+      "bindAddress": "10.0.0.5",
+      "port": 17801,
+      "protocol": "ws",
+      "publicEgress": false
+    },
+    "syncServer": {
+      "bindAddress": "10.0.0.5",
+      "port": 17802,
+      "protocol": "http",
+      "publicEgress": false
+    },
+    "auditSink": {
+      "bindAddress": "10.0.0.5",
+      "port": 17803,
+      "protocol": "http",
+      "publicEgress": false
+    },
+    "selfUpdate": {
+      "bindAddress": "10.0.0.5",
+      "port": 17804,
+      "protocol": "https",
+      "publicEgress": true
+    }
+  },
+  "allowPublicEgress": false,
+  "optInCloudEgress": false,
+  "egressAllowlist": [
+    {
+      "host": "updates.kqoffice.example.com",
+      "purpose": "Invalid default hosted update path.",
+      "evidenceCategory": "egress-opt-in"
+    }
+  ],
+  "evidence": {
+    "emit": true,
+    "category": "localcloud-config",
+    "auditSinkRequired": true
+  }
+}

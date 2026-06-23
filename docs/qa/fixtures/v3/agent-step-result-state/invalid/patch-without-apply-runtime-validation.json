@@ -1,0 +1,79 @@
+{
+  "stepResult": {
+    "id": "agsr-0000000000001011",
+    "schemaVersion": "v3-agent-step-result/0.1",
+    "taskId": "agt-0000000000001011",
+    "stepIndex": 1,
+    "kind": "patch",
+    "status": "completed",
+    "startedAt": "2026-06-10T12:04:00Z",
+    "finishedAt": "2026-06-10T12:04:10Z",
+    "output": {
+      "kind": "analysis-summary",
+      "schemaRef": "agent-step-result",
+      "refId": "agsr-0000000000001011",
+      "storesDocumentContent": false,
+      "applyPlanRuntimeValidated": false
+    },
+    "sandbox": {
+      "mode": "shadow-doc",
+      "branchId": "shadow-0000000000001011",
+      "mainDocumentUnchanged": true,
+      "failureIsolation": "discard-step-branch"
+    },
+    "policy": {
+      "preflight": true,
+      "auditLog": true,
+      "decision": "allow"
+    },
+    "evidence": {
+      "required": ["policy-decision", "audit-log-entry", "evidence-record"],
+      "evidenceIds": ["ev-0000000000001014"]
+    },
+    "failure": {
+      "code": "none",
+      "recoverable": false,
+      "retryAllowed": false
+    }
+  },
+  "taskState": {
+    "taskId": "agt-0000000000001011",
+    "schemaVersion": "v3-agent-task-state/0.1",
+    "updatedAt": "2026-06-10T12:04:11Z",
+    "ownerSurface": "writer",
+    "state": "running",
+    "currentStepIndex": 1,
+    "maxSteps": 3,
+    "progress": {
+      "completedSteps": 2,
+      "failedSteps": 0,
+      "cancelledSteps": 0
+    },
+    "cowork": {
+      "usesV2AsyncCowork": true,
+      "taskKind": "agent-multistep",
+      "taskState": "running"
+    },
+    "approval": {
+      "mode": "per-step",
+      "wholeTaskApprovalRequired": true,
+      "perStepApprovalSupported": true
+    },
+    "recovery": {
+      "softCancelSupported": true,
+      "hardCancelSupported": true,
+      "userDecisionRequired": true,
+      "mainDocumentUnchangedOnFailure": true
+    },
+    "merge": {
+      "target": "main-doc",
+      "requiresApproval": true,
+      "requiresApplyPlanRuntimeValidation": true
+    },
+    "evidence": {
+      "auditLogRequired": true,
+      "requiredForEveryStep": ["policy-decision", "evidence-record", "audit-log-entry"],
+      "taskEvidenceIds": ["ev-0000000000001015"]
+    }
+  }
+}

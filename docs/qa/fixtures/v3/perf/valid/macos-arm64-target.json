@@ -1,0 +1,30 @@
+{
+  "id": "v3-perf-baseline-macos-arm64-001",
+  "wave": "w9",
+  "category": "perf-baseline",
+  "platform": "macos-arm64",
+  "measurementMode": "target-contract",
+  "workload": {
+    "coldStart": {
+      "targetMs": 2000,
+      "measurement": "main-window-interactive",
+      "packageRoute": "dmg"
+    },
+    "firstToken": {
+      "targetMs": 800,
+      "trigger": "cmd-shift-k-chat",
+      "provider": "ollama-local",
+      "model": "llama3.2:3b"
+    },
+    "retrieval": {
+      "targetMs": 200,
+      "corpusDocuments": 10000,
+      "topK": 5,
+      "index": "local-knowledge-index"
+    }
+  },
+  "evidence": {
+    "required": ["perf-sample", "system-profile", "local-provider-proof", "knowledge-index-sample"],
+    "blocksGA": true
+  }
+}

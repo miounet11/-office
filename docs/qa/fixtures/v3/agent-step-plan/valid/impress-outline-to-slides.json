@@ -1,0 +1,193 @@
+{
+  "taskId": "agt-0000000000000a03",
+  "schemaVersion": "v3-agent-step-plan/0.1",
+  "goal": "Turn a project outline into a reviewed Impress slide deck draft.",
+  "createdAt": "2026-06-10T10:22:00Z",
+  "ownerSurface": "impress",
+  "maxSteps": 4,
+  "approvalMode": "per-step",
+  "approvalPolicy": {
+    "policyDoc": "docs/product/v3/w6-approval-policy.md",
+    "defaultMode": "whole-task",
+    "selectedModeSource": "explicit-user-choice",
+    "perStepRequiresExplicitUserChoice": true,
+    "implicitPerStepPromptsAllowed": false,
+    "promptStrategy": "explicit-per-step-review",
+    "reviewStepRequired": true,
+    "approvalEvidence": "user-approval",
+    "runtimeApprovalUiImplementation": "not-started"
+  },
+  "resumePolicy": {
+    "policyDoc": "docs/product/v3/w6-resume-policy.md",
+    "crossSessionResumeAllowed": true,
+    "resumePoint": "evidence-complete-checkpoint",
+    "requiresUserConfirmation": true,
+    "requiresDocumentHashMatch": true,
+    "requiresShadowSnapshot": true,
+    "requiresAuditReplay": true,
+    "autoResumeAllowed": false,
+    "staleCheckpointBehavior": "fail-closed-user-visible",
+    "checkpointEvidence": "required",
+    "runtimeResumeImplementation": "not-started"
+  },
+  "dataBoundary": {
+    "defaultServiceMode": "private",
+    "allowPublicEgress": false,
+    "requiresPolicyPreflight": true
+  },
+  "sandbox": {
+    "mode": "shadow-doc",
+    "mergeTarget": "main-doc",
+    "failureIsolation": "discard-step-branch"
+  },
+  "shadowDocPolicy": {
+    "policyDoc": "docs/product/v3/w6-shadow-doc-policy.md",
+    "shadowDocMode": "per-step-compatible-branch",
+    "writerCompatibilityTarget": "v2-w3-swdocshell",
+    "requiresExistingSwDocShellCompatibility": true,
+    "createsNewDocShellType": false,
+    "mergePath": "v2-apply-plan-runtime",
+    "mainDocMutationBeforeApprovalAllowed": false,
+    "mergeRequiresApproval": true,
+    "runtimeShadowDocImplementation": "not-started"
+  },
+  "dependencyPolicy": {
+    "policyDoc": "docs/product/v3/w6-dependency-policy.md",
+    "graphType": "forward-only-dag",
+    "executionOrder": "topological-index",
+    "allowsFanIn": true,
+    "allowsFanOut": true,
+    "allowsCycles": false,
+    "allowsFutureDependencies": false,
+    "allowsParallelRuntime": false,
+    "runtimeSchedulerImplementation": "not-started"
+  },
+  "plannerValidation": {
+    "policyDoc": "docs/product/v3/w6-plan-validation-policy.md",
+    "validationPhase": "before-execution",
+    "onInvalidPlan": "fail-closed-user-visible",
+    "blocksExecution": true,
+    "autoRetryAllowed": false,
+    "autoSimplificationAllowed": false,
+    "userRetryAllowed": true,
+    "invalidPlanEvidence": "required",
+    "runtimePlannerImplementation": "not-started"
+  },
+  "promptPolicy": {
+    "policyDoc": "docs/product/v3/w6-prompt-library.md",
+    "promptSetId": "w6-plan-act-observe-v1",
+    "promptSetVersion": "v1",
+    "plannerPromptId": "planner-v1",
+    "actorPromptId": "actor-v1",
+    "observerPromptId": "observer-v1",
+    "deterministicParameters": {
+      "temperature": 0,
+      "topP": 1,
+      "seedRequired": true
+    },
+    "publicEgressAllowed": false,
+    "runtimePromptExecution": "not-started"
+  },
+  "tokenLock": {
+    "patchStepMustUseApplyPlanRuntime": true,
+    "tokenCounts": {
+      "ParagraphAction": 7,
+      "CellAction": 5,
+      "SlideElementAction": 4
+    }
+  },
+  "steps": [
+    {
+      "index": 0,
+      "kind": "query",
+      "title": "Gather context",
+      "description": "Retrieve local knowledge chunks for the project outline and prior decks.",
+      "dependencies": [],
+      "expectedOutput": {
+        "kind": "knowledge-chunks",
+        "schemaRef": "knowledge-index-result"
+      },
+      "evidence": [
+        "policy-decision",
+        "kb-query"
+      ],
+      "policy": {
+        "preflight": true,
+        "auditLog": true
+      }
+    },
+    {
+      "index": 1,
+      "kind": "transform",
+      "title": "Create slide outline",
+      "description": "Produce a concise slide-by-slide outline with speaker-note cues.",
+      "dependencies": [
+        0
+      ],
+      "expectedOutput": {
+        "kind": "analysis-summary",
+        "schemaRef": "agent-step-result"
+      },
+      "evidence": [
+        "policy-decision",
+        "provider-call"
+      ],
+      "policy": {
+        "preflight": true,
+        "auditLog": true
+      }
+    },
+    {
+      "index": 2,
+      "kind": "patch",
+      "title": "Draft slides",
+      "description": "Create Impress slide element patches in the shadow document using ApplyPlan runtime output.",
+      "dependencies": [
+        1
+      ],
+      "expectedOutput": {
+        "kind": "apply-plan-runtime",
+        "schemaRef": "apply-plan-runtime"
+      },
+      "evidence": [
+        "policy-decision",
+        "provider-call",
+        "shadow-doc-diff",
+        "apply-plan-runtime-validated"
+      ],
+      "policy": {
+        "preflight": true,
+        "auditLog": true
+      }
+    },
+    {
+      "index": 3,
+      "kind": "review",
+      "title": "Approve deck",
+      "description": "Ask for explicit approval before merging the shadow deck into the main presentation.",
+      "dependencies": [
+        2
+      ],
+      "expectedOutput": {
+        "kind": "approval-decision",
+        "schemaRef": "user-approval"
+      },
+      "evidence": [
+        "policy-decision",
+        "user-approval"
+      ],
+      "policy": {
+        "preflight": true,
+        "auditLog": true
+      }
+    }
+  ],
+  "evidence": {
+    "requiredForEveryStep": [
+      "policy-decision",
+      "evidence-record"
+    ],
+    "auditLogRequired": true,
+    "blocksMergeOnMissingEvidence": true
+  }
+}

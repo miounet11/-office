@@ -1,0 +1,28 @@
+{
+  "id": "relga-5555555555555555",
+  "schemaVersion": "v3-release-ga-checklist/0.1",
+  "createdAt": "2026-06-10T16:30:00Z",
+  "gaScope": {
+    "product": "kqoffice-v3",
+    "releasePhase": "ga-blocking-contract",
+    "supportedPlatforms": ["macos", "windows", "linux", "self-hosted"],
+    "defaultDataBoundary": "local-first"
+  },
+  "readinessGates": [],
+  "releaseApprovals": {
+    "humanApprovalRequired": true,
+    "automatedApprovalAllowed": false,
+    "approvers": ["repo-owner", "release-owner", "qa-owner"],
+    "signoffEvidenceRequired": true
+  },
+  "evidence": {
+    "required": ["release-ga-checklist", "v2-regression-green", "v3-self-test-green", "v3-only-green", "human-approval", "evidence-record"],
+    "evidenceIds": ["ev-6600000000000005"]
+  },
+  "gates": {
+    "blocksGA": true,
+    "canShip": false,
+    "requiresExplicitUserAuthorization": true,
+    "runtimeImplementation": "started"
+  }
+}

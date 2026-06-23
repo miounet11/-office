@@ -1,0 +1,37 @@
+{
+  "id": "manual-4444444444444444",
+  "schemaVersion": "v3-manual-docs/0.1",
+  "createdAt": "2026-06-10T15:05:00Z",
+  "manual": {
+    "rootPath": "docs/manual/",
+    "embedded": true,
+    "onlineMirror": true,
+    "helpKey": "?",
+    "helpMenuEntry": true,
+    "searchEnabled": true,
+    "noExternalDependency": false
+  },
+  "locales": {
+    "requiredLocales": ["zh-CN", "en-US"],
+    "launchLocales": ["zh-CN", "en-US", "ja-JP", "zh-TW"],
+    "fallbackLocale": "en-US",
+    "fallbackForUntranslated": ["ja-JP", "zh-TW"]
+  },
+  "topics": [],
+  "delivery": {
+    "embeddedBundle": true,
+    "onlineMirrorSource": true,
+    "offlineReadable": false,
+    "requiresPublicInternet": true,
+    "updateChannel": "w8-self-host-or-release-bundle"
+  },
+  "evidence": {
+    "required": ["manual-docs-manifest", "embedded-help-open", "online-mirror-sync", "locale-coverage", "evidence-record"],
+    "evidenceIds": ["ev-4000000000000001"]
+  },
+  "gates": {
+    "blocksGA": true,
+    "requiresV2RegressionGreen": true,
+    "runtimeImplementation": "not-started"
+  }
+}

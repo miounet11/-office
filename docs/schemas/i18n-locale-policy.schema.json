@@ -1,0 +1,162 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://kqoffice.example.com/schemas/i18n-locale-policy.schema.json",
+  "title": "V3 i18n Locale Policy",
+  "description": "Contract-first manifest for V3 W9 locale and AI output-language policy. Draft; covered by the W9 i18n-locale self-test before gated i18n runtime or product integration exists.",
+  "type": "object",
+  "required": ["id", "schemaVersion", "createdAt", "locale", "ui", "aiOutput", "manual", "evidence", "gates"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^i18n-[0-9a-f]{16}$"
+    },
+    "schemaVersion": {
+      "const": "v3-i18n-locale-policy/0.1"
+    },
+    "createdAt": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+    },
+    "locale": {
+      "type": "object",
+      "required": ["osLocale", "uiLocale", "supportedLaunchLocales", "fallbackLocale"],
+      "additionalProperties": false,
+      "properties": {
+        "osLocale": {
+          "enum": ["zh-CN", "en-US", "ja-JP", "zh-TW"]
+        },
+        "uiLocale": {
+          "enum": ["zh-CN", "en-US", "ja-JP", "zh-TW"]
+        },
+        "supportedLaunchLocales": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "uniqueItems": true,
+          "items": {
+            "enum": ["zh-CN", "en-US", "ja-JP", "zh-TW"]
+          }
+        },
+        "fallbackLocale": {
+          "const": "en-US"
+        }
+      }
+    },
+    "ui": {
+      "type": "object",
+      "required": ["followsSystemLocale", "usesExistingI18nPool", "silentSwitchAllowed"],
+      "additionalProperties": false,
+      "properties": {
+        "followsSystemLocale": {
+          "const": true
+        },
+        "usesExistingI18nPool": {
+          "const": true
+        },
+        "silentSwitchAllowed": {
+          "const": false
+        }
+      }
+    },
+    "aiOutput": {
+      "type": "object",
+      "required": ["defaultLocale", "matchesUiLocale", "inlineOverride", "outputLanguage", "evidenceRequired"],
+      "additionalProperties": false,
+      "properties": {
+        "defaultLocale": {
+          "enum": ["zh-CN", "en-US", "ja-JP", "zh-TW"]
+        },
+        "matchesUiLocale": {
+          "const": true
+        },
+        "inlineOverride": {
+          "type": "object",
+          "required": ["enabled", "commandPattern", "explicitOnly", "persistsWithoutUserAction"],
+          "additionalProperties": false,
+          "properties": {
+            "enabled": {
+              "const": true
+            },
+            "commandPattern": {
+              "const": "^/lang (zh-CN|en-US|ja-JP|zh-TW|zh|en|ja)$"
+            },
+            "explicitOnly": {
+              "const": true
+            },
+            "persistsWithoutUserAction": {
+              "const": false
+            }
+          }
+        },
+        "outputLanguage": {
+          "enum": ["Chinese", "English", "Japanese", "Traditional Chinese"]
+        },
+        "evidenceRequired": {
+          "const": true
+        }
+      }
+    },
+    "manual": {
+      "type": "object",
+      "required": ["embedded", "onlineMirror", "requiredLocales"],
+      "additionalProperties": false,
+      "properties": {
+        "embedded": {
+          "const": true
+        },
+        "onlineMirror": {
+          "const": true
+        },
+        "requiredLocales": {
+          "type": "array",
+          "minItems": 2,
+          "uniqueItems": true,
+          "items": {
+            "enum": ["zh-CN", "en-US"]
+          }
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "required": ["required", "evidenceIds"],
+      "additionalProperties": false,
+      "properties": {
+        "required": {
+          "type": "array",
+          "minItems": 4,
+          "uniqueItems": true,
+          "items": {
+            "enum": ["i18n-locale-policy", "locale-selection", "language-override", "ai-output-language", "evidence-record"]
+          }
+        },
+        "evidenceIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^ev-[0-9a-f]{16}$"
+          }
+        }
+      }
+    },
+    "gates": {
+      "type": "object",
+      "required": ["blocksGA", "requiresV2RegressionGreen", "runtimeImplementation"],
+      "additionalProperties": false,
+      "properties": {
+        "blocksGA": {
+          "const": true
+        },
+        "requiresV2RegressionGreen": {
+          "const": true
+        },
+        "runtimeImplementation": {
+          "const": "not-started"
+        }
+      }
+    }
+  }
+}

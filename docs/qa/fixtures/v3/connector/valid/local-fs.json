@@ -1,0 +1,56 @@
+{
+  "id": "local-fs",
+  "version": "0.1.0",
+  "displayName": "Local Folder",
+  "vendor": "KQ Office",
+  "trust": {
+    "source": "builtin",
+    "publisher": "kqoffice",
+    "manifestSha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "reviewState": "repo-reviewed",
+    "installScope": "builtin",
+    "signatureRequired": true,
+    "allowUnsigned": false
+  },
+  "operations": {
+    "mode": "read-only",
+    "allowedActions": ["read"],
+    "writeback": false,
+    "writeScopesAllowed": false,
+    "runtimeWriteImplementation": "not-started"
+  },
+  "auth": {
+    "type": "none",
+    "tokenStorage": "none",
+    "flow": {
+      "strategy": "not-applicable",
+      "embeddedWebView": false,
+      "callback": "none",
+      "runtimeAuthImplementation": "not-started"
+    },
+    "refreshPolicy": {
+      "strategy": "not-applicable",
+      "backgroundRefresh": false,
+      "storesRefreshToken": false,
+      "runtimeRefreshImplementation": "not-started"
+    }
+  },
+  "serviceModes": ["private"],
+  "scopes": [
+    {
+      "name": "read:files",
+      "purpose": "Read user-selected local folders for prompt context.",
+      "dataClass": "confidential"
+    }
+  ],
+  "rateLimit": {
+    "perMinute": 120,
+    "perDay": 10000
+  },
+  "evidence": {
+    "emit": true,
+    "category": "data-fetch"
+  },
+  "requiresTenantPolicy": false,
+  "cacheTTLSeconds": 60
+}

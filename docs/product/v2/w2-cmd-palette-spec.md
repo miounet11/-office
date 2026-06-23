@@ -227,3 +227,88 @@ void CommandPalette::executeCommand(const OUString& unoCommand) {
 - [ ] 历史记录持久化
 - [ ] UITest 通过
 - [ ] V1.5 既有 8/9 beta gate 不退化
+
+## Backlog § (L102 入册): Pinyin Transliteration 集成草案 (W2.G)
+
+> 这一节是 **设计草稿**，不是已批准的实现路径，不入 SRCDIR。
+> 目的是在 i18npool gated（D1c）放行之前，把 pinyin 集成所需的接口面、性能上限、回退策略冻结下来；放行后只做实现层面落地。
+
+### 1. 现状
+
+- `cui/source/inc/commandpalette/CommandIndex.hxx` 中 `Entry::pinyinFirst` / `pinyinFull` 字段 **当前由调用方手填**（spec §"v0 设计 §Fuzzy Match Engine"）。
+- LO 自带 `i18npool` 提供 `css.i18n.Transliteration` 服务，其中存在 `pinyin` 风格变体 `TRANSLITERATION_pinyin_(numeric|toneless)`。
+- W2 OK(33) cppunit 全部走 hand-filled fixture，没有对真实 zh-CN label → pinyin 的 transliteration 通道做端到端覆盖。
+
+### 2. 目标接口（design-only）
+
+```cpp
+namespace cui::commandpalette
+{
+struct PinyinHints
+{
+    OUString full;   // "cuti"
+    OUString first;  // "ct"
+};
+
+// 单点入口；offline 模式 100% 本地，不出域。
+PinyinHints transliterateLabel(const OUString& zhLabel);
+}
+```
+
+调用约定：
+- 输入字符串可包含混合 ASCII / CJK / fullwidth / emoji；非 zh 部分按原样小写并保留。
+- 返回 `full` 是按字逐个拼音用空格隔开的 join；`first` 是每个字拼音首字母的拼接（去声调）。
+- 异常路径 fallback：transliteration 服务不可达 / 输入不可识别字符 → 返回 `{full="", first=""}`，调用方按 spec §"v0 Fuzzy Match Engine" 已有路径降级到 labelZh substring。
+
+### 3. 调用回路
+
+```
+CommandIndex::buildFromCommands()
+  └─ for each (unoCommand, labelZh) in xcu:
+       ├─ entry.label    = labelZh
+       ├─ entry.pinyin   = transliterateLabel(labelZh)
+       └─ entry.unoSlot  = unoCommand
+```
+
+入口点必须在索引构建一次（启动 / locale change），不在每次 query 即时触发。Query 阶段只读已构建的 `entry.pinyinFirst/Full`（与 spec §"v0 设计" 已经一致）。
+
+### 4. 性能上限
+
+- 单次 transliteration ≤ 5ms（i18npool zh-CN 内置数据，不走 IO）
+- 全索引重建（500 命令） ≤ 2.5s（启动可摊销）
+- 索引内存 ≤ 250KB（500 entries × ~500 bytes 平均）
+
+超上限时降级（按优先级）：
+1. 关闭 `pinyinFull`，只填 `pinyinFirst`（首字母够 80% query 用例）
+2. 关闭 pinyin 整路，回到 labelZh substring（spec §"v0 Fuzzy Match Engine" 既有路径）
+
+### 5. 回退矩阵
+
+| 场景 | 行为 |
+|---|---|
+| `i18npool` Transliteration 服务初始化失败 | 启动告警 + 回退 substring；不阻 W2 启动 |
+| zh-CN 之外的 label（en-US / fr / etc.） | 跳过 transliterate；只填 latin lowercase 到 `pinyinFirst.full` |
+| 单字无对应拼音（GB18030 ext B 等罕见字） | 该字位置填 `?`，整体不阻断 |
+| 用户切 locale | 重建索引 + 重新 transliterate；不复用上次结果 |
+
+### 6. Test Strategy（设计阶段，cppunit 落地待 D1c）
+
+- 黄金集 200 个高频命令（cut/copy/paste/bold/italic/insert image/...）→ 准确率 ≥ 95%
+- 边界 case：emoji label（不应崩）/ 全英文 label（仅 lowercase）/ 混合 label（"插入 image"）
+- 性能：` benchmark::transliterateLabel(label) ≤ 5ms` 99-percentile
+- 错误注入：模拟 `Transliteration::createInstance` 抛 → fallback 路径走通
+
+### 7. 与 W1 capability 矩阵的关系
+
+`intent-to-uno` capability（offline allowlist 第 4 项, W1 spec §"Capability ↔ ServiceMode 矩阵"）将与 W2 controller 共用 transliteration —— intent parser 输入纯中文 prompt 时，需要先生成 pinyin 让 fuzzy 兜底候选。这是 W1 / W2 共有约束，spec §"v1 设计：LLM Intent Parser" 已隐含但未明写。本 backlog 把这条耦合显式化。
+
+### 8. 不在本 backlog 内（避免范围爆炸）
+
+- 真实 i18npool 服务调用代码（gated D1c）
+- `Transliteration_pinyin` 是否需要包装 wrapper service（设计上不需要，直接调）
+- 多音字处理（默认取 i18npool 默认变体；多音字策略留 v2）
+
+### 9. Gate
+
+- D1c：实际触动 i18npool 时打开。本 backlog 只锁接口，不动代码。
+- 落地顺序建议：在 D3a-d 全部解开、Cmd+K 端到端跑通后再开 D1c —— 因为 fuzzy + recent + 历史回路（已 OK(33) workdir-verified）已经能覆盖大部分 zh-CN query 用例（用 labelZh substring），pinyin 是上限优化不是必需路径。

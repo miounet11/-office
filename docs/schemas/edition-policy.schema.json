@@ -1,0 +1,231 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://kqoffice.example.com/schemas/edition-policy.schema.json",
+  "title": "V3 Edition Policy",
+  "description": "Contract-first manifest for V3 W9 edition and freemium policy. Draft; covered by the W9 edition-policy self-test before gated edition runtime or billing integration exists.",
+  "type": "object",
+  "required": ["id", "schemaVersion", "createdAt", "businessModel", "editions", "guardrails", "evidence", "gates"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^edp-[0-9a-f]{16}$"
+    },
+    "schemaVersion": {
+      "const": "v3-edition-policy/0.1"
+    },
+    "createdAt": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+    },
+    "businessModel": {
+      "type": "object",
+      "required": ["mode", "personalFreeLocal", "enterpriseChargesByAudit", "functionLockAllowed"],
+      "additionalProperties": false,
+      "properties": {
+        "mode": {
+          "const": "freemium"
+        },
+        "personalFreeLocal": {
+          "const": true
+        },
+        "enterpriseChargesByAudit": {
+          "const": true
+        },
+        "functionLockAllowed": {
+          "const": false
+        }
+      }
+    },
+    "editions": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "items": {
+        "type": "object",
+        "required": ["id", "price", "audit", "limits", "featureAccess", "deployment", "dataBoundary"],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "enum": ["personal-free", "personal-pro", "enterprise", "enterprise-self-hosted"]
+          },
+          "price": {
+            "type": "object",
+            "required": ["currency", "amount", "period", "seatBased"],
+            "additionalProperties": false,
+            "properties": {
+              "currency": {
+                "enum": ["CNY"]
+              },
+              "amount": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9999
+              },
+              "period": {
+                "enum": ["free", "monthly", "one-time-plus-monthly"]
+              },
+              "seatBased": {
+                "type": "boolean"
+              }
+            }
+          },
+          "audit": {
+            "type": "object",
+            "required": ["enabled", "requiredForEdition", "bypassAllowed"],
+            "additionalProperties": false,
+            "properties": {
+              "enabled": {
+                "type": "boolean"
+              },
+              "requiredForEdition": {
+                "type": "boolean"
+              },
+              "bypassAllowed": {
+                "const": false
+              }
+            }
+          },
+          "limits": {
+            "type": "object",
+            "required": ["connectorMax", "knowledgeIndexDocumentMax", "agentConcurrencyMax", "unlimitedScale"],
+            "additionalProperties": false,
+            "properties": {
+              "connectorMax": {
+                "type": "integer",
+                "minimum": 5,
+                "maximum": 1000000
+              },
+              "knowledgeIndexDocumentMax": {
+                "type": "integer",
+                "minimum": 10000,
+                "maximum": 1000000000
+              },
+              "agentConcurrencyMax": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 1000000
+              },
+              "unlimitedScale": {
+                "type": "boolean"
+              }
+            }
+          },
+          "featureAccess": {
+            "type": "object",
+            "required": ["aiPatch", "localModel", "starterPack", "companionApproval", "featureLocked"],
+            "additionalProperties": false,
+            "properties": {
+              "aiPatch": {
+                "const": true
+              },
+              "localModel": {
+                "const": true
+              },
+              "starterPack": {
+                "const": true
+              },
+              "companionApproval": {
+                "const": true
+              },
+              "featureLocked": {
+                "const": false
+              }
+            }
+          },
+          "deployment": {
+            "type": "object",
+            "required": ["mode", "w8SelfHosted", "requiresPublicCloud"],
+            "additionalProperties": false,
+            "properties": {
+              "mode": {
+                "enum": ["desktop-local", "enterprise-managed", "w8-self-hosted"]
+              },
+              "w8SelfHosted": {
+                "type": "boolean"
+              },
+              "requiresPublicCloud": {
+                "const": false
+              }
+            }
+          },
+          "dataBoundary": {
+            "type": "object",
+            "required": ["localFirst", "storesDocumentContent", "publicEgressDefault"],
+            "additionalProperties": false,
+            "properties": {
+              "localFirst": {
+                "const": true
+              },
+              "storesDocumentContent": {
+                "const": false
+              },
+              "publicEgressDefault": {
+                "const": false
+              }
+            }
+          }
+        }
+      }
+    },
+    "guardrails": {
+      "type": "object",
+      "required": ["limitsOnlyScaleAndAudit", "personalEditionFullLocalAI", "enterpriseAuditMandatory", "trialBypassAuditAllowed"],
+      "additionalProperties": false,
+      "properties": {
+        "limitsOnlyScaleAndAudit": {
+          "const": true
+        },
+        "personalEditionFullLocalAI": {
+          "const": true
+        },
+        "enterpriseAuditMandatory": {
+          "const": true
+        },
+        "trialBypassAuditAllowed": {
+          "const": false
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "required": ["required", "evidenceIds"],
+      "additionalProperties": false,
+      "properties": {
+        "required": {
+          "type": "array",
+          "minItems": 4,
+          "uniqueItems": true,
+          "items": {
+            "enum": ["edition-policy", "pricing-snapshot", "audit-lock", "evidence-record", "v2-regression-green"]
+          }
+        },
+        "evidenceIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^ev-[0-9a-f]{16}$"
+          }
+        }
+      }
+    },
+    "gates": {
+      "type": "object",
+      "required": ["blocksGA", "requiresV2RegressionGreen", "runtimeImplementation"],
+      "additionalProperties": false,
+      "properties": {
+        "blocksGA": {
+          "const": true
+        },
+        "requiresV2RegressionGreen": {
+          "const": true
+        },
+        "runtimeImplementation": {
+          "const": "not-started"
+        }
+      }
+    }
+  }
+}

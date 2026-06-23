@@ -1,0 +1,48 @@
+{
+  "id": "v3-eval-w1-cell-format-date-calc-001",
+  "wave": "w1",
+  "category": "capability",
+  "surface": "calc",
+  "referenceBaseline": {
+    "id": "v2-ga-acceptance",
+    "source": "v2-ga",
+    "versionPolicy": "frozen-at-v2-ga",
+    "frozenAtLedger": "L211",
+    "requiresV2RegressionGreen": true,
+    "runtimeReferenceImplementation": "not-started"
+  },
+  "llmJudgePolicy": {
+    "enabled": false,
+    "promptLibrary": "docs/product/v3/w5-judge-prompt-library.md",
+    "promptId": "judge-v3-capability-v1",
+    "promptVersion": "v1",
+    "deterministicParameters": {
+      "temperature": 0,
+      "topP": 1,
+      "seedRequired": true
+    },
+    "defaultReleaseGate": false,
+    "requiresHumanReviewForPublish": true,
+    "runtimeJudgeImplementation": "not-started"
+  },
+  "input": {
+    "documentSnapshot": "fixtures/v3/eval/samples/calc-sales-dates.ods",
+    "selection": {
+      "kind": "cell-range",
+      "address": "Sheet1.A2:A20"
+    },
+    "userPrompt": "把日期列统一成 ISO 日期格式",
+    "context": []
+  },
+  "expected": {
+    "patchRef": "docs/qa/fixtures/v3/eval/expected-patches/w1-cell-format-date-calc.patch.json",
+    "patchType": "CellAction",
+    "tokenCount": 5,
+    "diffSimilarity": ">= 0.9",
+    "inlineAction": "format-change"
+  },
+  "scoring": {
+    "method": "exact",
+    "threshold": 1.0
+  }
+}

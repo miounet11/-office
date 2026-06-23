@@ -1,0 +1,81 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://kqoffice.example.com/schemas/perf-baseline-targets.schema.json",
+  "title": "V3 Perf Baseline Targets",
+  "description": "Target contract for V3 W9 H11 performance baseline. Draft; covered by H11 before runtime measurement exists.",
+  "type": "object",
+  "required": ["id", "wave", "category", "platform", "measurementMode", "workload", "evidence"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^v3-perf-baseline-[a-z0-9_-]+-[0-9]{3}$"
+    },
+    "wave": {
+      "const": "w9"
+    },
+    "category": {
+      "const": "perf-baseline"
+    },
+    "platform": {
+      "enum": ["macos-arm64", "linux-x86_64", "windows-x86_64"]
+    },
+    "measurementMode": {
+      "enum": ["target-contract", "runtime-sample"]
+    },
+    "workload": {
+      "type": "object",
+      "required": ["coldStart", "firstToken", "retrieval"],
+      "additionalProperties": false,
+      "properties": {
+        "coldStart": {
+          "type": "object",
+          "required": ["targetMs", "measurement", "packageRoute"],
+          "additionalProperties": false,
+          "properties": {
+            "targetMs": { "type": "integer", "minimum": 1, "maximum": 2000 },
+            "measurement": { "const": "main-window-interactive" },
+            "packageRoute": { "enum": ["dmg", "msi", "appimage"] }
+          }
+        },
+        "firstToken": {
+          "type": "object",
+          "required": ["targetMs", "trigger", "provider", "model"],
+          "additionalProperties": false,
+          "properties": {
+            "targetMs": { "type": "integer", "minimum": 1, "maximum": 800 },
+            "trigger": { "const": "cmd-shift-k-chat" },
+            "provider": { "const": "ollama-local" },
+            "model": { "const": "llama3.2:3b" }
+          }
+        },
+        "retrieval": {
+          "type": "object",
+          "required": ["targetMs", "corpusDocuments", "topK", "index"],
+          "additionalProperties": false,
+          "properties": {
+            "targetMs": { "type": "integer", "minimum": 1, "maximum": 200 },
+            "corpusDocuments": { "type": "integer", "minimum": 10000 },
+            "topK": { "const": 5 },
+            "index": { "const": "local-knowledge-index" }
+          }
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "required": ["required", "blocksGA"],
+      "additionalProperties": false,
+      "properties": {
+        "required": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": ["perf-sample", "system-profile", "local-provider-proof", "knowledge-index-sample"]
+          }
+        },
+        "blocksGA": { "const": true }
+      }
+    }
+  }
+}

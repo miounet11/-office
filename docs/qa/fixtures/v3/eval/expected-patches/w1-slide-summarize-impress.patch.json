@@ -1,0 +1,7 @@
+{
+  "patchType": "SlideElementAction",
+  "tokenCount": 4,
+  "inlineAction": "rewrite-text",
+  "requiredEvidence": ["provider-call", "inline-action-request", "user-approval"],
+  "mustPreserveUndo": true
+}

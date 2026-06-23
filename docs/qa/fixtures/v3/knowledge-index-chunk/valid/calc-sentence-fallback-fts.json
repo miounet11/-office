@@ -1,0 +1,91 @@
+{
+  "id": "kbch-0000000000000d02",
+  "schemaVersion": "v3-knowledge-index-chunk/0.1",
+  "createdAt": "2026-06-10T11:01:00Z",
+  "workspace": "finance",
+  "source": {
+    "kind": "document",
+    "uri": "file:///workspace/finance/sales-model.ods",
+    "sourceId": "doc-0000000000000d02",
+    "snapshotId": "doc-snap-0000000000000d02",
+    "contentHash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "modifiedAt": "2026-06-10T10:59:00Z"
+  },
+  "chunk": {
+    "granularity": "sentence-fallback",
+    "ordinal": 19,
+    "textHash": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "tokenCount": 38,
+    "language": "mixed",
+    "storesDocumentContent": false
+  },
+  "index": {
+    "scope": "per-workspace",
+    "retrievalMode": "fts",
+    "backend": "sqlite-fts5",
+    "embeddingModel": "none",
+    "embeddingDimensions": 0,
+    "topKMax": 10,
+    "incrementalUpdate": true
+  },
+  "modelAcquisitionPolicy": {
+    "modelFamily": "none",
+    "bundledByDefault": false,
+    "downloadPolicy": "not-required",
+    "userConfirmationRequired": false,
+    "fallbackWhenMissing": "sqlite-fts5",
+    "publicEgressByDefault": false,
+    "runtimeDownloaderImplementation": "not-started",
+    "runtimeEmbeddingImplementation": "not-started",
+    "silentDownloadAllowed": false
+  },
+  "vectorStorePolicy": {
+    "defaultBackend": "sqlite-fts5",
+    "selectedBackend": "sqlite-fts5",
+    "lancedbDefaultAllowed": false,
+    "lancedbMacosArm64Status": "pending-runtime-spike",
+    "requiresPlatformSmokeBeforeDefault": false,
+    "fallbackBackend": "sqlite-fts5",
+    "runtimeVectorStoreImplementation": "not-started"
+  },
+  "watcherPolicy": {
+    "trigger": "background-watcher",
+    "debounceMs": 5000,
+    "largeWorkspaceThresholdFiles": 10000,
+    "largeWorkspaceStrategy": "bounded-watch-plus-polling-fallback",
+    "perFileDescriptorWatch": false,
+    "maxOpenFileDescriptors": 256,
+    "pollingFallbackIntervalSeconds": 60,
+    "overflowBehavior": "fail-closed-user-visible",
+    "runtimeWatcherImplementation": "not-started"
+  },
+  "extractionPolicy": {
+    "documentFamily": "calc",
+    "inputFormat": "ods",
+    "textExtractionPath": "document-model",
+    "usesLibreOfficeImportFilter": true,
+    "usesDocumentModel": true,
+    "standalonePptParserAllowed": false,
+    "preservesSlideElementRefs": false,
+    "runtimeExtractionImplementation": "not-started"
+  },
+  "storagePolicy": {
+    "indexRoot": "application-data-directory",
+    "workspacePartition": "per-workspace",
+    "pathIdentity": "workspace-hash",
+    "colocatedWithUserDocuments": false,
+    "syncsWithUserDocuments": false,
+    "storesDocumentContent": false,
+    "runtimeStorageImplementation": "not-started"
+  },
+  "boundary": {
+    "serviceMode": "offline",
+    "publicEgress": false,
+    "localEmbedding": true,
+    "tenantPolicyRequired": true
+  },
+  "evidence": {
+    "required": ["document-snapshot", "index-update", "no-public-egress"],
+    "evidenceIds": ["ev-0000000000000d03", "ev-0000000000000d04"]
+  }
+}

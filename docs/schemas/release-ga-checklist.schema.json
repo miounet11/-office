@@ -1,0 +1,169 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://kqoffice.example.com/schemas/release-ga-checklist.schema.json",
+  "title": "V3 Release GA Checklist",
+  "description": "Contract-first manifest for V3 W9 release and GA blocking checklist. Draft; covered by the W9 release-ga-checklist self-test before gated release/runtime implementation exists.",
+  "type": "object",
+  "required": ["id", "schemaVersion", "createdAt", "gaScope", "readinessGates", "releaseApprovals", "evidence", "gates"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^relga-[0-9a-f]{16}$"
+    },
+    "schemaVersion": {
+      "const": "v3-release-ga-checklist/0.1"
+    },
+    "createdAt": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+    },
+    "gaScope": {
+      "type": "object",
+      "required": ["product", "releasePhase", "supportedPlatforms", "defaultDataBoundary"],
+      "additionalProperties": false,
+      "properties": {
+        "product": {
+          "const": "kqoffice-v3"
+        },
+        "releasePhase": {
+          "const": "ga-blocking-contract"
+        },
+        "supportedPlatforms": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "uniqueItems": true,
+          "items": {
+            "enum": ["macos", "windows", "linux", "self-hosted"]
+          }
+        },
+        "defaultDataBoundary": {
+          "const": "local-first"
+        }
+      }
+    },
+    "readinessGates": {
+      "type": "array",
+      "minItems": 16,
+      "maxItems": 16,
+      "items": {
+        "type": "object",
+        "required": ["id", "title", "status", "owner", "blocksGA", "requiredEvidence"],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "enum": [
+              "v2-regression-green",
+              "h8-connector-contract",
+              "h9-eval-baseline",
+              "h10-localcloud-no-egress",
+              "h11-perf-baseline",
+              "h12-crash-recovery",
+              "w9-onboarding-flow",
+              "w9-starter-pack",
+              "w9-edition-policy",
+              "w9-i18n-locale",
+              "w9-manual-docs",
+              "w9-distribution-update",
+              "w9-error-recovery-ux",
+              "source-archive-clean",
+              "windows-toast-proof",
+              "release-policy-decisions"
+            ]
+          },
+          "title": {
+            "type": "string",
+            "minLength": 8
+          },
+          "status": {
+            "enum": ["contract-active", "pending-runtime", "pending-release-decision"]
+          },
+          "owner": {
+            "enum": ["qa-owner", "release-owner", "repo-owner", "runtime-owner"]
+          },
+          "blocksGA": {
+            "const": true
+          },
+          "requiredEvidence": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 3
+            }
+          }
+        }
+      }
+    },
+    "releaseApprovals": {
+      "type": "object",
+      "required": ["humanApprovalRequired", "automatedApprovalAllowed", "approvers", "signoffEvidenceRequired"],
+      "additionalProperties": false,
+      "properties": {
+        "humanApprovalRequired": {
+          "const": true
+        },
+        "automatedApprovalAllowed": {
+          "const": false
+        },
+        "approvers": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "uniqueItems": true,
+          "items": {
+            "enum": ["repo-owner", "release-owner", "qa-owner"]
+          }
+        },
+        "signoffEvidenceRequired": {
+          "const": true
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "required": ["required", "evidenceIds"],
+      "additionalProperties": false,
+      "properties": {
+        "required": {
+          "type": "array",
+          "minItems": 6,
+          "uniqueItems": true,
+          "items": {
+            "enum": ["release-ga-checklist", "v2-regression-green", "v3-self-test-green", "v3-only-green", "human-approval", "evidence-record", "release-signoff"]
+          }
+        },
+        "evidenceIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^ev-[0-9a-f]{16}$"
+          }
+        }
+      }
+    },
+    "gates": {
+      "type": "object",
+      "required": ["blocksGA", "canShip", "requiresExplicitUserAuthorization", "runtimeImplementation"],
+      "additionalProperties": false,
+      "properties": {
+        "blocksGA": {
+          "const": true
+        },
+        "canShip": {
+          "const": false
+        },
+        "requiresExplicitUserAuthorization": {
+          "const": true
+        },
+        "runtimeImplementation": {
+          "const": "not-started"
+        }
+      }
+    }
+  }
+}

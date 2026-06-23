@@ -1,0 +1,62 @@
+{
+  "tenantContext": {
+    "id": "tctx-0000000000000f12",
+    "schemaVersion": "v3-tenant-context/0.1",
+    "createdAt": "2026-06-10T11:45:00Z",
+    "tenant": {
+      "id": "acme",
+      "name": "Acme Legal",
+      "plan": "enterprise"
+    },
+    "workspace": {
+      "id": "legal",
+      "name": "Legal Workspace",
+      "dataClasses": ["confidential"]
+    },
+    "users": [
+      {
+        "id": "user.li",
+        "role": "user",
+        "status": "active"
+      }
+    ],
+    "dataBoundary": {
+      "defaultServiceMode": "offline",
+      "allowedServiceModes": ["offline"],
+      "publicEgressDefault": false,
+      "tenantIsolation": true,
+      "localOnlyAdminPanel": true
+    },
+    "audit": {
+      "appendOnly": true,
+      "hashChainRequired": true,
+      "sink": "local-file",
+      "sinkPort": 17803
+    }
+  },
+  "policyRule": {
+    "id": "pol-deny-but-does-not-block",
+    "schemaVersion": "v3-policy-rule/0.1",
+    "priority": 11,
+    "phase": "pre-flight",
+    "effect": "deny",
+    "when": {
+      "tenants": ["acme"],
+      "serviceModes": ["offline"],
+      "actorRoles": ["user"],
+      "targetTypes": ["connector"],
+      "dataClasses": ["confidential"]
+    },
+    "enforcement": {
+      "blocksAction": false,
+      "approvalRequired": false,
+      "auditLogRequired": true,
+      "reasonCode": "deny-must-block"
+    },
+    "evidence": {
+      "required": ["policy-decision", "audit-log-entry", "evidence-record"],
+      "emitsAuditLog": true,
+      "evidenceRecordRequired": true
+    }
+  }
+}

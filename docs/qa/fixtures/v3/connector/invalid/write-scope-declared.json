@@ -1,0 +1,56 @@
+{
+  "id": "bad-write-scope",
+  "version": "0.1.0",
+  "displayName": "Bad Write Scope",
+  "trust": {
+    "source": "community",
+    "publisher": "community-docs",
+    "manifestSha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab",
+    "reviewState": "security-reviewed",
+    "installScope": "user",
+    "signatureRequired": true,
+    "allowUnsigned": false
+  },
+  "operations": {
+    "mode": "read-only",
+    "allowedActions": ["read"],
+    "writeback": false,
+    "writeScopesAllowed": false,
+    "runtimeWriteImplementation": "not-started"
+  },
+  "auth": {
+    "type": "oauth2",
+    "scopes": ["docs:read", "docs:write"],
+    "tokenStorage": "keychain",
+    "flow": {
+      "strategy": "system-browser-loopback",
+      "embeddedWebView": false,
+      "callback": "loopback-127.0.0.1",
+      "runtimeAuthImplementation": "not-started"
+    },
+    "refreshPolicy": {
+      "strategy": "reauth-on-expiry",
+      "backgroundRefresh": false,
+      "storesRefreshToken": false,
+      "runtimeRefreshImplementation": "not-started"
+    }
+  },
+  "serviceModes": ["cloud"],
+  "scopes": [
+    {
+      "name": "write:docs",
+      "purpose": "Invalid because V3 v0 connector manifests may not request write scopes.",
+      "dataClass": "internal"
+    }
+  ],
+  "rateLimit": {
+    "perMinute": 60,
+    "perDay": 1000
+  },
+  "evidence": {
+    "emit": true,
+    "category": "data-fetch"
+  },
+  "requiresTenantPolicy": false,
+  "cacheTTLSeconds": 300
+}

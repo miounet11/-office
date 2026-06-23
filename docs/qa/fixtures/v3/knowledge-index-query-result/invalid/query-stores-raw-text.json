@@ -1,0 +1,58 @@
+{
+  "query": {
+    "id": "kbq-0000000000000e11",
+    "schemaVersion": "v3-knowledge-index-query/0.1",
+    "createdAt": "2026-06-10T11:23:00Z",
+    "workspace": "legal",
+    "query": {
+      "intent": "keyword",
+      "textHash": "6666666666666666666666666666666666666666666666666666666666666666",
+      "language": "zh-CN",
+      "topK": 5,
+      "includeMetadata": false,
+      "storesQueryText": true,
+      "queryText": "raw query text must not be stored in the query fixture"
+    },
+    "retrieval": {
+      "mode": "fts",
+      "sourceKinds": ["document"],
+      "backends": ["sqlite-fts5"],
+      "rerank": "none",
+      "timeoutMs": 200
+    },
+    "boundary": {
+      "serviceMode": "offline",
+      "publicEgress": false,
+      "localEmbedding": true,
+      "tenantPolicyRequired": true
+    },
+    "evidence": {
+      "required": ["policy-decision", "no-public-egress", "kb-query"],
+      "evidenceIds": ["ev-0000000000000e12"]
+    }
+  },
+  "result": {
+    "id": "kbr-0000000000000e11",
+    "schemaVersion": "v3-knowledge-index-result/0.1",
+    "queryId": "kbq-0000000000000e11",
+    "createdAt": "2026-06-10T11:23:01Z",
+    "workspace": "legal",
+    "summary": {
+      "resultCount": 0,
+      "latencyMs": 90,
+      "retrievalMode": "fts",
+      "truncated": false,
+      "storesDocumentContent": false
+    },
+    "chunks": [],
+    "boundary": {
+      "publicEgress": false,
+      "hashAlgorithm": "sha256",
+      "storesDocumentContent": false
+    },
+    "evidence": {
+      "required": ["kb-query", "chunk-read", "no-public-egress"],
+      "evidenceIds": ["ev-0000000000000e13"]
+    }
+  }
+}

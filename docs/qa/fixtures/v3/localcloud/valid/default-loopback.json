@@ -1,0 +1,49 @@
+{
+  "id": "localcloud",
+  "version": "0.1.0",
+  "mode": "single-user-default",
+  "endpoint": {
+    "baseUrl": "http://127.0.0.1:17802",
+    "bindAddress": "127.0.0.1",
+    "allowPrivateLan": false
+  },
+  "services": {
+    "oauthProxy": {
+      "bindAddress": "127.0.0.1",
+      "port": 0,
+      "protocol": "http",
+      "publicEgress": false
+    },
+    "pushGateway": {
+      "bindAddress": "127.0.0.1",
+      "port": 17801,
+      "protocol": "ws",
+      "publicEgress": false
+    },
+    "syncServer": {
+      "bindAddress": "127.0.0.1",
+      "port": 17802,
+      "protocol": "http",
+      "publicEgress": false
+    },
+    "auditSink": {
+      "bindAddress": "127.0.0.1",
+      "port": 17803,
+      "protocol": "http",
+      "publicEgress": false
+    },
+    "selfUpdate": {
+      "bindAddress": "127.0.0.1",
+      "port": 17804,
+      "protocol": "https",
+      "publicEgress": false
+    }
+  },
+  "allowPublicEgress": false,
+  "optInCloudEgress": false,
+  "evidence": {
+    "emit": true,
+    "category": "localcloud-config",
+    "auditSinkRequired": true
+  }
+}

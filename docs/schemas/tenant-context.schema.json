@@ -1,0 +1,132 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://kqoffice.example.com/schemas/tenant-context.schema.json",
+  "title": "V3 Tenant Context",
+  "description": "Tenant/workspace/user context contract for V3 W4. Draft; covered by the W4 policy-tenant self-test before gated tenant runtime implementation exists.",
+  "type": "object",
+  "required": ["id", "schemaVersion", "createdAt", "tenant", "workspace", "users", "dataBoundary", "audit"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^tctx-[0-9a-f]{16}$"
+    },
+    "schemaVersion": {
+      "const": "v3-tenant-context/0.1"
+    },
+    "createdAt": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+    },
+    "tenant": {
+      "type": "object",
+      "required": ["id", "name", "plan"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]{2,63}$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 120
+        },
+        "plan": {
+          "enum": ["personal", "team", "enterprise"]
+        }
+      }
+    },
+    "workspace": {
+      "type": "object",
+      "required": ["id", "name", "dataClasses"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]{2,63}$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 120
+        },
+        "dataClasses": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": ["public", "internal", "confidential", "secret"]
+          }
+        }
+      }
+    },
+    "users": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "role", "status"],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9._-]{2,80}$"
+          },
+          "role": {
+            "enum": ["user", "admin", "service"]
+          },
+          "status": {
+            "enum": ["active", "suspended"]
+          }
+        }
+      }
+    },
+    "dataBoundary": {
+      "type": "object",
+      "required": ["defaultServiceMode", "allowedServiceModes", "publicEgressDefault", "tenantIsolation", "localOnlyAdminPanel"],
+      "additionalProperties": false,
+      "properties": {
+        "defaultServiceMode": {
+          "enum": ["offline", "private"]
+        },
+        "allowedServiceModes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": ["offline", "private"]
+          }
+        },
+        "publicEgressDefault": {
+          "const": false
+        },
+        "tenantIsolation": {
+          "const": true
+        },
+        "localOnlyAdminPanel": {
+          "const": true
+        }
+      }
+    },
+    "audit": {
+      "type": "object",
+      "required": ["appendOnly", "hashChainRequired", "sink", "sinkPort"],
+      "additionalProperties": false,
+      "properties": {
+        "appendOnly": {
+          "const": true
+        },
+        "hashChainRequired": {
+          "const": true
+        },
+        "sink": {
+          "enum": ["local-file", "local-sink-server"]
+        },
+        "sinkPort": {
+          "const": 17803
+        }
+      }
+    }
+  }
+}

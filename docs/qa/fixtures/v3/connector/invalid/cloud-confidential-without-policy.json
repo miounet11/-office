@@ -1,0 +1,56 @@
+{
+  "id": "bad-cloud-confidential",
+  "version": "0.1.0",
+  "displayName": "Bad Cloud Confidential",
+  "trust": {
+    "source": "community",
+    "publisher": "community-docs",
+    "manifestSha256": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+    "reviewState": "security-reviewed",
+    "installScope": "user",
+    "signatureRequired": true,
+    "allowUnsigned": false
+  },
+  "operations": {
+    "mode": "read-only",
+    "allowedActions": ["read"],
+    "writeback": false,
+    "writeScopesAllowed": false,
+    "runtimeWriteImplementation": "not-started"
+  },
+  "auth": {
+    "type": "oauth2",
+    "scopes": ["sites.read.all"],
+    "tokenStorage": "keychain",
+    "flow": {
+      "strategy": "system-browser-loopback",
+      "embeddedWebView": false,
+      "callback": "loopback-127.0.0.1",
+      "runtimeAuthImplementation": "not-started"
+    },
+    "refreshPolicy": {
+      "strategy": "reauth-on-expiry",
+      "backgroundRefresh": false,
+      "storesRefreshToken": false,
+      "runtimeRefreshImplementation": "not-started"
+    }
+  },
+  "serviceModes": ["cloud"],
+  "scopes": [
+    {
+      "name": "read:sites",
+      "purpose": "Invalid because cloud confidential data needs tenant policy.",
+      "dataClass": "confidential"
+    }
+  ],
+  "rateLimit": {
+    "perMinute": 45,
+    "perDay": 5000
+  },
+  "evidence": {
+    "emit": true,
+    "category": "data-fetch"
+  },
+  "requiresTenantPolicy": false,
+  "cacheTTLSeconds": 300
+}

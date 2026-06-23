@@ -1,0 +1,205 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://kqoffice.example.com/schemas/manual-docs-manifest.schema.json",
+  "title": "V3 Manual Docs Manifest",
+  "description": "Contract-first manifest for V3 W9 embedded and mirrored user manual docs. Draft; covered by the W9 manual-docs self-test before gated manual content or product integration exists.",
+  "type": "object",
+  "required": ["id", "schemaVersion", "createdAt", "manual", "locales", "topics", "delivery", "evidence", "gates"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^manual-[0-9a-f]{16}$"
+    },
+    "schemaVersion": {
+      "const": "v3-manual-docs/0.1"
+    },
+    "createdAt": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+    },
+    "manual": {
+      "type": "object",
+      "required": ["rootPath", "embedded", "onlineMirror", "helpKey", "helpMenuEntry", "searchEnabled", "noExternalDependency"],
+      "additionalProperties": false,
+      "properties": {
+        "rootPath": {
+          "const": "docs/manual/"
+        },
+        "embedded": {
+          "const": true
+        },
+        "onlineMirror": {
+          "const": true
+        },
+        "helpKey": {
+          "const": "?"
+        },
+        "helpMenuEntry": {
+          "const": true
+        },
+        "searchEnabled": {
+          "const": true
+        },
+        "noExternalDependency": {
+          "const": true
+        }
+      }
+    },
+    "locales": {
+      "type": "object",
+      "required": ["requiredLocales", "launchLocales", "fallbackLocale", "fallbackForUntranslated"],
+      "additionalProperties": false,
+      "properties": {
+        "requiredLocales": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "uniqueItems": true,
+          "items": {
+            "enum": ["zh-CN", "en-US"]
+          }
+        },
+        "launchLocales": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "uniqueItems": true,
+          "items": {
+            "enum": ["zh-CN", "en-US", "ja-JP", "zh-TW"]
+          }
+        },
+        "fallbackLocale": {
+          "const": "en-US"
+        },
+        "fallbackForUntranslated": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "uniqueItems": true,
+          "items": {
+            "enum": ["ja-JP", "zh-TW"]
+          }
+        }
+      }
+    },
+    "topics": {
+      "type": "array",
+      "minItems": 8,
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "required": ["id", "titleToken", "required", "embedded", "onlineMirror", "locales", "pathByLocale", "evidenceId"],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "enum": ["index", "quickstart", "ai-features", "connectors", "tenant-admin", "companion", "localcloud", "troubleshooting"]
+          },
+          "titleToken": {
+            "type": "string",
+            "pattern": "^manual\\.[a-z0-9-]+$"
+          },
+          "required": {
+            "const": true
+          },
+          "embedded": {
+            "const": true
+          },
+          "onlineMirror": {
+            "const": true
+          },
+          "locales": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 2,
+            "uniqueItems": true,
+            "items": {
+              "enum": ["zh-CN", "en-US"]
+            }
+          },
+          "pathByLocale": {
+            "type": "object",
+            "required": ["zh-CN", "en-US"],
+            "additionalProperties": false,
+            "properties": {
+              "zh-CN": {
+                "type": "string",
+                "pattern": "^docs/manual/zh-CN/[a-z0-9-]+\\.md$"
+              },
+              "en-US": {
+                "type": "string",
+                "pattern": "^docs/manual/en-US/[a-z0-9-]+\\.md$"
+              }
+            }
+          },
+          "evidenceId": {
+            "type": "string",
+            "pattern": "^ev-[0-9a-f]{16}$"
+          }
+        }
+      }
+    },
+    "delivery": {
+      "type": "object",
+      "required": ["embeddedBundle", "onlineMirrorSource", "offlineReadable", "requiresPublicInternet", "updateChannel"],
+      "additionalProperties": false,
+      "properties": {
+        "embeddedBundle": {
+          "const": true
+        },
+        "onlineMirrorSource": {
+          "const": true
+        },
+        "offlineReadable": {
+          "const": true
+        },
+        "requiresPublicInternet": {
+          "const": false
+        },
+        "updateChannel": {
+          "const": "w8-self-host-or-release-bundle"
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "required": ["required", "evidenceIds"],
+      "additionalProperties": false,
+      "properties": {
+        "required": {
+          "type": "array",
+          "minItems": 5,
+          "uniqueItems": true,
+          "items": {
+            "enum": ["manual-docs-manifest", "embedded-help-open", "online-mirror-sync", "locale-coverage", "evidence-record", "v2-regression-green"]
+          }
+        },
+        "evidenceIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^ev-[0-9a-f]{16}$"
+          }
+        }
+      }
+    },
+    "gates": {
+      "type": "object",
+      "required": ["blocksGA", "requiresV2RegressionGreen", "runtimeImplementation"],
+      "additionalProperties": false,
+      "properties": {
+        "blocksGA": {
+          "const": true
+        },
+        "requiresV2RegressionGreen": {
+          "const": true
+        },
+        "runtimeImplementation": {
+          "const": "not-started"
+        }
+      }
+    }
+  }
+}

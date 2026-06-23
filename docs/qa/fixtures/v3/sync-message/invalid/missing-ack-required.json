@@ -1,0 +1,39 @@
+{
+  "id": "sync-4000000000000003",
+  "schemaVersion": "v3-sync-message/0.1",
+  "createdAt": "2026-06-10T12:41:00Z",
+  "tenant": "acme",
+  "workspace": "ops-team",
+  "channel": "sync-to-desktop",
+  "direction": "ack",
+  "kind": "task-state-sync",
+  "payload": {
+    "refType": "agent-task-state",
+    "refId": "agt-4000000000000001",
+    "hash": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+    "storesDocumentContent": false,
+    "containsRawPayload": false
+  },
+  "transport": {
+    "mode": "local-socket",
+    "endpointClass": "loopback",
+    "port": 17802,
+    "publicEgress": false,
+    "mTLSRequired": true
+  },
+  "ordering": {
+    "sequence": 3,
+    "idempotencyKey": "idem-4000000000000003",
+    "ackRequired": false
+  },
+  "boundary": {
+    "serviceMode": "offline",
+    "storesDocumentContent": false,
+    "hashOnly": true,
+    "defaultNoPublicEgress": true
+  },
+  "evidence": {
+    "required": ["localcloud-sync-message", "evidence-record", "audit-log-entry", "agent-task-state"],
+    "evidenceIds": ["ev-4000000000000004"]
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "id": "sync-4000000000000002",
+  "schemaVersion": "v3-sync-message/0.1",
+  "createdAt": "2026-06-10T12:40:00Z",
+  "tenant": "acme",
+  "workspace": "sales-team",
+  "channel": "sync-to-companion",
+  "direction": "download",
+  "kind": "diff-summary-sync",
+  "payload": {
+    "refType": "companion-diff-summary",
+    "refId": "cds-4000000000000001",
+    "hash": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+    "storesDocumentContent": false,
+    "containsRawPayload": false
+  },
+  "transport": {
+    "mode": "lan-grpc",
+    "endpointClass": "private-lan",
+    "port": 17802,
+    "publicEgress": true,
+    "mTLSRequired": true
+  },
+  "ordering": {
+    "sequence": 2,
+    "idempotencyKey": "idem-4000000000000002",
+    "ackRequired": true
+  },
+  "boundary": {
+    "serviceMode": "private",
+    "storesDocumentContent": false,
+    "hashOnly": true,
+    "defaultNoPublicEgress": true
+  },
+  "evidence": {
+    "required": ["localcloud-sync-message", "evidence-record", "audit-log-entry", "companion-diff-summary"],
+    "evidenceIds": ["ev-4000000000000003"]
+  }
+}

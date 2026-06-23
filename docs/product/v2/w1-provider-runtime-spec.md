@@ -102,6 +102,31 @@ interface XProvider : com::sun::star::uno::XInterface
 
 Mode 切换记 evidence。Cloud 模式下每次请求顶部弹"内容将发送到 cloud provider"小提示。
 
+## Capability ↔ ServiceMode 矩阵 (L102 入册, source-of-truth = `ServiceModePolicy.cxx:20`)
+
+> 本表是 spec ↔ C++ 实际 allowlist 的诚实对照表，加这一节是为了关掉 W1 历史的 capability claim drift（spec 写过 "rewrite | summarize | format-fix | ..." 模糊省略号，C++ 实际是 4 个明确 token）。
+> H6 reader's manual 自动入册时按本表锁。改 allowlist 必须 3-site 同步：本表 / `ServiceModePolicy.cxx:20` `kOfflineCapabilities` / 新加 cppunit `testListCapabilitiesMatchesPolicy`（W1.A 已入 backlog）。
+
+| Capability token | offline | private | cloud | 触发回路 / 用例 |
+|---|---|---|---|---|
+| `rewrite` | ✅ | 计划支持（gated D1d） | 计划支持（gated W1 cloud） | Writer 段落改写、邮件润色、Calc 单元格批注润色 |
+| `summarize` | ✅ | 计划支持 | 计划支持 | Writer 长文摘要、Impress 大纲压缩 |
+| `format-fix` | ✅ | 计划支持 | 计划支持 | 全局 fmt clean (Writer/Calc/Impress 同 token，apply 路径不同) |
+| `intent-to-uno` | ✅ | 计划支持 | 计划支持 | Cmd+K 自然语言 → `.uno:` 命令分派；与 W2 controller 共享 |
+
+总数：offline = **4** (`rewrite | summarize | format-fix | intent-to-uno`)。这是 `Provider::listCapabilities()` 在 offline 模式下应当返回的 sequence，但当前 C++ 还返回空（W1.A 待办，可逆 reflection patch）。
+
+矩阵不变量（与 W1 invariant §29 相干）：
+- offline 集合是 private 集合的子集，private 集合是 cloud 集合的子集（**包含序**）。
+- 任何不在矩阵里的 capability token，`Provider::call` 必须 reject 并记 evidence `policy-denied`。
+- 新加 capability：先加到本表 + `ServiceModePolicy.cxx:20`，再加 cppunit case；不允许 spec 落后于 C++。
+
+矩阵扩展项（不入 offline，留待对应 wave 落地时再决）：
+- `apply-paragraph` — W3 wiring，offline 走 ApplyPlanValidator 不需 provider，所以不入本表。
+- `inline-action-cell-*` / `inline-action-slide-*` — W4 token，token 走 ProviderRequest.capability 还是走独立 dispatcher 是 D3a-d 范围内决议。
+- `cowork-task-*` — W5 token，offline 走纯本地 worker，不一定要进矩阵。
+
+
 ## Request Lifecycle
 
 ```
@@ -221,3 +246,172 @@ W1 完成时验证：
 - [ ] Service mode 切换从 Settings → AI 可见
 - [ ] evidence 文件按 `tmp/ai-evidence/2026-MM/<id>.json` 写出
 - [ ] V1.5 27/27 兼容性测试不退化
+
+## Backlog § (L103 入册): Cloud Adapter Token Lock (W1.cloud, design-only)
+
+> 这一节是 **schema 冻结草案**，不是 cloud TLS 实装路径，不入 SRCDIR。
+> 目的是在 W1 cloud（也叫 D1d cloud 续期）授权之前，把 cloud-side adapter
+> 的 token / 鉴权 / endpoint 形态锁下来；放行后只做实装。
+> 与 ServiceModePolicy `Cloud` 模式的 allowlist 同步在 §"Capability ↔
+> ServiceMode 矩阵" 章节，已显式列出"private/cloud 计划支持"列。本 backlog 继续把
+> cloud 这一边的 **认证与路由细节** 冻结。
+
+### 1. 第一阶段目标
+
+V2 cloud 只先做 **Anthropic-shape adapter**（HTTP/JSON, x-api-key
+header），不做 OpenAI/Azure/Bedrock；多 vendor 是 V2.x 范围。Anthropic
+是 first-class first 的原因：
+
+- 协议简单（一个 endpoint，无 streaming required, JSON-only）
+- 用户最常见的 cloud LLM 之一
+- evidence 字段已经能直接装 Anthropic-shape 响应（`content` 单段）
+
+### 2. Cloud adapter 接口（design-only）
+
+```cpp
+namespace kqoffice::ai
+{
+class SAL_DLLPUBLIC_EXPORT CloudAdapter
+{
+public:
+    /// Vendor enumeration. V2 only Anthropic; rest reserved for V2.x.
+    enum class Vendor
+    {
+        Anthropic,    // anthropic-2024-style /v1/messages
+        // OpenAI,    // V2.x
+        // Azure,     // V2.x
+        // Bedrock,   // V2.x
+    };
+
+    struct Config
+    {
+        Vendor vendor;
+        OUString endpoint;        // e.g. https://api.anthropic.com/v1/messages
+        OUString apiKeyRef;       // KEY REFERENCE, not raw key — see §3
+        OUString model;           // e.g. claude-3-5-sonnet-20241022
+        sal_Int32 maxOutputTokens; // default 1024
+        sal_Int32 timeoutMs;       // default 30000
+    };
+
+    explicit CloudAdapter(const Config& cfg);
+
+    /// Probe: HEAD on endpoint or vendor-specific cheap GET.
+    /// Returns "reachable" | "unauthenticated" | "unreachable" | "rate-limited".
+    OUString probe();
+
+    /// Generate. Returns content; empty string on any failure.
+    /// Evidence-level reason captured in lastError().
+    OUString generate(const OUString& prompt);
+
+    /// Diagnostics for evidence record. Reset on each call.
+    OUString lastError() const;
+
+private:
+    Config m_cfg;
+    OUString m_lastError;
+};
+} // namespace kqoffice::ai
+```
+
+不变量：
+- `apiKeyRef` 永远不是原始 key —— 是指向 OS keychain 的 reference
+  (macOS keychain item name, Windows credman, GNOME secret-service)。Adapter
+  内部即时取 key 用，调用后立即 zero 内存，**绝不写日志**。
+- `Config` 字段值（不含 key）写 evidence；endpoint URL 算受控 PII，
+  evidence 字段标 `private`。
+- Probe 不会消耗 token；用 HEAD 或最小 token request 完成。
+
+### 3. Key storage（设计层 token lock）
+
+| OS | 存储 | reference 形态 |
+|---|---|---|
+| macOS | `Security.framework` keychain item | `keychain://kqoffice/ai-cloud/anthropic` |
+| Windows | `wincred` credential manager | `wincred://kqoffice/ai-cloud/anthropic` |
+| Linux | `libsecret` (GNOME) / `kwallet` (KDE) | `secret-service://kqoffice/ai-cloud/anthropic` |
+
+Adapter 启动时用 reference 解析到 raw key；fail-fast on 失败（不 silently
+fall back，避免没鉴权情况下发请求暴露 prompt）。
+
+key reference 是 user setting，存 `kqoffice/registry/data/.../AICloud.xcu`
+(待 D1d cloud 解锁后入册)。**不存 raw key 到 registry**，registry 只存
+reference。
+
+### 4. ServiceMode 切换 evidence
+
+切换到 `cloud` 时必须 emit evidence with reason `mode-switch-to-cloud`，
+包含：
+
+- target vendor
+- endpoint URL（不含 key）
+- 用户是否在最近 24h 看过隐私提示（W1 spec §"Service Mode Policy" 已有要求）
+- timestamp ISO 8601 + UTC
+
+切换回 offline / private 同样 emit evidence，便于审计 "用户用云模式多久"。
+
+### 5. 请求 lifecycle 增量（在 §"Request Lifecycle" 基础上）
+
+```
+ServiceModePolicy.check(req) → 通过
+  └─ 若 mode==Cloud:
+       ├─ 显式校验 capability ∈ cloud allowlist
+       ├─ 显式校验用户 24h 隐私提示已 ack
+       ├─ EvidenceRecorder.start(req_hash) 加 cloud-marker
+       └─ CloudAdapter.generate(req.prompt)
+            ├─ 取 keychain key（即时，不缓存到 m_cfg）
+            ├─ HTTP POST endpoint
+            ├─ 失败 → return ProviderResponse{status=provider-error}
+            └─ 成功 → return ProviderResponse{status=ok, content, evidence_id}
+```
+
+### 6. Timeouts / 重试
+
+- HTTP timeout = `Config.timeoutMs` （默认 30s）
+- 不重试 4xx（鉴权 / 输入错）
+- 5xx 可重试 1 次，间隔 1s；超过 = `provider-error`
+- 429 rate-limited 立即返回 `rate-limited`（不 retry，让用户决定）
+
+### 7. Provider response 字段映射（Anthropic 4 项）
+
+| Anthropic field | ProviderResponse 映射 | 备注 |
+|---|---|---|
+| `content[0].text` | `content` | 仅取第一段；多段拼接是 V2.x |
+| `usage.input_tokens` | evidence `request_tokens` (新字段) | 待 provider-evidence.schema 增列 |
+| `usage.output_tokens` | evidence `response_tokens` (新字段) | 同上 |
+| `stop_reason` | evidence `stop_reason` (新字段) | 同上 |
+
+新增 evidence 字段 = schema 改动 = H1 / H6 必须同步：
+
+- `docs/schemas/provider-evidence.schema.json` 加 3 字段
+- reader's manual 加对应 fact-block
+- C++ EvidenceRecord 加 3 个 sal_Int32 + 1 个 OUString
+- H1 通过
+
+这一同步必须与 cloud adapter 实装在同一个 PR 里完成，不允许 schema 先落 C++ 落后。
+
+### 8. 不在本 backlog 内
+
+- 实际 HTTP client（macOS NSURLSession / Linux libcurl / Windows WinHTTP；选型留 D1d cloud 时决）
+- 多 vendor（OpenAI / Azure / Bedrock —— V2.x）
+- streaming response（V2.x）
+- function calling / tool use（V2.x）
+- 计费 quota / budget enforcement（不在 V2 任何 wave 范围）
+
+### 9. Gate
+
+- **W1 cloud (D1d cloud)**：实际 SRCDIR 落 CloudAdapter.{hxx,cxx} + AICloud.xcu schema +
+  evidence schema 3 字段补充 + cppunit。
+- 落地顺序建议：W1.A/W1.B (D1d 第一阶段，offline-only honesty) 先放行
+  并跑通 → 再开 D1d cloud；这样 evidence schema 改动是单方向只增加，
+  不动现有 17-token status enum。
+
+### 10. Schema 冻结要点（不动 C++）
+
+- adapter Config 字段集冻结为 §2 的 7 项（vendor / endpoint / apiKeyRef / model /
+  maxOutputTokens / timeoutMs + 未来 `extraHeaders` 选项给企业代理用）
+- vendor enum 冻结为 Anthropic（V2 范围）
+- key reference scheme 冻结为 §3 三种
+- 新增 evidence 字段冻结为 §7 三项（request_tokens / response_tokens / stop_reason）
+
+**这些 frozen list 不在 schema JSON 里实装直到 D1d cloud 放行**。本节
+只是把"放行时该长这样"写死，避免到时候争论 vendor 顺序 / key store
+选型 / 字段命名。

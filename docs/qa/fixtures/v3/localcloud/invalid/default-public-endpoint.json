@@ -1,0 +1,49 @@
+{
+  "id": "localcloud",
+  "version": "0.1.0",
+  "mode": "single-user-default",
+  "endpoint": {
+    "baseUrl": "https://oauth.kqoffice.example.com/cb",
+    "bindAddress": "8.8.8.8",
+    "allowPrivateLan": false
+  },
+  "services": {
+    "oauthProxy": {
+      "bindAddress": "8.8.8.8",
+      "port": 443,
+      "protocol": "https",
+      "publicEgress": true
+    },
+    "pushGateway": {
+      "bindAddress": "127.0.0.1",
+      "port": 17801,
+      "protocol": "ws",
+      "publicEgress": false
+    },
+    "syncServer": {
+      "bindAddress": "127.0.0.1",
+      "port": 17802,
+      "protocol": "http",
+      "publicEgress": false
+    },
+    "auditSink": {
+      "bindAddress": "127.0.0.1",
+      "port": 17803,
+      "protocol": "http",
+      "publicEgress": false
+    },
+    "selfUpdate": {
+      "bindAddress": "127.0.0.1",
+      "port": 17804,
+      "protocol": "https",
+      "publicEgress": false
+    }
+  },
+  "allowPublicEgress": false,
+  "optInCloudEgress": false,
+  "evidence": {
+    "emit": true,
+    "category": "localcloud-config",
+    "auditSinkRequired": true
+  }
+}

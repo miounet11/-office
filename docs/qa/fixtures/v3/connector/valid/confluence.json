@@ -1,0 +1,57 @@
+{
+  "id": "confluence",
+  "version": "0.1.0",
+  "displayName": "Confluence",
+  "vendor": "Atlassian",
+  "trust": {
+    "source": "builtin",
+    "publisher": "kqoffice",
+    "manifestSha256": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+    "reviewState": "repo-reviewed",
+    "installScope": "builtin",
+    "signatureRequired": true,
+    "allowUnsigned": false
+  },
+  "operations": {
+    "mode": "read-only",
+    "allowedActions": ["read"],
+    "writeback": false,
+    "writeScopesAllowed": false,
+    "runtimeWriteImplementation": "not-started"
+  },
+  "auth": {
+    "type": "api-key",
+    "scopes": ["read:space", "read:page"],
+    "tokenStorage": "keychain",
+    "flow": {
+      "strategy": "manual-secret-entry",
+      "embeddedWebView": false,
+      "callback": "manual-entry",
+      "runtimeAuthImplementation": "not-started"
+    },
+    "refreshPolicy": {
+      "strategy": "manual-rotate",
+      "backgroundRefresh": false,
+      "storesRefreshToken": false,
+      "runtimeRefreshImplementation": "not-started"
+    }
+  },
+  "serviceModes": ["private", "cloud"],
+  "scopes": [
+    {
+      "name": "read:spaces",
+      "purpose": "Fetch approved wiki pages for prompt context.",
+      "dataClass": "confidential"
+    }
+  ],
+  "rateLimit": {
+    "perMinute": 45,
+    "perDay": 5000
+  },
+  "evidence": {
+    "emit": true,
+    "category": "data-fetch"
+  },
+  "requiresTenantPolicy": true,
+  "cacheTTLSeconds": 300
+}

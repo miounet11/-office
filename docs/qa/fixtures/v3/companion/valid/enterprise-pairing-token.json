@@ -1,0 +1,46 @@
+{
+  "id": "cpt-1000000000000002",
+  "schemaVersion": "v3-companion-pairing-token/0.1",
+  "createdAt": "2026-06-10T12:11:00Z",
+  "expiresAt": "2026-06-10T12:19:00Z",
+  "tenant": "acme",
+  "workspace": "legal-team",
+  "desktop": {
+    "instanceId": "desk-1000000000000002",
+    "app": "calc",
+    "lanEndpoint": "grpc://10.0.0.22:17801"
+  },
+  "device": {
+    "proposedDeviceId": "dev-1000000000000002",
+    "platform": "ios",
+    "bindingRequired": true
+  },
+  "transport": {
+    "mode": "enterprise-https",
+    "port": 17801,
+    "publicEgress": false,
+    "cloudPushOptIn": false,
+    "mdnsRequired": false
+  },
+  "token": {
+    "ttlSeconds": 480,
+    "sessionTtlHours": 24,
+    "hash": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "storesSecret": false
+  },
+  "security": {
+    "pinConfirmationRequired": true,
+    "biometricEnrollmentRequired": true,
+    "mTLSRequired": true,
+    "revocable": true
+  },
+  "dataBoundary": {
+    "storesDocumentContent": false,
+    "storesDiffSummaryOnly": true,
+    "allowApprovalOffline": false
+  },
+  "evidence": {
+    "required": ["companion-pairing-token", "user-pin-confirmation", "device-binding", "audit-log-entry"],
+    "evidenceIds": ["ev-1000000000000002"]
+  }
+}

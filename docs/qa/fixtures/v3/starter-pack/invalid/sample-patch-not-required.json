@@ -1,0 +1,736 @@
+{
+  "id": "spm-8000000000000003",
+  "schemaVersion": "v3-starter-pack-manifest/0.1",
+  "createdAt": "2026-06-10T13:35:00Z",
+  "pack": {
+    "name": "v3-starter-pack",
+    "distribution": "embedded",
+    "embeddedDefault": true,
+    "templateRoot": "templates/v3-starter-pack/",
+    "localeStrategy": "ui-locale-first"
+  },
+  "coverage": {
+    "templateCount": 30,
+    "businessScenarioCount": 10,
+    "perSurfaceCount": {
+      "writer": 10,
+      "calc": 10,
+      "impress": 10
+    },
+    "patchSmokeRequired": true
+  },
+  "templates": [
+    {
+      "id": "tpl-writer-meeting-notes",
+      "surface": "writer",
+      "scenario": "meeting-notes",
+      "path": "templates/v3-starter-pack/writer/meeting-notes.ott",
+      "titleKey": "starter-pack.meeting-notes",
+      "localeReady": [
+        "zh-CN",
+        "en-US"
+      ],
+      "samplePatch": {
+        "required": true,
+        "actionKind": "ParagraphAction",
+        "mustSucceed": false,
+        "requiresUndo": true,
+        "evidenceRequired": true
+      },
+      "dataBoundary": {
+        "storesDocumentContent": false,
+        "publicEgress": false,
+        "localFirst": true
+      }
+    },
+    {
+      "id": "tpl-writer-okr",
+      "surface": "writer",
+      "scenario": "okr",
+      "path": "templates/v3-starter-pack/writer/okr.ott",
+      "titleKey": "starter-pack.okr",
+      "localeReady": [
+        "zh-CN",
+        "en-US"
+      ],
+      "samplePatch": {
+        "required": true,
+        "actionKind": "ParagraphAction",
+        "mustSucceed": true,
+        "requiresUndo": true,
+        "evidenceRequired": true
+      },
+      "dataBoundary": {
+        "storesDocumentContent": false,
+        "publicEgress": false,
+        "localFirst": true
+      }
+    },
+    {
+      "id": "tpl-writer-prd",
+      "surface": "writer",
+      "scenario": "prd",
+      "path": "templates/v3-starter-pack/writer/prd.ott",
+      "titleKey": "starter-pack.prd",
+      "localeReady": [
+        "zh-CN",
+        "en-US"
+      ],
+      "samplePatch": {
+        "required": true,
+        "actionKind": "ParagraphAction",
+        "mustSucceed": true,
+        "requiresUndo": true,
+        "evidenceRequired": true
+      },
+      "dataBoundary": {
+        "storesDocumentContent": false,
+        "publicEgress": false,
+        "localFirst": true
+      }
+    },
+    {
+      "id": "tpl-writer-weekly-report",
+      "surface": "writer",
+      "scenario": "weekly-report",
+      "path": "templates/v3-starter-pack/writer/weekly-report.ott",
+      "titleKey": "starter-pack.weekly-report",
+      "localeReady": [
+        "zh-CN",
+        "en-US"
+      ],
+      "samplePatch": {
+        "required": true,
+        "actionKind": "ParagraphAction",
+        "mustSucceed": true,
+        "requiresUndo": true,
+        "evidenceRequired": true
+      },
+      "dataBoundary": {
+        "storesDocumentContent": false,
+        "publicEgress": false,
+        "localFirst": true
+      }
+    },
+    {
+      "id": "tpl-writer-contract-brief",
+      "surface": "writer",
+      "scenario": "contract-brief",
+      "path": "templates/v3-starter-pack/writer/contract-brief.ott",
+      "titleKey": "starter-pack.contract-brief",
+      "localeReady": [
+        "zh-CN",
+        "en-US"
+      ],
+      "samplePatch": {
+        "required": true,
+        "actionKind": "ParagraphAction",
+        "mustSucceed": true,
+        "requiresUndo": true,
+        "evidenceRequired": true
+      },
+      "dataBoundary": {
+        "storesDocumentContent": false,
+        "publicEgress": false,
+        "localFirst": true
+      }
+    },
+    {
+      "id": "tpl-writer-budget",
+      "surface": "writer",
+      "scenario": "budget",
+      "path": "templates/v3-starter-pack/writer/budget.ott",
+      "titleKey": "starter-pack.budget",
+      "localeReady": [
+        "zh-CN",
+        "en-US"
+      ],
+      "samplePatch": {
+        "required": true,
+        "actionKind": "ParagraphAction",
+        "mustSucceed": true,
+        "requiresUndo": true,
+        "evidenceRequired": true
+      },
+      "dataBoundary": {
+        "storesDocumentContent": false,
+        "publicEgress": false,
+        "localFirst": true
+      }
+    },
+    {
+      "id": "tpl-writer-sales-dashboard",
+      "surface": "writer",
+      "scenario": "sales-dashboard",
+      "path": "templates/v3-starter-pack/writer/sales-dashboard.ott",
+      "titleKey": "starter-pack.sales-dashboard",
+      "localeReady": [
+        "zh-CN",
+        "en-US"
+      ],
+      "samplePatch": {
+        "required": true,
+        "actionKind": "ParagraphAction",
+        "mustSucceed": true,
+        "requiresUndo": true,
+        "evidenceRequired": true
+      },
+      "dataBoundary": {
+        "storesDocumentContent": false,
+        "publicEgress": false,
+        "localFirst": true
+      }
+    },
+    {
+      "id": "tpl-writer-project-gantt",
+      "surface": "writer",
+      "scenario": "project-gantt",
+      "path": "templates/v3-starter-pack/writer/project-gantt.ott",
+      "titleKey": "starter-pack.project-gantt",
+      "localeReady": [
+        "zh-CN",
+        "en-US"
+      ],
+      "samplePatch": {
+        "required": true,
+        "actionKind": "ParagraphAction",
+        "mustSucceed": true,
+        "requiresUndo": true,
+        "evidenceRequired": true
+      },
+      "dataBoundary": {
+        "storesDocumentContent": false,
+        "publicEgress": false,
+        "localFirst": true
+      }
+    },
+    {
+      "id": "tpl-writer-roadshow",
+      "surface": "writer",
+      "scenario": "roadshow",
+      "path": "templates/v3-starter-pack/writer/roadshow.ott",
+      "titleKey": "starter-pack.roadshow",
+      "localeReady": [
+        "zh-CN",
+        "en-US"
+      ],
+      "samplePatch": {
+        "required": true,
+        "actionKind": "ParagraphAction",
+        "mustSucceed": true,
+        "requiresUndo": true,
+        "evidenceRequired": true
+      },
+      "dataBoundary": {
+        "storesDocumentContent": false,
+        "publicEgress": false,
+        "localFirst": true
+      }
+    },
+    {
+      "id": "tpl-writer-retrospective",
+      "surface": "writer",
+      "scenario": "retrospective",
+      "path": "templates/v3-starter-pack/writer/retrospective.ott",
+      "titleKey": "starter-pack.retrospective",
+      "localeReady": [
+        "zh-CN",
+        "en-US"
+      ],
+      "samplePatch": {
+        "required": true,
+        "actionKind": "ParagraphAction",
+        "mustSucceed": true,
+        "requiresUndo": true,
+        "evidenceRequired": true
+      },
+      "dataBoundary": {
+        "storesDocumentContent": false,
+        "publicEgress": false,
+        "localFirst": true
+      }
+    },
+    {
+      "id": "tpl-calc-meeting-notes",
+      "surface": "calc",
+      "scenario": "meeting-notes",
+      "path": "templates/v3-starter-pack/calc/meeting-notes.ots",
+      "titleKey": "starter-pack.meeting-notes",
+      "localeReady": [
+        "zh-CN",
+        "en-US"
+      ],
+      "samplePatch": {
+        "required": true,
+        "actionKind": "CellAction",
+        "mustSucceed": true,
+        "requiresUndo": true,
+        "evidenceRequired": true
+      },
+      "dataBoundary": {
+        "storesDocumentContent": false,
+        "publicEgress": false,
+        "localFirst": true
+      }
+    },
+    {
+      "id": "tpl-calc-okr",
+      "surface": "calc",
+      "scenario": "okr",
+      "path": "templates/v3-starter-pack/calc/okr.ots",
+      "titleKey": "starter-pack.okr",
+      "localeReady": [
+        "zh-CN",
+        "en-US"
+      ],
+      "samplePatch": {
+        "required": true,
+        "actionKind": "CellAction",
+        "mustSucceed": true,
+        "requiresUndo": true,
+        "evidenceRequired": true
+      },
+      "dataBoundary": {
+        "storesDocumentContent": false,
+        "publicEgress": false,
+        "localFirst": true
+      }
+    },
+    {
+      "id": "tpl-calc-prd",
+      "surface": "calc",
+      "scenario": "prd",
+      "path": "templates/v3-starter-pack/calc/prd.ots",
+      "titleKey": "starter-pack.prd",
+      "localeReady": [
+        "zh-CN",
+        "en-US"
+      ],
+      "samplePatch": {
+        "required": true,
+        "actionKind": "CellAction",
+        "mustSucceed": true,
+        "requiresUndo": true,
+        "evidenceRequired": true
+      },
+      "dataBoundary": {
+        "storesDocumentContent": false,
+        "publicEgress": false,
+        "localFirst": true
+      }
+    },
+    {
+      "id": "tpl-calc-weekly-report",
+      "surface": "calc",
+      "scenario": "weekly-report",
+      "path": "templates/v3-starter-pack/calc/weekly-report.ots",
+      "titleKey": "starter-pack.weekly-report",
+      "localeReady": [
+        "zh-CN",
+        "en-US"
+      ],
+      "samplePatch": {
+        "required": true,
+        "actionKind": "CellAction",
+        "mustSucceed": true,
+        "requiresUndo": true,
+        "evidenceRequired": true
+      },
+      "dataBoundary": {
+        "storesDocumentContent": false,
+        "publicEgress": false,
+        "localFirst": true
+      }
+    },
+    {
+      "id": "tpl-calc-contract-brief",
+      "surface": "calc",
+      "scenario": "contract-brief",
+      "path": "templates/v3-starter-pack/calc/contract-brief.ots",
+      "titleKey": "starter-pack.contract-brief",
+      "localeReady": [
+        "zh-CN",
+        "en-US"
+      ],
+      "samplePatch": {
+        "required": true,
+        "actionKind": "CellAction",
+        "mustSucceed": true,
+        "requiresUndo": true,
+        "evidenceRequired": true
+      },
+      "dataBoundary": {
+        "storesDocumentContent": false,
+        "publicEgress": false,
+        "localFirst": true
+      }
+    },
+    {
+      "id": "tpl-calc-budget",
+      "surface": "calc",
+      "scenario": "budget",
+      "path": "templates/v3-starter-pack/calc/budget.ots",
+      "titleKey": "starter-pack.budget",
+      "localeReady": [
+        "zh-CN",
+        "en-US"
+      ],
+      "samplePatch": {
+        "required": true,
+        "actionKind": "CellAction",
+        "mustSucceed": true,
+        "requiresUndo": true,
+        "evidenceRequired": true
+      },
+      "dataBoundary": {
+        "storesDocumentContent": false,
+        "publicEgress": false,
+        "localFirst": true
+      }
+    },
+    {
+      "id": "tpl-calc-sales-dashboard",
+      "surface": "calc",
+      "scenario": "sales-dashboard",
+      "path": "templates/v3-starter-pack/calc/sales-dashboard.ots",
+      "titleKey": "starter-pack.sales-dashboard",
+      "localeReady": [
+        "zh-CN",
+        "en-US"
+      ],
+      "samplePatch": {
+        "required": true,
+        "actionKind": "CellAction",
+        "mustSucceed": true,
+        "requiresUndo": true,
+        "evidenceRequired": true
+      },
+      "dataBoundary": {
+        "storesDocumentContent": false,
+        "publicEgress": false,
+        "localFirst": true
+      }
+    },
+    {
+      "id": "tpl-calc-project-gantt",
+      "surface": "calc",
+      "scenario": "project-gantt",
+      "path": "templates/v3-starter-pack/calc/project-gantt.ots",
+      "titleKey": "starter-pack.project-gantt",
+      "localeReady": [
+        "zh-CN",
+        "en-US"
+      ],
+      "samplePatch": {
+        "required": true,
+        "actionKind": "CellAction",
+        "mustSucceed": true,
+        "requiresUndo": true,
+        "evidenceRequired": true
+      },
+      "dataBoundary": {
+        "storesDocumentContent": false,
+        "publicEgress": false,
+        "localFirst": true
+      }
+    },
+    {
+      "id": "tpl-calc-roadshow",
+      "surface": "calc",
+      "scenario": "roadshow",
+      "path": "templates/v3-starter-pack/calc/roadshow.ots",
+      "titleKey": "starter-pack.roadshow",
+      "localeReady": [
+        "zh-CN",
+        "en-US"
+      ],
+      "samplePatch": {
+        "required": true,
+        "actionKind": "CellAction",
+        "mustSucceed": true,
+        "requiresUndo": true,
+        "evidenceRequired": true
+      },
+      "dataBoundary": {
+        "storesDocumentContent": false,
+        "publicEgress": false,
+        "localFirst": true
+      }
+    },
+    {
+      "id": "tpl-calc-retrospective",
+      "surface": "calc",
+      "scenario": "retrospective",
+      "path": "templates/v3-starter-pack/calc/retrospective.ots",
+      "titleKey": "starter-pack.retrospective",
+      "localeReady": [
+        "zh-CN",
+        "en-US"
+      ],
+      "samplePatch": {
+        "required": true,
+        "actionKind": "CellAction",
+        "mustSucceed": true,
+        "requiresUndo": true,
+        "evidenceRequired": true
+      },
+      "dataBoundary": {
+        "storesDocumentContent": false,
+        "publicEgress": false,
+        "localFirst": true
+      }
+    },
+    {
+      "id": "tpl-impress-meeting-notes",
+      "surface": "impress",
+      "scenario": "meeting-notes",
+      "path": "templates/v3-starter-pack/impress/meeting-notes.otp",
+      "titleKey": "starter-pack.meeting-notes",
+      "localeReady": [
+        "zh-CN",
+        "en-US"
+      ],
+      "samplePatch": {
+        "required": true,
+        "actionKind": "SlideElementAction",
+        "mustSucceed": true,
+        "requiresUndo": true,
+        "evidenceRequired": true
+      },
+      "dataBoundary": {
+        "storesDocumentContent": false,
+        "publicEgress": false,
+        "localFirst": true
+      }
+    },
+    {
+      "id": "tpl-impress-okr",
+      "surface": "impress",
+      "scenario": "okr",
+      "path": "templates/v3-starter-pack/impress/okr.otp",
+      "titleKey": "starter-pack.okr",
+      "localeReady": [
+        "zh-CN",
+        "en-US"
+      ],
+      "samplePatch": {
+        "required": true,
+        "actionKind": "SlideElementAction",
+        "mustSucceed": true,
+        "requiresUndo": true,
+        "evidenceRequired": true
+      },
+      "dataBoundary": {
+        "storesDocumentContent": false,
+        "publicEgress": false,
+        "localFirst": true
+      }
+    },
+    {
+      "id": "tpl-impress-prd",
+      "surface": "impress",
+      "scenario": "prd",
+      "path": "templates/v3-starter-pack/impress/prd.otp",
+      "titleKey": "starter-pack.prd",
+      "localeReady": [
+        "zh-CN",
+        "en-US"
+      ],
+      "samplePatch": {
+        "required": true,
+        "actionKind": "SlideElementAction",
+        "mustSucceed": true,
+        "requiresUndo": true,
+        "evidenceRequired": true
+      },
+      "dataBoundary": {
+        "storesDocumentContent": false,
+        "publicEgress": false,
+        "localFirst": true
+      }
+    },
+    {
+      "id": "tpl-impress-weekly-report",
+      "surface": "impress",
+      "scenario": "weekly-report",
+      "path": "templates/v3-starter-pack/impress/weekly-report.otp",
+      "titleKey": "starter-pack.weekly-report",
+      "localeReady": [
+        "zh-CN",
+        "en-US"
+      ],
+      "samplePatch": {
+        "required": true,
+        "actionKind": "SlideElementAction",
+        "mustSucceed": true,
+        "requiresUndo": true,
+        "evidenceRequired": true
+      },
+      "dataBoundary": {
+        "storesDocumentContent": false,
+        "publicEgress": false,
+        "localFirst": true
+      }
+    },
+    {
+      "id": "tpl-impress-contract-brief",
+      "surface": "impress",
+      "scenario": "contract-brief",
+      "path": "templates/v3-starter-pack/impress/contract-brief.otp",
+      "titleKey": "starter-pack.contract-brief",
+      "localeReady": [
+        "zh-CN",
+        "en-US"
+      ],
+      "samplePatch": {
+        "required": true,
+        "actionKind": "SlideElementAction",
+        "mustSucceed": true,
+        "requiresUndo": true,
+        "evidenceRequired": true
+      },
+      "dataBoundary": {
+        "storesDocumentContent": false,
+        "publicEgress": false,
+        "localFirst": true
+      }
+    },
+    {
+      "id": "tpl-impress-budget",
+      "surface": "impress",
+      "scenario": "budget",
+      "path": "templates/v3-starter-pack/impress/budget.otp",
+      "titleKey": "starter-pack.budget",
+      "localeReady": [
+        "zh-CN",
+        "en-US"
+      ],
+      "samplePatch": {
+        "required": true,
+        "actionKind": "SlideElementAction",
+        "mustSucceed": true,
+        "requiresUndo": true,
+        "evidenceRequired": true
+      },
+      "dataBoundary": {
+        "storesDocumentContent": false,
+        "publicEgress": false,
+        "localFirst": true
+      }
+    },
+    {
+      "id": "tpl-impress-sales-dashboard",
+      "surface": "impress",
+      "scenario": "sales-dashboard",
+      "path": "templates/v3-starter-pack/impress/sales-dashboard.otp",
+      "titleKey": "starter-pack.sales-dashboard",
+      "localeReady": [
+        "zh-CN",
+        "en-US"
+      ],
+      "samplePatch": {
+        "required": true,
+        "actionKind": "SlideElementAction",
+        "mustSucceed": true,
+        "requiresUndo": true,
+        "evidenceRequired": true
+      },
+      "dataBoundary": {
+        "storesDocumentContent": false,
+        "publicEgress": false,
+        "localFirst": true
+      }
+    },
+    {
+      "id": "tpl-impress-project-gantt",
+      "surface": "impress",
+      "scenario": "project-gantt",
+      "path": "templates/v3-starter-pack/impress/project-gantt.otp",
+      "titleKey": "starter-pack.project-gantt",
+      "localeReady": [
+        "zh-CN",
+        "en-US"
+      ],
+      "samplePatch": {
+        "required": true,
+        "actionKind": "SlideElementAction",
+        "mustSucceed": true,
+        "requiresUndo": true,
+        "evidenceRequired": true
+      },
+      "dataBoundary": {
+        "storesDocumentContent": false,
+        "publicEgress": false,
+        "localFirst": true
+      }
+    },
+    {
+      "id": "tpl-impress-roadshow",
+      "surface": "impress",
+      "scenario": "roadshow",
+      "path": "templates/v3-starter-pack/impress/roadshow.otp",
+      "titleKey": "starter-pack.roadshow",
+      "localeReady": [
+        "zh-CN",
+        "en-US"
+      ],
+      "samplePatch": {
+        "required": true,
+        "actionKind": "SlideElementAction",
+        "mustSucceed": true,
+        "requiresUndo": true,
+        "evidenceRequired": true
+      },
+      "dataBoundary": {
+        "storesDocumentContent": false,
+        "publicEgress": false,
+        "localFirst": true
+      }
+    },
+    {
+      "id": "tpl-impress-retrospective",
+      "surface": "impress",
+      "scenario": "retrospective",
+      "path": "templates/v3-starter-pack/impress/retrospective.otp",
+      "titleKey": "starter-pack.retrospective",
+      "localeReady": [
+        "zh-CN",
+        "en-US"
+      ],
+      "samplePatch": {
+        "required": true,
+        "actionKind": "SlideElementAction",
+        "mustSucceed": true,
+        "requiresUndo": true,
+        "evidenceRequired": true
+      },
+      "dataBoundary": {
+        "storesDocumentContent": false,
+        "publicEgress": false,
+        "localFirst": true
+      }
+    }
+  ],
+  "installation": {
+    "installable": true,
+    "requiresNetwork": false,
+    "w8SelfHostedCompatible": true
+  },
+  "evidence": {
+    "required": [
+      "starter-pack-manifest",
+      "template-install",
+      "sample-patch-result",
+      "evidence-record",
+      "v2-regression-green"
+    ],
+    "evidenceIds": [
+      "ev-8000000000000003"
+    ]
+  },
+  "gates": {
+    "blocksGA": true,
+    "requiresV2RegressionGreen": true,
+    "runtimeImplementation": "not-started"
+  }
+}

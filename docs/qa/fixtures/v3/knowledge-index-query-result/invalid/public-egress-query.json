@@ -1,0 +1,57 @@
+{
+  "query": {
+    "id": "kbq-0000000000000e13",
+    "schemaVersion": "v3-knowledge-index-query/0.1",
+    "createdAt": "2026-06-10T11:25:00Z",
+    "workspace": "research",
+    "query": {
+      "intent": "semantic",
+      "textHash": "9999999999999999999999999999999999999999999999999999999999999999",
+      "language": "mixed",
+      "topK": 2,
+      "includeMetadata": false,
+      "storesQueryText": false
+    },
+    "retrieval": {
+      "mode": "hybrid",
+      "sourceKinds": ["document"],
+      "backends": ["sqlite-fts5", "lancedb-local"],
+      "rerank": "bge-m3",
+      "timeoutMs": 450
+    },
+    "boundary": {
+      "serviceMode": "cloud",
+      "publicEgress": true,
+      "localEmbedding": false,
+      "tenantPolicyRequired": false
+    },
+    "evidence": {
+      "required": ["kb-query"],
+      "evidenceIds": ["ev-0000000000000e17"]
+    }
+  },
+  "result": {
+    "id": "kbr-0000000000000e13",
+    "schemaVersion": "v3-knowledge-index-result/0.1",
+    "queryId": "kbq-0000000000000e13",
+    "createdAt": "2026-06-10T11:25:01Z",
+    "workspace": "research",
+    "summary": {
+      "resultCount": 3,
+      "latencyMs": 620,
+      "retrievalMode": "hybrid",
+      "truncated": true,
+      "storesDocumentContent": false
+    },
+    "chunks": [],
+    "boundary": {
+      "publicEgress": true,
+      "hashAlgorithm": "sha256",
+      "storesDocumentContent": false
+    },
+    "evidence": {
+      "required": ["kb-query", "chunk-read"],
+      "evidenceIds": ["ev-0000000000000e18"]
+    }
+  }
+}

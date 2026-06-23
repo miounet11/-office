@@ -1,0 +1,68 @@
+{
+  "query": {
+    "id": "kbq-0000000000000e12",
+    "schemaVersion": "v3-knowledge-index-query/0.1",
+    "createdAt": "2026-06-10T11:24:00Z",
+    "workspace": "legal",
+    "query": {
+      "intent": "hybrid",
+      "textHash": "7777777777777777777777777777777777777777777777777777777777777777",
+      "language": "en-US",
+      "topK": 3,
+      "includeMetadata": true,
+      "storesQueryText": false
+    },
+    "retrieval": {
+      "mode": "hybrid",
+      "sourceKinds": ["document", "connector"],
+      "backends": ["sqlite-fts5", "lancedb-local"],
+      "rerank": "bge-m3",
+      "timeoutMs": 450
+    },
+    "boundary": {
+      "serviceMode": "private",
+      "publicEgress": false,
+      "localEmbedding": true,
+      "tenantPolicyRequired": true
+    },
+    "evidence": {
+      "required": ["policy-decision", "no-public-egress", "kb-query"],
+      "evidenceIds": ["ev-0000000000000e14"]
+    }
+  },
+  "result": {
+    "id": "kbr-0000000000000e12",
+    "schemaVersion": "v3-knowledge-index-result/0.1",
+    "queryId": "kbq-0000000000000e12",
+    "createdAt": "2026-06-10T11:24:01Z",
+    "workspace": "legal",
+    "summary": {
+      "resultCount": 1,
+      "latencyMs": 355,
+      "retrievalMode": "hybrid",
+      "truncated": false,
+      "storesDocumentContent": true
+    },
+    "chunks": [
+      {
+        "chunkId": "kbch-0000000000000d03",
+        "rank": 1,
+        "scoreBasisPoints": 9200,
+        "sourceKind": "connector",
+        "textHash": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+        "snippetHash": "8888888888888888888888888888888888888888888888888888888888888888",
+        "snippetText": "raw snippet must not be stored in the result fixture",
+        "evidenceIds": ["ev-0000000000000e15"]
+      }
+    ],
+    "boundary": {
+      "publicEgress": false,
+      "hashAlgorithm": "sha256",
+      "storesDocumentContent": false
+    },
+    "evidence": {
+      "required": ["kb-query", "chunk-read", "no-public-egress"],
+      "evidenceIds": ["ev-0000000000000e16"]
+    }
+  }
+}

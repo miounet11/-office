@@ -1,0 +1,42 @@
+{
+  "id": "v3-crash-recovery-macos-writer-001",
+  "wave": "w9",
+  "category": "crash-recovery",
+  "platform": "macos-arm64",
+  "measurementMode": "target-contract",
+  "scenario": {
+    "documentSurface": "writer",
+    "crashTrigger": {
+      "mode": "sigkill",
+      "processState": "editing-unsaved"
+    },
+    "unsavedEdit": {
+      "documentId": "writer-draft-001",
+      "editKind": "text-insert",
+      "minCharacters": 120,
+      "includesUnsavedState": true
+    },
+    "autosave": {
+      "intervalSeconds": 30,
+      "storage": "local-file-only",
+      "publicEgress": false
+    },
+    "recovery": {
+      "dialog": "RecoveryDialog",
+      "maxDialogSeconds": 30,
+      "oneClickRestore": true,
+      "diffExpected": "zero",
+      "dataLossTolerance": "none"
+    }
+  },
+  "evidence": {
+    "required": [
+      "autosave-snapshot",
+      "sigkill-marker",
+      "recovery-dialog-shown",
+      "restore-applied",
+      "diff-zero-proof"
+    ],
+    "blocksGA": true
+  }
+}

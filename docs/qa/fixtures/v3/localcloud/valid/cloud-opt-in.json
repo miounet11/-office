@@ -1,0 +1,56 @@
+{
+  "id": "localcloud",
+  "version": "0.1.0",
+  "mode": "cloud-opt-in",
+  "endpoint": {
+    "baseUrl": "http://127.0.0.1:17802",
+    "bindAddress": "127.0.0.1",
+    "allowPrivateLan": false
+  },
+  "services": {
+    "oauthProxy": {
+      "bindAddress": "127.0.0.1",
+      "port": 0,
+      "protocol": "http",
+      "publicEgress": false
+    },
+    "pushGateway": {
+      "bindAddress": "127.0.0.1",
+      "port": 17801,
+      "protocol": "ws",
+      "publicEgress": false
+    },
+    "syncServer": {
+      "bindAddress": "127.0.0.1",
+      "port": 17802,
+      "protocol": "http",
+      "publicEgress": false
+    },
+    "auditSink": {
+      "bindAddress": "127.0.0.1",
+      "port": 17803,
+      "protocol": "http",
+      "publicEgress": false
+    },
+    "selfUpdate": {
+      "bindAddress": "127.0.0.1",
+      "port": 17804,
+      "protocol": "https",
+      "publicEgress": false
+    }
+  },
+  "allowPublicEgress": true,
+  "optInCloudEgress": true,
+  "egressAllowlist": [
+    {
+      "host": "api.openai.com",
+      "purpose": "Explicit user-enabled cloud provider call; never used by the default localcloud path.",
+      "evidenceCategory": "egress-opt-in"
+    }
+  ],
+  "evidence": {
+    "emit": true,
+    "category": "egress-opt-in",
+    "auditSinkRequired": true
+  }
+}

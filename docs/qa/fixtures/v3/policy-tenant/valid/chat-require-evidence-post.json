@@ -1,0 +1,62 @@
+{
+  "tenantContext": {
+    "id": "tctx-0000000000000f04",
+    "schemaVersion": "v3-tenant-context/0.1",
+    "createdAt": "2026-06-10T11:43:00Z",
+    "tenant": {
+      "id": "solo",
+      "name": "Solo Local",
+      "plan": "personal"
+    },
+    "workspace": {
+      "id": "drafts",
+      "name": "Drafts",
+      "dataClasses": ["public", "internal"]
+    },
+    "users": [
+      {
+        "id": "user.solo",
+        "role": "user",
+        "status": "active"
+      }
+    ],
+    "dataBoundary": {
+      "defaultServiceMode": "offline",
+      "allowedServiceModes": ["offline"],
+      "publicEgressDefault": false,
+      "tenantIsolation": true,
+      "localOnlyAdminPanel": true
+    },
+    "audit": {
+      "appendOnly": true,
+      "hashChainRequired": true,
+      "sink": "local-file",
+      "sinkPort": 17803
+    }
+  },
+  "policyRule": {
+    "id": "pol-require-evidence-for-chat",
+    "schemaVersion": "v3-policy-rule/0.1",
+    "priority": 200,
+    "phase": "post-evidence",
+    "effect": "require-evidence",
+    "when": {
+      "tenants": ["solo"],
+      "serviceModes": ["offline"],
+      "actorRoles": ["user"],
+      "targetTypes": ["chat"],
+      "dataClasses": ["public", "internal"]
+    },
+    "enforcement": {
+      "blocksAction": false,
+      "approvalRequired": false,
+      "auditLogRequired": true,
+      "reasonCode": "chat-must-have-evidence"
+    },
+    "evidence": {
+      "required": ["policy-decision", "audit-log-entry", "evidence-record"],
+      "emitsAuditLog": true,
+      "evidenceRecordRequired": true
+    }
+  }
+}

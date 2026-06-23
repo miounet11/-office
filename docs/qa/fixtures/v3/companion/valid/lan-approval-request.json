@@ -1,0 +1,48 @@
+{
+  "id": "car-1000000000000001",
+  "schemaVersion": "v3-companion-approval-request/0.1",
+  "createdAt": "2026-06-10T12:15:00Z",
+  "expiresAt": "2026-06-10T12:30:00Z",
+  "taskId": "agt-1000000000000001",
+  "summaryId": "cds-1000000000000001",
+  "pairingId": "cpt-1000000000000001",
+  "tenant": "acme",
+  "workspace": "risk-team",
+  "actor": {
+    "userId": "alice",
+    "role": "user"
+  },
+  "channel": "companion",
+  "request": {
+    "state": "awaiting-review",
+    "availableActions": ["approve", "reject", "rollback"],
+    "requiresOnline": true
+  },
+  "transport": {
+    "mode": "lan-push",
+    "localGatewayPort": 17801,
+    "publicEgress": false,
+    "cloudPushOptIn": false
+  },
+  "approval": {
+    "biometricRequired": true,
+    "secondConfirmRequired": true,
+    "mobileMayEdit": false,
+    "decisionWritesAudit": true
+  },
+  "dataBoundary": {
+    "storesDocumentContent": false,
+    "storesDiffSummaryOnly": true,
+    "allowApprovalOffline": false
+  },
+  "audit": {
+    "auditLogRequired": true,
+    "actorRole": "user",
+    "channel": "companion",
+    "evidenceRequired": true
+  },
+  "evidence": {
+    "required": ["companion-approval-request", "user-approval", "biometric-confirmation", "audit-log-entry", "evidence-record"],
+    "evidenceIds": ["ev-1000000000000006"]
+  }
+}

@@ -1,0 +1,216 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://kqoffice.example.com/schemas/onboarding-flow.schema.json",
+  "title": "V3 Onboarding Flow",
+  "description": "Contract-first envelope for the V3 W9 five-step first-run onboarding path. Draft; covered by the W9 onboarding-flow self-test before gated onboarding runtime implementation exists.",
+  "type": "object",
+  "required": ["id", "schemaVersion", "createdAt", "locale", "edition", "durationBudget", "steps", "privacy", "localModel", "connector", "demoPatch", "evidence", "gates"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^onb-[0-9a-f]{16}$"
+    },
+    "schemaVersion": {
+      "const": "v3-onboarding-flow/0.1"
+    },
+    "createdAt": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+    },
+    "locale": {
+      "enum": ["zh-CN", "en-US", "ja-JP", "zh-TW"]
+    },
+    "edition": {
+      "enum": ["personal-free", "personal-pro", "enterprise", "enterprise-self-hosted"]
+    },
+    "durationBudget": {
+      "type": "object",
+      "required": ["maxMinutes", "expectedMinutes", "fromDownloadToPatch"],
+      "additionalProperties": false,
+      "properties": {
+        "maxMinutes": {
+          "const": 5
+        },
+        "expectedMinutes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5
+        },
+        "fromDownloadToPatch": {
+          "const": true
+        }
+      }
+    },
+    "steps": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 5,
+      "items": {
+        "type": "object",
+        "required": ["order", "kind", "titleKey", "required", "maxSeconds", "evidenceRequired"],
+        "additionalProperties": false,
+        "properties": {
+          "order": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5
+          },
+          "kind": {
+            "enum": ["welcome", "local-model", "connector", "privacy", "demo-patch"]
+          },
+          "titleKey": {
+            "type": "string",
+            "pattern": "^onboarding\\.[a-z0-9-]+$"
+          },
+          "required": {
+            "type": "boolean"
+          },
+          "maxSeconds": {
+            "type": "integer",
+            "minimum": 10,
+            "maximum": 180
+          },
+          "evidenceRequired": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "privacy": {
+      "type": "object",
+      "required": ["noSilentUpload", "localFirst", "explicitCloudOptIn", "storesDocumentContent"],
+      "additionalProperties": false,
+      "properties": {
+        "noSilentUpload": {
+          "const": true
+        },
+        "localFirst": {
+          "const": true
+        },
+        "explicitCloudOptIn": {
+          "const": true
+        },
+        "storesDocumentContent": {
+          "const": false
+        }
+      }
+    },
+    "localModel": {
+      "type": "object",
+      "required": ["mode", "provider", "canSkip", "defaultModel", "offlineCapable"],
+      "additionalProperties": false,
+      "properties": {
+        "mode": {
+          "enum": ["select-or-skip", "preconfigured"]
+        },
+        "provider": {
+          "enum": ["ollama-local", "enterprise-local", "none"]
+        },
+        "canSkip": {
+          "const": true
+        },
+        "defaultModel": {
+          "type": "string",
+          "pattern": "^(llama3\\.2:3b|qwen3:0\\.6b|enterprise-local|none)$"
+        },
+        "offlineCapable": {
+          "const": true
+        }
+      }
+    },
+    "connector": {
+      "type": "object",
+      "required": ["required", "maxInitialConnectors", "optionalKinds", "requiresEvidence"],
+      "additionalProperties": false,
+      "properties": {
+        "required": {
+          "const": false
+        },
+        "maxInitialConnectors": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "optionalKinds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": ["local-fs", "feishu-docs", "wechat-work-docs", "notion", "sharepoint", "confluence"]
+          }
+        },
+        "requiresEvidence": {
+          "const": true
+        }
+      }
+    },
+    "demoPatch": {
+      "type": "object",
+      "required": ["sampleDocument", "surfaces", "mustSucceed", "requiresUndo", "resultEvidence"],
+      "additionalProperties": false,
+      "properties": {
+        "sampleDocument": {
+          "enum": ["starter-writer-brief", "starter-calc-budget", "starter-impress-review"]
+        },
+        "surfaces": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": ["writer", "calc", "impress"]
+          }
+        },
+        "mustSucceed": {
+          "const": true
+        },
+        "requiresUndo": {
+          "const": true
+        },
+        "resultEvidence": {
+          "const": true
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "required": ["required", "evidenceIds"],
+      "additionalProperties": false,
+      "properties": {
+        "required": {
+          "type": "array",
+          "minItems": 3,
+          "uniqueItems": true,
+          "items": {
+            "enum": ["onboarding-flow", "evidence-record", "local-model-choice", "privacy-confirmation", "demo-patch-result", "connector-choice"]
+          }
+        },
+        "evidenceIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^ev-[0-9a-f]{16}$"
+          }
+        }
+      }
+    },
+    "gates": {
+      "type": "object",
+      "required": ["blocksGA", "requiresV2RegressionGreen", "runtimeImplementation"],
+      "additionalProperties": false,
+      "properties": {
+        "blocksGA": {
+          "const": true
+        },
+        "requiresV2RegressionGreen": {
+          "const": true
+        },
+        "runtimeImplementation": {
+          "const": "not-started"
+        }
+      }
+    }
+  }
+}

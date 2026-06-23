@@ -1,0 +1,154 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://kqoffice.example.com/schemas/agent-task-state.schema.json",
+  "title": "V3 Agent Task State",
+  "description": "Task-level lifecycle contract for V3 W6 Agent Multistep. Draft; covered by the W6 agent-step-result-state self-test before gated agent runtime implementation exists.",
+  "type": "object",
+  "required": ["taskId", "schemaVersion", "updatedAt", "ownerSurface", "state", "currentStepIndex", "maxSteps", "progress", "cowork", "approval", "recovery", "merge", "evidence"],
+  "additionalProperties": false,
+  "properties": {
+    "taskId": {
+      "type": "string",
+      "pattern": "^agt-[0-9a-f]{16}$"
+    },
+    "schemaVersion": {
+      "const": "v3-agent-task-state/0.1"
+    },
+    "updatedAt": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+    },
+    "ownerSurface": {
+      "enum": ["writer", "calc", "impress"]
+    },
+    "state": {
+      "enum": ["pending", "running", "paused", "awaiting-review", "applied", "failed", "cancelled"]
+    },
+    "currentStepIndex": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 24
+    },
+    "maxSteps": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 25
+    },
+    "progress": {
+      "type": "object",
+      "required": ["completedSteps", "failedSteps", "cancelledSteps"],
+      "additionalProperties": false,
+      "properties": {
+        "completedSteps": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 25
+        },
+        "failedSteps": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 25
+        },
+        "cancelledSteps": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 25
+        }
+      }
+    },
+    "cowork": {
+      "type": "object",
+      "required": ["usesV2AsyncCowork", "taskKind", "taskState"],
+      "additionalProperties": false,
+      "properties": {
+        "usesV2AsyncCowork": {
+          "const": true
+        },
+        "taskKind": {
+          "const": "agent-multistep"
+        },
+        "taskState": {
+          "enum": ["pending", "running", "awaiting-review", "applied", "failed", "cancelled"]
+        }
+      }
+    },
+    "approval": {
+      "type": "object",
+      "required": ["mode", "wholeTaskApprovalRequired", "perStepApprovalSupported"],
+      "additionalProperties": false,
+      "properties": {
+        "mode": {
+          "enum": ["per-step", "whole-task"]
+        },
+        "wholeTaskApprovalRequired": {
+          "const": true
+        },
+        "perStepApprovalSupported": {
+          "const": true
+        }
+      }
+    },
+    "recovery": {
+      "type": "object",
+      "required": ["softCancelSupported", "hardCancelSupported", "userDecisionRequired", "mainDocumentUnchangedOnFailure"],
+      "additionalProperties": false,
+      "properties": {
+        "softCancelSupported": {
+          "const": true
+        },
+        "hardCancelSupported": {
+          "const": true
+        },
+        "userDecisionRequired": {
+          "const": true
+        },
+        "mainDocumentUnchangedOnFailure": {
+          "const": true
+        }
+      }
+    },
+    "merge": {
+      "type": "object",
+      "required": ["target", "requiresApproval", "requiresApplyPlanRuntimeValidation"],
+      "additionalProperties": false,
+      "properties": {
+        "target": {
+          "const": "main-doc"
+        },
+        "requiresApproval": {
+          "const": true
+        },
+        "requiresApplyPlanRuntimeValidation": {
+          "const": true
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "required": ["auditLogRequired", "requiredForEveryStep", "taskEvidenceIds"],
+      "additionalProperties": false,
+      "properties": {
+        "auditLogRequired": {
+          "const": true
+        },
+        "requiredForEveryStep": {
+          "type": "array",
+          "minItems": 2,
+          "uniqueItems": true,
+          "items": {
+            "enum": ["policy-decision", "evidence-record", "audit-log-entry"]
+          }
+        },
+        "taskEvidenceIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^ev-[0-9a-f]{16}$"
+          }
+        }
+      }
+    }
+  }
+}

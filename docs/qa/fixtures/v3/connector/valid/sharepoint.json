@@ -1,0 +1,57 @@
+{
+  "id": "sharepoint",
+  "version": "0.1.0",
+  "displayName": "SharePoint",
+  "vendor": "Microsoft",
+  "trust": {
+    "source": "builtin",
+    "publisher": "kqoffice",
+    "manifestSha256": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "reviewState": "repo-reviewed",
+    "installScope": "builtin",
+    "signatureRequired": true,
+    "allowUnsigned": false
+  },
+  "operations": {
+    "mode": "read-only",
+    "allowedActions": ["read"],
+    "writeback": false,
+    "writeScopesAllowed": false,
+    "runtimeWriteImplementation": "not-started"
+  },
+  "auth": {
+    "type": "oauth2",
+    "scopes": ["sites.read.all"],
+    "tokenStorage": "keychain",
+    "flow": {
+      "strategy": "system-browser-loopback",
+      "embeddedWebView": false,
+      "callback": "loopback-127.0.0.1",
+      "runtimeAuthImplementation": "not-started"
+    },
+    "refreshPolicy": {
+      "strategy": "reauth-on-expiry",
+      "backgroundRefresh": false,
+      "storesRefreshToken": false,
+      "runtimeRefreshImplementation": "not-started"
+    }
+  },
+  "serviceModes": ["cloud"],
+  "scopes": [
+    {
+      "name": "read:sites",
+      "purpose": "Fetch approved enterprise site documents for prompt context.",
+      "dataClass": "confidential"
+    }
+  ],
+  "rateLimit": {
+    "perMinute": 45,
+    "perDay": 5000
+  },
+  "evidence": {
+    "emit": true,
+    "category": "data-fetch"
+  },
+  "requiresTenantPolicy": true,
+  "cacheTTLSeconds": 300
+}

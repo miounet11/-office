@@ -1,0 +1,61 @@
+{
+  "id": "kbch-0000000000000d15",
+  "schemaVersion": "v3-knowledge-index-chunk/0.1",
+  "createdAt": "2026-06-11T04:10:00Z",
+  "workspace": "research",
+  "source": {
+    "kind": "document",
+    "uri": "file:///workspace/research/lancedb-default.odt",
+    "sourceId": "doc-0000000000000d15",
+    "snapshotId": "doc-snap-0000000000000d15",
+    "contentHash": "9999999999999999999999999999999999999999999999999999999999999999",
+    "modifiedAt": "2026-06-11T04:08:00Z"
+  },
+  "chunk": {
+    "granularity": "paragraph",
+    "ordinal": 5,
+    "textHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "tokenCount": 128,
+    "language": "mixed",
+    "storesDocumentContent": false
+  },
+  "index": {
+    "scope": "per-workspace",
+    "retrievalMode": "hybrid",
+    "backend": "lancedb-local",
+    "embeddingModel": "bge-m3",
+    "embeddingDimensions": 1024,
+    "topKMax": 10,
+    "incrementalUpdate": true
+  },
+  "modelAcquisitionPolicy": {
+    "modelFamily": "bge-m3",
+    "bundledByDefault": false,
+    "downloadPolicy": "explicit-user-confirmed",
+    "userConfirmationRequired": true,
+    "fallbackWhenMissing": "sqlite-fts5",
+    "publicEgressByDefault": false,
+    "runtimeDownloaderImplementation": "not-started",
+    "runtimeEmbeddingImplementation": "not-started",
+    "silentDownloadAllowed": false
+  },
+  "vectorStorePolicy": {
+    "defaultBackend": "lancedb-local",
+    "selectedBackend": "lancedb-local",
+    "lancedbDefaultAllowed": true,
+    "lancedbMacosArm64Status": "stable",
+    "requiresPlatformSmokeBeforeDefault": false,
+    "fallbackBackend": "lancedb-local",
+    "runtimeVectorStoreImplementation": "started"
+  },
+  "boundary": {
+    "serviceMode": "private",
+    "publicEgress": false,
+    "localEmbedding": true,
+    "tenantPolicyRequired": true
+  },
+  "evidence": {
+    "required": ["document-snapshot", "index-update", "no-public-egress"],
+    "evidenceIds": ["ev-0000000000000d19", "ev-0000000000000d1a"]
+  }
+}

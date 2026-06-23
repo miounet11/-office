@@ -1,0 +1,158 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://kqoffice.example.com/schemas/localcloud-config.schema.json",
+  "title": "V3 LocalCloud Config",
+  "description": "Configuration contract for V3 W8 local-cloud defaults. Draft; covered by H10 and intentionally separate from V2 schema locks.",
+  "type": "object",
+  "required": [
+    "id",
+    "version",
+    "mode",
+    "endpoint",
+    "services",
+    "allowPublicEgress",
+    "optInCloudEgress",
+    "evidence"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "const": "localcloud"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "mode": {
+      "enum": ["single-user-default", "enterprise-lan", "cloud-opt-in"]
+    },
+    "endpoint": {
+      "type": "object",
+      "required": ["baseUrl", "bindAddress", "allowPrivateLan"],
+      "additionalProperties": false,
+      "properties": {
+        "baseUrl": {
+          "type": "string",
+          "pattern": "^https?://[^ ]+$"
+        },
+        "bindAddress": {
+          "type": "string",
+          "minLength": 7,
+          "maxLength": 64
+        },
+        "allowPrivateLan": {
+          "type": "boolean"
+        }
+      }
+    },
+    "services": {
+      "type": "object",
+      "required": ["oauthProxy", "pushGateway", "syncServer", "auditSink", "selfUpdate"],
+      "additionalProperties": false,
+      "properties": {
+        "oauthProxy": {
+          "type": "object",
+          "required": ["bindAddress", "port", "protocol", "publicEgress"],
+          "additionalProperties": false,
+          "properties": {
+            "bindAddress": { "type": "string", "minLength": 7, "maxLength": 64 },
+            "port": { "type": "integer", "minimum": 0, "maximum": 65535 },
+            "protocol": { "enum": ["http", "https", "ws", "grpc", "file"] },
+            "publicEgress": { "type": "boolean" },
+            "requiredEvidence": { "enum": ["localcloud-config", "egress-opt-in", "health-check"] }
+          }
+        },
+        "pushGateway": {
+          "type": "object",
+          "required": ["bindAddress", "port", "protocol", "publicEgress"],
+          "additionalProperties": false,
+          "properties": {
+            "bindAddress": { "type": "string", "minLength": 7, "maxLength": 64 },
+            "port": { "type": "integer", "minimum": 0, "maximum": 65535 },
+            "protocol": { "enum": ["http", "https", "ws", "grpc", "file"] },
+            "publicEgress": { "type": "boolean" },
+            "requiredEvidence": { "enum": ["localcloud-config", "egress-opt-in", "health-check"] }
+          }
+        },
+        "syncServer": {
+          "type": "object",
+          "required": ["bindAddress", "port", "protocol", "publicEgress"],
+          "additionalProperties": false,
+          "properties": {
+            "bindAddress": { "type": "string", "minLength": 7, "maxLength": 64 },
+            "port": { "type": "integer", "minimum": 0, "maximum": 65535 },
+            "protocol": { "enum": ["http", "https", "ws", "grpc", "file"] },
+            "publicEgress": { "type": "boolean" },
+            "requiredEvidence": { "enum": ["localcloud-config", "egress-opt-in", "health-check"] }
+          }
+        },
+        "auditSink": {
+          "type": "object",
+          "required": ["bindAddress", "port", "protocol", "publicEgress"],
+          "additionalProperties": false,
+          "properties": {
+            "bindAddress": { "type": "string", "minLength": 7, "maxLength": 64 },
+            "port": { "type": "integer", "minimum": 0, "maximum": 65535 },
+            "protocol": { "enum": ["http", "https", "ws", "grpc", "file"] },
+            "publicEgress": { "type": "boolean" },
+            "requiredEvidence": { "enum": ["localcloud-config", "egress-opt-in", "health-check"] }
+          }
+        },
+        "selfUpdate": {
+          "type": "object",
+          "required": ["bindAddress", "port", "protocol", "publicEgress"],
+          "additionalProperties": false,
+          "properties": {
+            "bindAddress": { "type": "string", "minLength": 7, "maxLength": 64 },
+            "port": { "type": "integer", "minimum": 0, "maximum": 65535 },
+            "protocol": { "enum": ["http", "https", "ws", "grpc", "file"] },
+            "publicEgress": { "type": "boolean" },
+            "requiredEvidence": { "enum": ["localcloud-config", "egress-opt-in", "health-check"] }
+          }
+        }
+      }
+    },
+    "allowPublicEgress": {
+      "type": "boolean",
+      "default": false
+    },
+    "optInCloudEgress": {
+      "type": "boolean",
+      "default": false
+    },
+    "egressAllowlist": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "required": ["host", "purpose", "evidenceCategory"],
+        "additionalProperties": false,
+        "properties": {
+          "host": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 253
+          },
+          "purpose": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 256
+          },
+          "evidenceCategory": {
+            "enum": ["egress-opt-in"]
+          }
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "required": ["emit", "category", "auditSinkRequired"],
+      "additionalProperties": false,
+      "properties": {
+        "emit": { "const": true },
+        "category": { "enum": ["localcloud-config", "egress-opt-in", "health-check"] },
+        "auditSinkRequired": { "const": true }
+      }
+    }
+  }
+}

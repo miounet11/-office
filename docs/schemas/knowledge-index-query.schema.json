@@ -1,0 +1,131 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://kqoffice.example.com/schemas/knowledge-index-query.schema.json",
+  "title": "V3 Knowledge Index Query",
+  "description": "Synchronous W3 knowledge index query contract. Draft; covered by the W3 knowledge-index-query-result self-test before gated query runtime implementation exists.",
+  "type": "object",
+  "required": ["id", "schemaVersion", "createdAt", "workspace", "query", "retrieval", "boundary", "evidence"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^kbq-[0-9a-f]{16}$"
+    },
+    "schemaVersion": {
+      "const": "v3-knowledge-index-query/0.1"
+    },
+    "createdAt": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+    },
+    "workspace": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{2,63}$"
+    },
+    "query": {
+      "type": "object",
+      "required": ["intent", "textHash", "language", "topK", "includeMetadata", "storesQueryText"],
+      "additionalProperties": false,
+      "properties": {
+        "intent": {
+          "enum": ["keyword", "semantic", "hybrid"]
+        },
+        "textHash": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "language": {
+          "enum": ["zh-CN", "en-US", "mixed"]
+        },
+        "topK": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10
+        },
+        "includeMetadata": {
+          "type": "boolean"
+        },
+        "storesQueryText": {
+          "const": false
+        }
+      }
+    },
+    "retrieval": {
+      "type": "object",
+      "required": ["mode", "sourceKinds", "backends", "rerank", "timeoutMs"],
+      "additionalProperties": false,
+      "properties": {
+        "mode": {
+          "enum": ["fts", "hybrid"]
+        },
+        "sourceKinds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": ["document", "connector"]
+          }
+        },
+        "backends": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": ["sqlite-fts5", "lancedb-local"]
+          }
+        },
+        "rerank": {
+          "enum": ["none", "bge-m3"]
+        },
+        "timeoutMs": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 500
+        }
+      }
+    },
+    "boundary": {
+      "type": "object",
+      "required": ["serviceMode", "publicEgress", "localEmbedding", "tenantPolicyRequired"],
+      "additionalProperties": false,
+      "properties": {
+        "serviceMode": {
+          "enum": ["offline", "private"]
+        },
+        "publicEgress": {
+          "const": false
+        },
+        "localEmbedding": {
+          "const": true
+        },
+        "tenantPolicyRequired": {
+          "const": true
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "required": ["required", "evidenceIds"],
+      "additionalProperties": false,
+      "properties": {
+        "required": {
+          "type": "array",
+          "minItems": 2,
+          "uniqueItems": true,
+          "items": {
+            "enum": ["policy-decision", "no-public-egress", "kb-query"]
+          }
+        },
+        "evidenceIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^ev-[0-9a-f]{16}$"
+          }
+        }
+      }
+    }
+  }
+}

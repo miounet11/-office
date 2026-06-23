@@ -1,0 +1,42 @@
+{
+  "id": "v3-crash-recovery-linux-calc-001",
+  "wave": "w9",
+  "category": "crash-recovery",
+  "platform": "linux-x86_64",
+  "measurementMode": "target-contract",
+  "scenario": {
+    "documentSurface": "calc",
+    "crashTrigger": {
+      "mode": "sigkill",
+      "processState": "editing-unsaved"
+    },
+    "unsavedEdit": {
+      "documentId": "calc-budget-001",
+      "editKind": "cell-edit",
+      "minCharacters": 24,
+      "includesUnsavedState": true
+    },
+    "autosave": {
+      "intervalSeconds": 30,
+      "storage": "local-file-only",
+      "publicEgress": false
+    },
+    "recovery": {
+      "dialog": "RecoveryDialog",
+      "maxDialogSeconds": 30,
+      "oneClickRestore": true,
+      "diffExpected": "zero",
+      "dataLossTolerance": "none"
+    }
+  },
+  "evidence": {
+    "required": [
+      "autosave-snapshot",
+      "sigkill-marker",
+      "recovery-dialog-shown",
+      "restore-applied",
+      "diff-zero-proof"
+    ],
+    "blocksGA": true
+  }
+}

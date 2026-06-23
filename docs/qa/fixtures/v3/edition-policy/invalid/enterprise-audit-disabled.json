@@ -1,0 +1,184 @@
+{
+  "id": "edp-9100000000000002",
+  "schemaVersion": "v3-edition-policy/0.1",
+  "createdAt": "2026-06-10T14:20:00Z",
+  "businessModel": {
+    "mode": "freemium",
+    "personalFreeLocal": true,
+    "enterpriseChargesByAudit": true,
+    "functionLockAllowed": false
+  },
+  "editions": [
+    {
+      "id": "personal-free",
+      "price": {
+        "currency": "CNY",
+        "amount": 0,
+        "period": "free",
+        "seatBased": false
+      },
+      "audit": {
+        "enabled": false,
+        "requiredForEdition": false,
+        "bypassAllowed": false
+      },
+      "limits": {
+        "connectorMax": 5,
+        "knowledgeIndexDocumentMax": 10000,
+        "agentConcurrencyMax": 1,
+        "unlimitedScale": false
+      },
+      "featureAccess": {
+        "aiPatch": true,
+        "localModel": true,
+        "starterPack": true,
+        "companionApproval": true,
+        "featureLocked": false
+      },
+      "deployment": {
+        "mode": "desktop-local",
+        "w8SelfHosted": false,
+        "requiresPublicCloud": false
+      },
+      "dataBoundary": {
+        "localFirst": true,
+        "storesDocumentContent": false,
+        "publicEgressDefault": false
+      }
+    },
+    {
+      "id": "personal-pro",
+      "price": {
+        "currency": "CNY",
+        "amount": 39,
+        "period": "monthly",
+        "seatBased": false
+      },
+      "audit": {
+        "enabled": false,
+        "requiredForEdition": false,
+        "bypassAllowed": false
+      },
+      "limits": {
+        "connectorMax": 20,
+        "knowledgeIndexDocumentMax": 50000,
+        "agentConcurrencyMax": 3,
+        "unlimitedScale": false
+      },
+      "featureAccess": {
+        "aiPatch": true,
+        "localModel": true,
+        "starterPack": true,
+        "companionApproval": true,
+        "featureLocked": false
+      },
+      "deployment": {
+        "mode": "desktop-local",
+        "w8SelfHosted": false,
+        "requiresPublicCloud": false
+      },
+      "dataBoundary": {
+        "localFirst": true,
+        "storesDocumentContent": false,
+        "publicEgressDefault": false
+      }
+    },
+    {
+      "id": "enterprise",
+      "price": {
+        "currency": "CNY",
+        "amount": 199,
+        "period": "monthly",
+        "seatBased": true
+      },
+      "audit": {
+        "enabled": false,
+        "requiredForEdition": false,
+        "bypassAllowed": false
+      },
+      "limits": {
+        "connectorMax": 1000000,
+        "knowledgeIndexDocumentMax": 1000000000,
+        "agentConcurrencyMax": 1000000,
+        "unlimitedScale": true
+      },
+      "featureAccess": {
+        "aiPatch": true,
+        "localModel": true,
+        "starterPack": true,
+        "companionApproval": true,
+        "featureLocked": false
+      },
+      "deployment": {
+        "mode": "enterprise-managed",
+        "w8SelfHosted": false,
+        "requiresPublicCloud": false
+      },
+      "dataBoundary": {
+        "localFirst": true,
+        "storesDocumentContent": false,
+        "publicEgressDefault": false
+      }
+    },
+    {
+      "id": "enterprise-self-hosted",
+      "price": {
+        "currency": "CNY",
+        "amount": 9999,
+        "period": "one-time-plus-monthly",
+        "seatBased": true
+      },
+      "audit": {
+        "enabled": true,
+        "requiredForEdition": true,
+        "bypassAllowed": false
+      },
+      "limits": {
+        "connectorMax": 1000000,
+        "knowledgeIndexDocumentMax": 1000000000,
+        "agentConcurrencyMax": 1000000,
+        "unlimitedScale": true
+      },
+      "featureAccess": {
+        "aiPatch": true,
+        "localModel": true,
+        "starterPack": true,
+        "companionApproval": true,
+        "featureLocked": false
+      },
+      "deployment": {
+        "mode": "w8-self-hosted",
+        "w8SelfHosted": true,
+        "requiresPublicCloud": false
+      },
+      "dataBoundary": {
+        "localFirst": true,
+        "storesDocumentContent": false,
+        "publicEgressDefault": false
+      }
+    }
+  ],
+  "guardrails": {
+    "limitsOnlyScaleAndAudit": true,
+    "personalEditionFullLocalAI": true,
+    "enterpriseAuditMandatory": true,
+    "trialBypassAuditAllowed": false
+  },
+  "evidence": {
+    "required": [
+      "edition-policy",
+      "pricing-snapshot",
+      "audit-lock",
+      "evidence-record",
+      "v2-regression-green"
+    ],
+    "evidenceIds": [
+      "ev-9100000000000002"
+    ]
+  },
+  "gates": {
+    "blocksGA": true,
+    "requiresV2RegressionGreen": true,
+    "runtimeImplementation": "not-started"
+  }
+}

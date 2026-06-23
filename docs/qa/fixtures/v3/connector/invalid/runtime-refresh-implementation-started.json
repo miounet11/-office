@@ -1,0 +1,56 @@
+{
+  "id": "bad-runtime-refresh-started",
+  "version": "0.1.0",
+  "displayName": "Bad Runtime Refresh Started",
+  "trust": {
+    "source": "community",
+    "publisher": "bad-author",
+    "manifestSha256": "sha256:cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd",
+    "reviewState": "security-reviewed",
+    "installScope": "user",
+    "signatureRequired": true,
+    "allowUnsigned": false
+  },
+  "operations": {
+    "mode": "read-only",
+    "allowedActions": ["read"],
+    "writeback": false,
+    "writeScopesAllowed": false,
+    "runtimeWriteImplementation": "not-started"
+  },
+  "auth": {
+    "type": "oauth2",
+    "scopes": ["docs:read"],
+    "tokenStorage": "keychain",
+    "flow": {
+      "strategy": "system-browser-loopback",
+      "embeddedWebView": false,
+      "callback": "loopback-127.0.0.1",
+      "runtimeAuthImplementation": "not-started"
+    },
+    "refreshPolicy": {
+      "strategy": "reauth-on-expiry",
+      "backgroundRefresh": false,
+      "storesRefreshToken": false,
+      "runtimeRefreshImplementation": "started"
+    }
+  },
+  "serviceModes": ["cloud"],
+  "scopes": [
+    {
+      "name": "read:documents",
+      "purpose": "Fetch documents for prompt context.",
+      "dataClass": "internal"
+    }
+  ],
+  "rateLimit": {
+    "perMinute": 30,
+    "perDay": 1000
+  },
+  "evidence": {
+    "emit": true,
+    "category": "data-fetch"
+  },
+  "requiresTenantPolicy": false,
+  "cacheTTLSeconds": 300
+}

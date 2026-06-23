@@ -1,0 +1,58 @@
+{
+  "id": "i18n-a000000000000004",
+  "schemaVersion": "v3-i18n-locale-policy/0.1",
+  "createdAt": "2026-06-10T14:45:00Z",
+  "locale": {
+    "osLocale": "zh-TW",
+    "uiLocale": "zh-TW",
+    "supportedLaunchLocales": [
+      "zh-CN",
+      "en-US",
+      "ja-JP",
+      "zh-TW"
+    ],
+    "fallbackLocale": "en-US"
+  },
+  "ui": {
+    "followsSystemLocale": true,
+    "usesExistingI18nPool": true,
+    "silentSwitchAllowed": false
+  },
+  "aiOutput": {
+    "defaultLocale": "zh-TW",
+    "matchesUiLocale": true,
+    "inlineOverride": {
+      "enabled": true,
+      "commandPattern": "^/lang (zh-CN|en-US|ja-JP|zh-TW|zh|en|ja)$",
+      "explicitOnly": true,
+      "persistsWithoutUserAction": false
+    },
+    "outputLanguage": "Traditional Chinese",
+    "evidenceRequired": true
+  },
+  "manual": {
+    "embedded": true,
+    "onlineMirror": true,
+    "requiredLocales": [
+      "zh-CN",
+      "en-US"
+    ]
+  },
+  "evidence": {
+    "required": [
+      "i18n-locale-policy",
+      "locale-selection",
+      "language-override",
+      "ai-output-language",
+      "evidence-record"
+    ],
+    "evidenceIds": [
+      "ev-a000000000000004"
+    ]
+  },
+  "gates": {
+    "blocksGA": true,
+    "requiresV2RegressionGreen": true,
+    "runtimeImplementation": "not-started"
+  }
+}

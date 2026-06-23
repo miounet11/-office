@@ -1,0 +1,164 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://kqoffice.example.com/schemas/distribution-update.schema.json",
+  "title": "V3 Distribution Update Policy",
+  "description": "Contract-first manifest for V3 W9 distribution and self-update policy. Draft; covered by the W9 distribution-update self-test before gated packaging, update server, or product integration exists.",
+  "type": "object",
+  "required": ["id", "schemaVersion", "createdAt", "distribution", "update", "onboarding", "evidence", "gates"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^dist-[0-9a-f]{16}$"
+    },
+    "schemaVersion": {
+      "const": "v3-distribution-update/0.1"
+    },
+    "createdAt": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+    },
+    "distribution": {
+      "type": "object",
+      "required": ["firstLaunchChannels", "artifactSigningRequired", "checksumRequired", "notarizationRequired", "offlineInstallSupported", "noPublicCloudRequired"],
+      "additionalProperties": false,
+      "properties": {
+        "firstLaunchChannels": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "uniqueItems": true,
+          "items": {
+            "type": "object",
+            "required": ["platform", "artifact", "primary", "installerSmokeRequired", "downloadToFirstPatchMaxMinutes"],
+            "additionalProperties": false,
+            "properties": {
+              "platform": {
+                "enum": ["macos", "windows", "linux", "self-hosted"]
+              },
+              "artifact": {
+                "enum": ["DMG", "MSI", "AppImage", "docker"]
+              },
+              "primary": {
+                "const": true
+              },
+              "installerSmokeRequired": {
+                "const": true
+              },
+              "downloadToFirstPatchMaxMinutes": {
+                "type": "integer",
+                "maximum": 5
+              }
+            }
+          }
+        },
+        "artifactSigningRequired": {
+          "const": true
+        },
+        "checksumRequired": {
+          "const": true
+        },
+        "notarizationRequired": {
+          "const": true
+        },
+        "offlineInstallSupported": {
+          "const": true
+        },
+        "noPublicCloudRequired": {
+          "const": true
+        }
+      }
+    },
+    "update": {
+      "type": "object",
+      "required": ["mode", "promptRequired", "oneClick", "deferrable", "forceUpdateAllowed", "selfHostServer", "lanSupported", "publicInternetRequired", "rollbackRequired"],
+      "additionalProperties": false,
+      "properties": {
+        "mode": {
+          "const": "prompt-one-click"
+        },
+        "promptRequired": {
+          "const": true
+        },
+        "oneClick": {
+          "const": true
+        },
+        "deferrable": {
+          "const": true
+        },
+        "forceUpdateAllowed": {
+          "const": false
+        },
+        "selfHostServer": {
+          "const": "w8-update-server"
+        },
+        "lanSupported": {
+          "const": true
+        },
+        "publicInternetRequired": {
+          "const": false
+        },
+        "rollbackRequired": {
+          "const": true
+        }
+      }
+    },
+    "onboarding": {
+      "type": "object",
+      "required": ["downloadToFirstPatchMaxMinutes", "requiresStarterPack", "requiresOnboardingFlow"],
+      "additionalProperties": false,
+      "properties": {
+        "downloadToFirstPatchMaxMinutes": {
+          "type": "integer",
+          "maximum": 5
+        },
+        "requiresStarterPack": {
+          "const": true
+        },
+        "requiresOnboardingFlow": {
+          "const": true
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "required": ["required", "evidenceIds"],
+      "additionalProperties": false,
+      "properties": {
+        "required": {
+          "type": "array",
+          "minItems": 6,
+          "uniqueItems": true,
+          "items": {
+            "enum": ["distribution-update-policy", "artifact-signature", "installer-smoke", "update-prompt", "rollback-proof", "evidence-record", "v2-regression-green"]
+          }
+        },
+        "evidenceIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^ev-[0-9a-f]{16}$"
+          }
+        }
+      }
+    },
+    "gates": {
+      "type": "object",
+      "required": ["blocksGA", "requiresV2RegressionGreen", "runtimeImplementation"],
+      "additionalProperties": false,
+      "properties": {
+        "blocksGA": {
+          "const": true
+        },
+        "requiresV2RegressionGreen": {
+          "const": true
+        },
+        "runtimeImplementation": {
+          "const": "not-started"
+        }
+      }
+    }
+  }
+}

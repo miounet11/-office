@@ -1,0 +1,62 @@
+{
+  "tenantContext": {
+    "id": "tctx-0000000000000f11",
+    "schemaVersion": "v3-tenant-context/0.1",
+    "createdAt": "2026-06-10T11:44:00Z",
+    "tenant": {
+      "id": "acme",
+      "name": "Acme Legal",
+      "plan": "enterprise"
+    },
+    "workspace": {
+      "id": "legal",
+      "name": "Legal Workspace",
+      "dataClasses": ["secret"]
+    },
+    "users": [
+      {
+        "id": "user.li",
+        "role": "user",
+        "status": "active"
+      }
+    ],
+    "dataBoundary": {
+      "defaultServiceMode": "cloud",
+      "allowedServiceModes": ["offline", "private", "cloud"],
+      "publicEgressDefault": true,
+      "tenantIsolation": false,
+      "localOnlyAdminPanel": false
+    },
+    "audit": {
+      "appendOnly": true,
+      "hashChainRequired": true,
+      "sink": "local-sink-server",
+      "sinkPort": 17803
+    }
+  },
+  "policyRule": {
+    "id": "pol-deny-cloud-connectors-in-offline",
+    "schemaVersion": "v3-policy-rule/0.1",
+    "priority": 10,
+    "phase": "pre-flight",
+    "effect": "deny",
+    "when": {
+      "tenants": ["acme"],
+      "serviceModes": ["offline"],
+      "actorRoles": ["any"],
+      "targetTypes": ["connector"],
+      "dataClasses": ["secret"]
+    },
+    "enforcement": {
+      "blocksAction": true,
+      "approvalRequired": false,
+      "auditLogRequired": true,
+      "reasonCode": "offline-denies-sensitive-connector"
+    },
+    "evidence": {
+      "required": ["policy-decision", "audit-log-entry", "evidence-record"],
+      "emitsAuditLog": true,
+      "evidenceRecordRequired": true
+    }
+  }
+}

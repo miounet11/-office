@@ -1,0 +1,33 @@
+{
+  "id": "aud-0000000000000d03",
+  "schemaVersion": "v3-audit-log-entry/0.1",
+  "timestamp": "2026-06-10T10:47:00Z",
+  "tenant": "acme",
+  "workspace": "legal",
+  "actor": {
+    "id": "svc.connector",
+    "role": "service"
+  },
+  "action": {
+    "type": "connector-fetch",
+    "target": "sharepoint/contracts",
+    "serviceMode": "private",
+    "dataClass": "secret",
+    "publicEgress": false
+  },
+  "evidenceId": "ev-0000000000000d04",
+  "capability_id": "connector-fetch",
+  "elapsed_ms": 42,
+  "policyDecision": "deny",
+  "approvalChain": [],
+  "redaction": {
+    "storesDocumentContent": false,
+    "promptStorage": "none",
+    "hashAlgorithm": "sha256"
+  },
+  "chain": {
+    "algorithm": "sha256",
+    "previousHash": "5555555555555555555555555555555555555555555555555555555555555555",
+    "entryHash": "6666666666666666666666666666666666666666666666666666666666666666"
+  }
+}

@@ -9,6 +9,8 @@ Purpose: make the beta source-hygiene blocker actionable without deleting genera
 2. Read `tmp/source-hygiene-report.md` from the top down.
 3. Resolve buckets in this order:
    - source review/stage
+   - repo backup human-decision items
+   - odd/local human-decision items
    - unresolved human-decision items
    - config/autoconf artifacts
    - install/test/release artifacts
@@ -47,6 +49,32 @@ git diff -- .gitignore autogen.lastrun autogen.lastrun.bak config_host.mk
 ```
 
 Stop if a file looks user-authored, credentials-like, externally supplied, or unrelated to the active beta round.
+
+### Repo backup human-decision items
+
+Local Git backup directories such as `.git.bak-*/` are not product source, but they may contain branch refs, reflogs, or recovery data. They require an explicit operator decision before archive, ignore, or cleanup.
+
+Safe inspection:
+
+```sh
+git status --short -- '.git.bak-*'
+find . -maxdepth 1 -type d -name '.git.bak-*' -print
+```
+
+Do not delete or move these directories inside this packet.
+
+### Odd/local human-decision items
+
+Odd local paths include top-level diagnostic files and configuration warning outputs that are not generated/build outputs by default.
+
+Safe inspection:
+
+```sh
+git status --short -- ':(literal):-' config.warn config_host_lang.mk
+git diff -- config.warn config_host_lang.mk
+```
+
+Stop before staging, ignoring, or cleaning these files unless the operator confirms they belong to the active release packet.
 
 ### Config/autoconf artifacts
 

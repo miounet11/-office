@@ -1,0 +1,96 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://kqoffice.example.com/schemas/crash-recovery-targets.schema.json",
+  "title": "V3 Crash Recovery Targets",
+  "description": "Target contract for V3 W9 H12 crash recovery. Draft; covered by H12 before runtime SIGKILL harness exists.",
+  "type": "object",
+  "required": ["id", "wave", "category", "platform", "measurementMode", "scenario", "evidence"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^v3-crash-recovery-[a-z0-9_-]+-[0-9]{3}$"
+    },
+    "wave": {
+      "const": "w9"
+    },
+    "category": {
+      "const": "crash-recovery"
+    },
+    "platform": {
+      "enum": ["macos-arm64", "linux-x86_64", "windows-x86_64"]
+    },
+    "measurementMode": {
+      "enum": ["target-contract", "runtime-sample"]
+    },
+    "scenario": {
+      "type": "object",
+      "required": ["documentSurface", "crashTrigger", "unsavedEdit", "autosave", "recovery"],
+      "additionalProperties": false,
+      "properties": {
+        "documentSurface": {
+          "enum": ["writer", "calc", "impress"]
+        },
+        "crashTrigger": {
+          "type": "object",
+          "required": ["mode", "processState"],
+          "additionalProperties": false,
+          "properties": {
+            "mode": { "const": "sigkill" },
+            "processState": { "const": "editing-unsaved" }
+          }
+        },
+        "unsavedEdit": {
+          "type": "object",
+          "required": ["documentId", "editKind", "minCharacters", "includesUnsavedState"],
+          "additionalProperties": false,
+          "properties": {
+            "documentId": { "type": "string", "minLength": 1 },
+            "editKind": {
+              "enum": ["text-insert", "cell-edit", "slide-text-edit"]
+            },
+            "minCharacters": { "type": "integer", "minimum": 1 },
+            "includesUnsavedState": { "const": true }
+          }
+        },
+        "autosave": {
+          "type": "object",
+          "required": ["intervalSeconds", "storage", "publicEgress"],
+          "additionalProperties": false,
+          "properties": {
+            "intervalSeconds": { "type": "integer", "minimum": 1, "maximum": 30 },
+            "storage": { "const": "local-file-only" },
+            "publicEgress": { "const": false }
+          }
+        },
+        "recovery": {
+          "type": "object",
+          "required": ["dialog", "maxDialogSeconds", "oneClickRestore", "diffExpected", "dataLossTolerance"],
+          "additionalProperties": false,
+          "properties": {
+            "dialog": { "const": "RecoveryDialog" },
+            "maxDialogSeconds": { "type": "integer", "minimum": 1, "maximum": 30 },
+            "oneClickRestore": { "const": true },
+            "diffExpected": { "const": "zero" },
+            "dataLossTolerance": { "const": "none" }
+          }
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "required": ["required", "blocksGA"],
+      "additionalProperties": false,
+      "properties": {
+        "required": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": ["autosave-snapshot", "sigkill-marker", "recovery-dialog-shown", "restore-applied", "diff-zero-proof"]
+          }
+        },
+        "blocksGA": { "const": true }
+      }
+    }
+  }
+}
