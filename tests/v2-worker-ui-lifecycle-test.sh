@@ -396,7 +396,7 @@ require_token "testCoworkUiAsyncBridgeExposesPendingRunningAndCompletes" "$test_
 require_token "testAutoOpenReviewNotificationRecordsPlanMismatch" "$test_log" "latest auto-open plan mismatch cppunit run"
 require_token "testCoworkUiBridgeRunsNewTaskToOpenedReview" "$test_log" "latest Cowork UI bridge cppunit run"
 require_token "testCoworkUiBridgePostsOsNotificationRequest" "$test_log" "latest Cowork UI OS notification cppunit run"
-require_token "OK (45)" "$test_log" "kqoffice_cowork OK(45)"
+require_token "OK (56)" "$test_log" "kqoffice_cowork OK(56)"
 
 echo "Status: passed"
 echo "Checks: $checks"
