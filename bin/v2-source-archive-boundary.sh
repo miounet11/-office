@@ -65,8 +65,8 @@ def prefix(path, *labels):
     return ("prefix", path, frozenset(labels))
 
 rules = [
-    exact("kqoffice/Library_kqoffice_ai.mk", "W1-provider", "W5-cowork"),
-    exact("kqoffice/Module_kqoffice.mk", "W1-provider", "W5-cowork"),
+    exact("kqoffice/Library_kqoffice_ai.mk", "W1-provider", "W5-cowork", "V3-agent-chat", "V3-agent-mesh", "V3-ai-canvas", "V3-ai-filemgr", "V3-control-plane"),
+    exact("kqoffice/Module_kqoffice.mk", "W1-provider", "W5-cowork", "V3-agent-chat", "V3-agent-mesh", "V3-ai-canvas", "V3-ai-filemgr", "V3-control-plane"),
     exact("cui/Library_cui.mk", "W2-command-palette", "W5-cowork"),
     exact("cui/Module_cui.mk", "W2-command-palette", "W5-cowork"),
     exact("cui/UIConfig_cui.mk", "W2-command-palette", "W5-cowork"),
@@ -162,6 +162,41 @@ rules = [
 
     prefix("sfx2/source/sidebar/AIChat", "V3-native-ai-workspace"),
     exact("sfx2/uiconfig/ui/aichatpanel.ui", "V3-native-ai-workspace"),
+    exact("sfx2/source/dialog/backingwindow.cxx", "V3-native-ai-workspace"),
+    exact("sfx2/uiconfig/ui/startcenter.ui", "V3-native-ai-workspace"),
+
+    # V3 agent-chat (in-app chat runtime)
+    exact("kqoffice/CppunitTest_kqoffice_agent_chat.mk", "V3-agent-chat"),
+    exact("kqoffice/qa/cppunit/test_agent_chat.cxx", "V3-agent-chat"),
+    prefix("kqoffice/source/ai/chat/", "V3-agent-chat"),
+
+    # V3 agent-mesh (multi-agent orchestration)
+    exact("kqoffice/CppunitTest_kqoffice_agent_mesh.mk", "V3-agent-mesh"),
+    exact("kqoffice/qa/cppunit/test_agent_mesh.cxx", "V3-agent-mesh"),
+    prefix("kqoffice/source/ai/mesh/", "V3-agent-mesh"),
+
+    # V3 ai-canvas (AI canvas workspace)
+    exact("kqoffice/CppunitTest_kqoffice_ai_canvas.mk", "V3-ai-canvas"),
+    exact("kqoffice/qa/cppunit/test_ai_canvas.cxx", "V3-ai-canvas"),
+    prefix("kqoffice/source/ai/canvas/", "V3-ai-canvas"),
+
+    # V3 ai-filemgr (AI file manager)
+    exact("kqoffice/CppunitTest_kqoffice_ai_filemgr.mk", "V3-ai-filemgr"),
+    exact("kqoffice/qa/cppunit/test_ai_filemgr.cxx", "V3-ai-filemgr"),
+    prefix("kqoffice/source/ai/filemgr/", "V3-ai-filemgr"),
+
+    # V3 control-plane (resource budget, safe restore, session store)
+    exact("kqoffice/CppunitTest_kqoffice_control_plane.mk", "V3-control-plane"),
+    exact("kqoffice/qa/cppunit/test_control_plane.cxx", "V3-control-plane"),
+    prefix("kqoffice/source/ai/control/", "V3-control-plane"),
+
+    # V3 i18n (AI strings)
+    exact("kqoffice/source/ai/i18n/AiI18nStrings.hxx", "V3-i18n"),
+
+    # V1.5 branding assets (icons, templates, branding)
+    prefix("downstream-branding/", "V1.5-branding-assets"),
+    prefix("extras/", "V1.5-branding-assets"),
+    prefix("sysui/desktop/icons/", "V1.5-branding-assets"),
 
     exact("postprocess/CustomTarget_registry.mk", "build-infra"),
     prefix("solenv/", "build-infra"),
@@ -212,6 +247,13 @@ batch_labels = [
     "W4-select-to-act",
     "W5-cowork",
     "V3-native-ai-workspace",
+    "V3-agent-chat",
+    "V3-agent-mesh",
+    "V3-ai-canvas",
+    "V3-ai-filemgr",
+    "V3-control-plane",
+    "V3-i18n",
+    "V1.5-branding-assets",
     "build-infra",
     "submodule-dirty",
 ]
