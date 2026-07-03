@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 # Capture packaged-app screenshots for R5 evidence.
 # Usage: bin/packaged-screenshots.sh [APP_BUNDLE_PATH]
-# Default app: test-install/可圈office.app
+# Default app: test-install/可圈办公.app
 
 set -euo pipefail
 
 REPO="$(cd "$(dirname "$0")/.." && pwd)"
-APP="${1:-$REPO/test-install/可圈office.app}"
+APP="${1:-$REPO/test-install/可圈办公.app}"
 SOFFICE="$APP/Contents/MacOS/soffice"
 BUNDLE_ID="com.kdoffice.app"
 OUT="$REPO/tmp/product-completion/screenshots"

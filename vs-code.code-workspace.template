@@ -235,7 +235,7 @@
 				"name": "run in debugger after make",
 				"type": "cppdbg",
 				"request": "launch",
-				"program": "/Users/lu/可点office/instdir/可圈office.app/Contents/program/soffice.bin",
+				"program": "/Users/lu/可点office/instdir/可圈办公.app/Contents/program/soffice.bin",
 				"args": [],
 				"stopAtEntry": false,
 				"cwd": "/Users/lu/可点office",
@@ -265,13 +265,13 @@
 						},
 						{
 							"description": "Mark pretty-printers bootstrap (in instdir/program) safe",
-							"text": "add-auto-load-safe-path /Users/lu/可点office/instdir/可圈office.app/Contents",
+							"text": "add-auto-load-safe-path /Users/lu/可点office/instdir/可圈办公.app/Contents",
 							"ignoreFailures": true
 						}
 					]
 				},
 				"osx": {
-					"program": "/Users/lu/可点office/instdir/可圈office.app/Contents/MacOS/soffice",
+					"program": "/Users/lu/可点office/instdir/可圈办公.app/Contents/MacOS/soffice",
 					"MIMode": "lldb",
 					"setupCommands": [
 						{
@@ -294,7 +294,7 @@
 				//	"preLaunchTask": "remove profile-dir",
 				"type": "cppdbg",
 				"request": "launch",
-				"program": "/Users/lu/可点office/instdir/可圈office.app/Contents/program/soffice.bin",
+				"program": "/Users/lu/可点office/instdir/可圈办公.app/Contents/program/soffice.bin",
 				"args": [
 					"-env:UserInstallation=file:////Users/lu/可点office/workdir/vs-code-temporary-user-profile"
 				],
@@ -323,13 +323,13 @@
 						},
 						{
 							"description": "Mark pretty-printers bootstrap (in instdir/program) safe",
-							"text": "add-auto-load-safe-path /Users/lu/可点office/instdir/可圈office.app/Contents",
+							"text": "add-auto-load-safe-path /Users/lu/可点office/instdir/可圈办公.app/Contents",
 							"ignoreFailures": true
 						}
 					]
 				},
 				"osx": {
-					"program": "/Users/lu/可点office/instdir/可圈office.app/Contents/MacOS/soffice",
+					"program": "/Users/lu/可点office/instdir/可圈办公.app/Contents/MacOS/soffice",
 					"MIMode": "lldb",
 					"setupCommands": [
 						{

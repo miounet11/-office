@@ -8,7 +8,7 @@ usage() {
 Usage:
   source-status.sh [git-status-options...]
 
-Shows a source-focused git status for the current 可圈office tree.
+Shows a source-focused git status for the current 可圈办公 tree.
 Generated build/install outputs are excluded so agent handoffs and reviews
 can focus on real source and planning changes.
 

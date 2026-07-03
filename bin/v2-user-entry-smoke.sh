@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# V2 user-entry smoke for installed 可圈office.app.
+# V2 user-entry smoke for installed 可圈办公.app.
 #
 # This is a local product-surface smoke, not a visible GUI click-through. It
 # verifies that the installed app bundle carries a coherent user-entry chain for
@@ -12,7 +12,7 @@ cd "$repo_root"
 
 mkdir -p tmp
 
-app="${KDOFFICE_APP_BUNDLE:-$repo_root/instdir/可圈office.app}"
+app="${KDOFFICE_APP_BUNDLE:-$repo_root/instdir/可圈办公.app}"
 src_root="${KDOFFICE_SRC_ROOT:-/Users/lu/kdoffice-src}"
 report="${V2_USER_ENTRY_REPORT:-tmp/v2-user-entry-smoke.md}"
 

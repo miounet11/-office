@@ -10,7 +10,7 @@ else
     src_root="$(cd -P "$repo_root" && pwd)"
 fi
 
-app_root="${KDOFFICE_APP_BUNDLE:-$repo_root/test-install/可圈office.app}"
+app_root="${KDOFFICE_APP_BUNDLE:-$repo_root/test-install/可圈办公.app}"
 output_path="$repo_root/tmp/product-completion/workbench-a11y-preflight.md"
 run_name="workbench-a11y-preflight"
 
@@ -20,7 +20,7 @@ Usage:
   workbench-a11y-preflight.sh [options]
 
 Options:
-  --app <path>          App bundle path. Defaults to KDOFFICE_APP_BUNDLE or test-install/可圈office.app.
+  --app <path>          App bundle path. Defaults to KDOFFICE_APP_BUNDLE or test-install/可圈办公.app.
   --output <path>       Report path. Default: tmp/product-completion/workbench-a11y-preflight.md
   --run-name <name>     GUI timing run name. Default: workbench-a11y-preflight
   -h, --help

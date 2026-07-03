@@ -61,11 +61,11 @@ assert_contains "$tmp_root/bad_limit.stderr" 'Limit must be a positive integer'
 
 traversal_repo="$tmp_root/traversal-repo"
 traversal_src="$tmp_root/traversal-src"
-mkdir -p "$traversal_repo/bin" "$traversal_src/test-install/可圈office.app/Contents/MacOS"
+mkdir -p "$traversal_repo/bin" "$traversal_src/test-install/可圈办公.app/Contents/MacOS"
 cp "$script" "$traversal_repo/bin/compatibility-roundtrip.sh"
 chmod +x "$traversal_repo/bin/compatibility-roundtrip.sh"
-printf '#!/usr/bin/env bash\n' > "$traversal_src/test-install/可圈office.app/Contents/MacOS/soffice"
-chmod +x "$traversal_src/test-install/可圈office.app/Contents/MacOS/soffice"
+printf '#!/usr/bin/env bash\n' > "$traversal_src/test-install/可圈办公.app/Contents/MacOS/soffice"
+chmod +x "$traversal_src/test-install/可圈办公.app/Contents/MacOS/soffice"
 set +e
 KDOFFICE_SRC_ROOT="$traversal_src" "$traversal_repo/bin/compatibility-roundtrip.sh" --format bogus --run-name ../../escape >"$tmp_root/run_name_traversal.stdout" 2>"$tmp_root/run_name_traversal.stderr"
 run_name_traversal_status=$?
@@ -78,9 +78,9 @@ if [[ -e "$traversal_repo/tmp/escape" ]]; then
 fi
 
 fake_src_root="$tmp_root/source-root"
-mkdir -p "$fake_src_root/test-install/可圈office.app/Contents/MacOS"
-printf '#!/usr/bin/env bash\n' > "$fake_src_root/test-install/可圈office.app/Contents/MacOS/soffice"
-chmod +x "$fake_src_root/test-install/可圈office.app/Contents/MacOS/soffice"
+mkdir -p "$fake_src_root/test-install/可圈办公.app/Contents/MacOS"
+printf '#!/usr/bin/env bash\n' > "$fake_src_root/test-install/可圈办公.app/Contents/MacOS/soffice"
+chmod +x "$fake_src_root/test-install/可圈办公.app/Contents/MacOS/soffice"
 set +e
 KDOFFICE_SRC_ROOT="$fake_src_root" "$script" --format '?' --run-name fallback-probe >"$tmp_root/source_fallback.stdout" 2>"$tmp_root/source_fallback.stderr"
 source_fallback_status=$?

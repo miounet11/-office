@@ -93,8 +93,8 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-instdir_app="$repo_root/instdir/可圈office.app"
-testinstall_app="$repo_root/test-install/可圈office.app"
+instdir_app="$repo_root/instdir/可圈办公.app"
+testinstall_app="$repo_root/test-install/可圈办公.app"
 
 need_install=0
 if [[ "$force_install" == "1" ]]; then
@@ -143,7 +143,7 @@ resolve_app() {
 
 app=""
 if ! app="$(resolve_app)"; then
-    echo "FAIL: no static 可圈office.app resources under instdir/ or test-install/"
+    echo "FAIL: no static 可圈办公.app resources under instdir/ or test-install/"
     exit 1
 fi
 

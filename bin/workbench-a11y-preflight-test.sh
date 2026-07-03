@@ -11,11 +11,11 @@ cleanup() {
 trap cleanup EXIT
 
 fake_repo="$tmp_root/repo"
-mkdir -p "$fake_repo/bin" "$fake_repo/tmp" "$fake_repo/test-install/可圈office.app/Contents/MacOS"
+mkdir -p "$fake_repo/bin" "$fake_repo/tmp" "$fake_repo/test-install/可圈办公.app/Contents/MacOS"
 cp "$script_under_test" "$fake_repo/bin/workbench-a11y-preflight.sh"
 chmod +x "$fake_repo/bin/workbench-a11y-preflight.sh"
-touch "$fake_repo/test-install/可圈office.app/Contents/MacOS/soffice"
-chmod +x "$fake_repo/test-install/可圈office.app/Contents/MacOS/soffice"
+touch "$fake_repo/test-install/可圈办公.app/Contents/MacOS/soffice"
+chmod +x "$fake_repo/test-install/可圈办公.app/Contents/MacOS/soffice"
 
 write_stub() {
     local stub_path="$1"
@@ -33,7 +33,7 @@ write_stub "$fake_repo/bin/workbench-template-check.sh" 'printf "# template\n" >
 write_stub "$fake_repo/bin/gui-smoke-timing.sh" 'run_name=""; while [[ $# -gt 0 ]]; do case "$1" in --run-name) run_name="$2"; shift 2 ;; *) shift ;; esac; done; mkdir -p "tmp/gui-smoke-timing/$run_name"; printf "# gui\n" > "tmp/gui-smoke-timing/$run_name/report.md"'
 
 report="$fake_repo/tmp/preflight.md"
-"$fake_repo/bin/workbench-a11y-preflight.sh" --app "$fake_repo/test-install/可圈office.app" --output "$report" --run-name unit-preflight
+"$fake_repo/bin/workbench-a11y-preflight.sh" --app "$fake_repo/test-install/可圈办公.app" --output "$report" --run-name unit-preflight
 
 for expected in \
     'Status: passed' \
@@ -57,7 +57,7 @@ fi
 
 write_stub "$fake_repo/bin/workbench-template-check.sh" 'printf "# template failed\n" > "$1"; exit 1'
 blocked_report="$fake_repo/tmp/preflight-blocked.md"
-if "$fake_repo/bin/workbench-a11y-preflight.sh" --app "$fake_repo/test-install/可圈office.app" --output "$blocked_report" --run-name unit-preflight-blocked > "$tmp_root/blocked-stdout.log" 2> "$tmp_root/blocked-stderr.log"; then
+if "$fake_repo/bin/workbench-a11y-preflight.sh" --app "$fake_repo/test-install/可圈办公.app" --output "$blocked_report" --run-name unit-preflight-blocked > "$tmp_root/blocked-stdout.log" 2> "$tmp_root/blocked-stderr.log"; then
     printf 'Expected preflight to fail when a support gate fails\n' >&2
     exit 1
 fi

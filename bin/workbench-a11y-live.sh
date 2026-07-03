@@ -2,7 +2,7 @@
 set -euo pipefail
 
 REPO="$(cd "$(dirname "$0")/.." && pwd)"
-APP="$REPO/test-install/可圈office.app"
+APP="$REPO/test-install/可圈办公.app"
 OUT="$REPO/tmp/product-completion/live-accessibility-proof.md"
 STATE="$(mktemp -t workbench-a11y-live.XXXXXX)"
 RESUME=0

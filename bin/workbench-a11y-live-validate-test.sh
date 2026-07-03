@@ -14,7 +14,7 @@ valid_proof="$tmp_root/live-accessibility-proof-valid.md"
 invalid_proof="$tmp_root/live-accessibility-proof-invalid.md"
 report="$tmp_root/live-accessibility-validation.md"
 json_report="$tmp_root/live-accessibility-validation.json"
-expected_app="$tmp_root/test-install/可圈office.app"
+expected_app="$tmp_root/test-install/可圈办公.app"
 mkdir -p "$expected_app/Contents/MacOS"
 touch "$expected_app/Contents/MacOS/soffice"
 

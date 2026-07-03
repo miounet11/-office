@@ -61,12 +61,12 @@ PY
 
 fake_repo="$work_root/repo"
 fake_src="$work_root/src"
-mkdir -p "$fake_repo/bin" "$fake_repo/instdir/可圈office.app/Contents/MacOS" \
+mkdir -p "$fake_repo/bin" "$fake_repo/instdir/可圈办公.app/Contents/MacOS" \
     "$fake_src/sw/qa" "$fake_src/sc/qa" "$fake_src/sd/qa" "$fake_src/oox/qa"
 ln -s "$fake_src" "$fake_repo/libreoffice-core"
 cp "$script" "$fake_repo/bin/compatibility-roundtrip.sh"
 
-cat > "$fake_repo/instdir/可圈office.app/Contents/MacOS/soffice" <<'EOF'
+cat > "$fake_repo/instdir/可圈办公.app/Contents/MacOS/soffice" <<'EOF'
 #!/usr/bin/env bash
 set -euo pipefail
 outdir=""
@@ -97,7 +97,7 @@ stem="$(basename "$input")"
 stem="${stem%.*}"
 printf 'fake %s conversion\n' "$target" > "$outdir/$stem.$target"
 EOF
-chmod +x "$fake_repo/instdir/可圈office.app/Contents/MacOS/soffice"
+chmod +x "$fake_repo/instdir/可圈办公.app/Contents/MacOS/soffice"
 
 cat > "$fake_repo/bin/odfvalidator.sh" <<'EOF'
 #!/usr/bin/env bash

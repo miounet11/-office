@@ -10,13 +10,13 @@ else
     src_root="$(cd -P "$repo_root" && pwd)"
 fi
 app_candidates=(
-    "$repo_root/instdir/可圈office.app"
-    "$repo_root/test-install/可圈office.app"
+    "$repo_root/instdir/可圈办公.app"
+    "$repo_root/test-install/可圈办公.app"
 )
 if [[ "$src_root" != "$repo_root" ]]; then
     app_candidates+=(
-        "$src_root/test-install/可圈office.app"
-        "$src_root/instdir/可圈office.app"
+        "$src_root/test-install/可圈办公.app"
+        "$src_root/instdir/可圈办公.app"
     )
 fi
 app_bundle="${KDOFFICE_APP_BUNDLE:-${app_candidates[0]}}"

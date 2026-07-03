@@ -5,7 +5,7 @@
 set -euo pipefail
 
 REPO="$(cd "$(dirname "$0")/.." && pwd)"
-SOFFICE="$REPO/test-install/可圈office.app/Contents/MacOS/soffice"
+SOFFICE="$REPO/test-install/可圈办公.app/Contents/MacOS/soffice"
 VERAPDF="$REPO/bin/verapdf.sh"
 RUN_NAME=""
 SAMPLES_ARG=""

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Build 可圈office with --with-lang=zh-CN, working around the
+# Build 可圈办公 with --with-lang=zh-CN, working around the
 # ASCII-workdir / Chinese-path incompatibility in xsltproc.
 #
 # Wraps gmake test-install with:
@@ -109,7 +109,7 @@ PY
       "workdir/CustomTarget/postprocess/registry/registry_zh-CN.list" 2>&1 ) | head -3 >&2 || true
 
   # Deploy to test-install if it exists
-  TEST_RES="$REPO/test-install/可圈office.app/Contents/Resources/registry/res/registry_zh-CN.xcd"
+  TEST_RES="$REPO/test-install/可圈办公.app/Contents/Resources/registry/res/registry_zh-CN.xcd"
   if [[ -d "$(dirname "$TEST_RES")" ]]; then
     cp "$XCD" "$TEST_RES"
     echo "[wrapper] deployed registry_zh-CN.xcd ($(stat -f%z "$XCD") bytes) -> test-install"

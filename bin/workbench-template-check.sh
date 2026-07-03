@@ -70,10 +70,10 @@ def built_archive_for(rel_archive: str) -> Path:
 
 def runtime_archive_for(rel_archive: str) -> Path:
     candidates = [
-        repo_root / "instdir/可圈office.app/Contents/Resources/template/common" / rel_archive,
-        repo_root / "test-install/可圈office.app/Contents/Resources/template/common" / rel_archive,
-        src_root / "test-install/可圈office.app/Contents/Resources/template/common" / rel_archive,
-        src_root / "instdir/可圈office.app/Contents/Resources/template/common" / rel_archive,
+        repo_root / "instdir/可圈办公.app/Contents/Resources/template/common" / rel_archive,
+        repo_root / "test-install/可圈办公.app/Contents/Resources/template/common" / rel_archive,
+        src_root / "test-install/可圈办公.app/Contents/Resources/template/common" / rel_archive,
+        src_root / "instdir/可圈办公.app/Contents/Resources/template/common" / rel_archive,
     ]
     return next((path for path in candidates if path.exists()), candidates[0])
 

@@ -10,7 +10,7 @@ usage() {
 Usage:
   v2-p0-gates.sh [run-name]
 
-Runs the current P0 verification gates for 可圈office:
+Runs the current P0 verification gates for 可圈办公:
   1. source-focused status
   2. quality baseline
   3. scenario workbench template package check
@@ -85,7 +85,7 @@ run_step() {
 }
 
 {
-    printf '# 可圈office V2 P0 Gates\n\n'
+    printf '# 可圈办公 V2 P0 Gates\n\n'
     printf 'Run name: %s\n' "$run_name"
     printf 'Generated at: %s\n' "$(date '+%Y-%m-%d %H:%M:%S %z')"
     printf 'Repo root: %s\n\n' "$repo_root"

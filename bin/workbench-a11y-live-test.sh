@@ -25,7 +25,7 @@ dump_failure() {
 trap dump_failure EXIT
 
 fake_repo="$tmp_root/repo"
-fake_app="$fake_repo/test-install/可圈office.app"
+fake_app="$fake_repo/test-install/可圈办公.app"
 mkdir -p "$fake_repo/bin" "$fake_app/Contents/MacOS" "$fake_repo/fake-bin" "$fake_repo/tmp/product-completion"
 resolved_fake_app="$(cd -P "$fake_app" && pwd)"
 cp "$script_under_test" "$fake_repo/bin/workbench-a11y-live.sh"

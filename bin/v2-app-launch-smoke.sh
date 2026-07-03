@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # V2 product app launch smoke.
 #
-# Proves the installed 可圈office.app can start from the real app bundle with
+# Proves the installed 可圈办公.app can start from the real app bundle with
 # the AI runtime environment enabled. This is stronger than H8 static bundle
 # checks, but still not a GUI click-through.
 set -euo pipefail
@@ -11,7 +11,7 @@ cd "$repo_root"
 
 mkdir -p tmp
 
-app="${KDOFFICE_APP_BUNDLE:-$repo_root/instdir/可圈office.app}"
+app="${KDOFFICE_APP_BUNDLE:-$repo_root/instdir/可圈办公.app}"
 log="${V2_APP_LAUNCH_LOG:-tmp/v2-app-launch-smoke.log}"
 report="${V2_APP_LAUNCH_REPORT:-tmp/v2-app-launch-smoke.md}"
 version_log="${V2_APP_LAUNCH_VERSION_LOG:-tmp/v2-app-launch-version.log}"

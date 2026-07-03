@@ -12,7 +12,7 @@
     <key>CFBundleDevelopmentRegion</key>
     <string>en</string>
     <key>CFBundleDisplayName</key>
-    <string>可圈office 快速预览</string>
+    <string>可圈办公 快速预览</string>
     <key>CFBundleExecutable</key>
     <string>QuickLookPreview</string>
     <key>CFBundleIdentifier</key>
@@ -20,7 +20,7 @@
     <key>CFBundleInfoDictionaryVersion</key>
     <string>6.0</string>
     <key>CFBundleName</key>
-    <string>可圈officeQuickLookPreview</string>
+    <string>可圈办公QuickLookPreview</string>
     <key>CFBundlePackageType</key>
     <string>XPC!</string>
     <key>CFBundleShortVersionString</key>

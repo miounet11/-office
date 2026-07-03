@@ -126,13 +126,13 @@ def representative_for(suffix: str, limit: int = 3) -> list[str]:
     return selected
 
 app_candidates = [
-    repo_root / "instdir/可圈office.app/Contents/MacOS/soffice",
-    repo_root / "test-install/可圈office.app/Contents/MacOS/soffice",
+    repo_root / "instdir/可圈办公.app/Contents/MacOS/soffice",
+    repo_root / "test-install/可圈办公.app/Contents/MacOS/soffice",
 ]
 if src_root != repo_root:
     app_candidates.extend([
-        src_root / "test-install/可圈office.app/Contents/MacOS/soffice",
-        src_root / "instdir/可圈office.app/Contents/MacOS/soffice",
+        src_root / "test-install/可圈办公.app/Contents/MacOS/soffice",
+        src_root / "instdir/可圈办公.app/Contents/MacOS/soffice",
     ])
 app_path = next((path for path in app_candidates if path.exists()), app_candidates[0])
 validators = [
@@ -142,7 +142,7 @@ validators = [
 ]
 
 lines = []
-lines.append("# 可圈office Compatibility Lab Baseline")
+lines.append("# 可圈办公 Compatibility Lab Baseline")
 lines.append("")
 lines.append(f"Generated at: {datetime.now().astimezone().strftime('%Y-%m-%d %H:%M:%S %z')}")
 lines.append(f"Repo root: {repo_root}")

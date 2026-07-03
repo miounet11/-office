@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # V2 Writer document-processing smoke.
 #
-# Proves the installed 可圈office.app can do more than initialize: it opens a
+# Proves the installed 可圈办公.app can do more than initialize: it opens a
 # real Writer import path, converts text to ODT through the product bundle, and
 # verifies the generated document content. This is still not a GUI click-through.
 set -euo pipefail
@@ -11,7 +11,7 @@ cd "$repo_root"
 
 mkdir -p tmp
 
-app="${KDOFFICE_APP_BUNDLE:-$repo_root/instdir/可圈office.app}"
+app="${KDOFFICE_APP_BUNDLE:-$repo_root/instdir/可圈办公.app}"
 report="${V2_WRITER_DOCUMENT_REPORT:-tmp/v2-writer-document-smoke.md}"
 log="${V2_WRITER_DOCUMENT_LOG:-tmp/v2-writer-document-smoke.log}"
 static_log="${V2_WRITER_DOCUMENT_STATIC_LOG:-tmp/v2-writer-document-static.log}"
@@ -74,7 +74,7 @@ work="$(mktemp -d /tmp/kqoffice-writer-smoke.XXXXXX)"
 input="$work/writer-input.txt"
 outdir="$work/out"
 output="$outdir/writer-input.odt"
-expected="可圈office Writer smoke"
+expected="可圈办公 Writer smoke"
 mkdir -p "$outdir"
 printf '%s\nAI select-to-act baseline\n' "$expected" >"$input"
 

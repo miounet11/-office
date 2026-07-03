@@ -37,13 +37,13 @@ Globals
     }
 }
 
-可圈office
+可圈办公
 {
     Settings
     {
         variables
         {
-            PRODUCTNAME 可圈office
+            PRODUCTNAME 可圈办公
             PRODUCTVERSION 26.8
             PRODUCTEXTENSION .0.0.alpha0
             POSTVERSIONEXTENSION
@@ -118,7 +118,7 @@ LibreOfficeDev
     }
 }
 
-可圈office_SDK
+可圈办公_SDK
 {
     Settings
     {

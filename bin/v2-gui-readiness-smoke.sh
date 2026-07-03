@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# V2 GUI readiness smoke for installed 可圈office.app.
+# V2 GUI readiness smoke for installed 可圈办公.app.
 #
 # Captures host-side prerequisites for a real visible GUI click-through and
 # compares the visible /Applications bundle against the builddir app-bundle V2
@@ -13,12 +13,12 @@ cd "$repo_root"
 
 mkdir -p tmp
 
-app="${KDOFFICE_APP_BUNDLE:-$repo_root/instdir/可圈office.app}"
-installed_app="${KDOFFICE_INSTALLED_APP_BUNDLE:-/Applications/可圈office.app}"
+app="${KDOFFICE_APP_BUNDLE:-$repo_root/instdir/可圈办公.app}"
+installed_app="${KDOFFICE_INSTALLED_APP_BUNDLE:-/Applications/可圈办公.app}"
 report="${V2_GUI_READINESS_REPORT:-tmp/v2-gui-readiness-smoke.md}"
 log="${V2_GUI_READINESS_LOG:-tmp/v2-gui-readiness-smoke.log}"
 expected_bundle_id="${V2_GUI_READINESS_BUNDLE_ID:-com.kdoffice.app}"
-expected_bundle_name="${V2_GUI_READINESS_BUNDLE_NAME:-可圈office}"
+expected_bundle_name="${V2_GUI_READINESS_BUNDLE_NAME:-可圈办公}"
 passes=0
 failures=0
 readiness="ready"
@@ -205,11 +205,11 @@ APPLESCRIPT
 )"
 [[ "$activate_output" == "activated" ]] && record PASS "bundle activation" "application id $expected_bundle_id activated" || record FAIL "bundle activation" "$activate_output"
 
-process_lines="$(ps -axo pid,ppid,etime,command | grep -F '可圈office.app/Contents/MacOS/soffice' | grep -v grep || true)"
+process_lines="$(ps -axo pid,ppid,etime,command | grep -F '可圈办公.app/Contents/MacOS/soffice' | grep -v grep || true)"
 if [[ -n "$process_lines" ]]; then
     record PASS "visible process" "$(echo "$process_lines" | tr '\n' ';' | sed 's/;$//')"
 else
-    record FAIL "visible process" "no 可圈office soffice process found after activation"
+    record FAIL "visible process" "no 可圈办公 soffice process found after activation"
 fi
 if echo "$process_lines" | grep -Fq "$app/Contents/MacOS/soffice"; then
     record NOTE "LaunchServices route" "active visible instance is builddir app"

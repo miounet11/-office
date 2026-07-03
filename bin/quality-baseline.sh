@@ -9,7 +9,7 @@ usage() {
 Usage:
   quality-baseline.sh [output-file]
 
-Generates a repeatable baseline report for the current 可圈office tree.
+Generates a repeatable baseline report for the current 可圈办公 tree.
 If no output file is provided, the report is written to:
   tmp/world-class-quality-baseline.md
 EOF
@@ -53,7 +53,7 @@ file_state() {
 }
 
 cat > "$output_path" <<EOF
-# 可圈office Quality Baseline
+# 可圈办公 Quality Baseline
 
 Generated at: $created_at
 Branch: $branch_name

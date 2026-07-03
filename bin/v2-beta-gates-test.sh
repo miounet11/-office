@@ -176,8 +176,8 @@ write_stub "$pass_repo/bin/gui-smoke-timing.sh" 'if [[ -z "${KDOFFICE_APP_BUNDLE
 write_stub "$pass_repo/bin/compatibility-layout-evidence.sh" 'exit 0'
 write_stub "$pass_repo/bin/source-hygiene-report.sh" 'exit 0'
 write_stub "$pass_repo/bin/plugin-manifest-validator.sh" 'exit 0'
-mkdir -p "$pass_repo/test-install/可圈office.app/Contents/MacOS"
-touch "$pass_repo/test-install/可圈office.app/Contents/MacOS/soffice"
+mkdir -p "$pass_repo/test-install/可圈办公.app/Contents/MacOS"
+touch "$pass_repo/test-install/可圈办公.app/Contents/MacOS/soffice"
 
 cat > "$pass_repo/tmp/product-completion/live-accessibility-proof.md" <<'EOF'
 # Live Accessibility Proof
@@ -205,11 +205,11 @@ cat > "$pass_repo/tmp/product-completion/live-accessibility-proof.md" <<'EOF'
 
 - None.
 EOF
-sed -i.bak "s|PASS_APP_PLACEHOLDER|$pass_repo/test-install/可圈office.app|g" "$pass_repo/tmp/product-completion/live-accessibility-proof.md"
+sed -i.bak "s|PASS_APP_PLACEHOLDER|$pass_repo/test-install/可圈办公.app|g" "$pass_repo/tmp/product-completion/live-accessibility-proof.md"
 rm -f "$pass_repo/tmp/product-completion/live-accessibility-proof.md.bak"
 
 pass_run_name="unit-live-accessibility-proof"
-KDOFFICE_APP_BUNDLE="$pass_repo/test-install/可圈office.app" "$pass_repo/bin/v2-beta-gates.sh" "$pass_run_name" > "$tmp_root/pass-stdout.log" 2> "$tmp_root/pass-stderr.log"
+KDOFFICE_APP_BUNDLE="$pass_repo/test-install/可圈办公.app" "$pass_repo/bin/v2-beta-gates.sh" "$pass_run_name" > "$tmp_root/pass-stdout.log" 2> "$tmp_root/pass-stderr.log"
 
 pass_report="$pass_repo/tmp/v2-beta-gates/$pass_run_name.md"
 pass_json_report="$pass_repo/tmp/v2-beta-gates/$pass_run_name.json"
@@ -226,9 +226,9 @@ if ! grep -F -q -- 'tmp/product-completion/live-accessibility-validation.json' "
 fi
 
 if ! grep -F -q -- "KDOFFICE_SOFFICE_BIN=" "$pass_report" ||
-    ! grep -F -q -- "test-install/可圈office.app/Contents/MacOS/soffice" "$pass_report" ||
+    ! grep -F -q -- "test-install/可圈办公.app/Contents/MacOS/soffice" "$pass_report" ||
     ! grep -F -q -- "--app" "$pass_report" ||
-    ! grep -F -q -- "test-install/可圈office.app" "$pass_report"; then
+    ! grep -F -q -- "test-install/可圈办公.app" "$pass_report"; then
     printf 'Expected beta gate report to show explicit test-install app/soffice routing\n' >&2
     exit 1
 fi

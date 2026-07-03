@@ -10,13 +10,13 @@ else
     src_root="$(cd -P "$repo_root" && pwd)"
 fi
 soffice_candidates=(
-    "$repo_root/instdir/可圈office.app/Contents/MacOS/soffice"
-    "$repo_root/test-install/可圈office.app/Contents/MacOS/soffice"
+    "$repo_root/instdir/可圈办公.app/Contents/MacOS/soffice"
+    "$repo_root/test-install/可圈办公.app/Contents/MacOS/soffice"
 )
 if [[ "$src_root" != "$repo_root" ]]; then
     soffice_candidates+=(
-        "$src_root/test-install/可圈office.app/Contents/MacOS/soffice"
-        "$src_root/instdir/可圈office.app/Contents/MacOS/soffice"
+        "$src_root/test-install/可圈办公.app/Contents/MacOS/soffice"
+        "$src_root/instdir/可圈办公.app/Contents/MacOS/soffice"
     )
 fi
 

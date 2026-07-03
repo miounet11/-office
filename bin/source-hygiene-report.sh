@@ -30,7 +30,7 @@ Options:
                With --decision-progress or --decision-plan, also write JSON evidence.
   -h, --help
 
-Generates a source/generated boundary report for the current 可圈office tree.
+Generates a source/generated boundary report for the current 可圈办公 tree.
 Default mode is advisory and always exits 0; use --strict for release-candidate
 hygiene checks.
 EOF

@@ -705,7 +705,7 @@
             <key>UTTypeIdentifier</key>
             <string>org.openoffice.extension</string>
             <key>UTTypeDescription</key>
-            <string>可圈office 扩展</string>
+            <string>可圈办公 扩展</string>
             <key>UTTypeConformsTo</key>
             <array>
                 <string>public.data</string>
@@ -1526,7 +1526,7 @@
     <array>
         <dict>
             <key>CFBundleURLName</key>
-            <string>可圈office CMIS</string>
+            <string>可圈办公 CMIS</string>
             <key>CFBundleURLSchemes</key>
             <array>
                 <string>vnd.libreoffice.cmis</string>
@@ -1534,7 +1534,7 @@
         </dict>
         <dict>
             <key>CFBundleURLName</key>
-            <string>可圈office</string>
+            <string>可圈办公</string>
             <key>CFBundleURLSchemes</key>
             <array>
                 <string>vnd.libreoffice.command</string>
@@ -1547,7 +1547,7 @@
         </dict>
         <dict>
             <key>CFBundleURLName</key>
-            <string>可圈office WebDav</string>
+            <string>可圈办公 WebDav</string>
             <key>CFBundleURLSchemes</key>
             <array>
                 <string>vnd.sun.star.webdav</string>
@@ -1836,7 +1836,7 @@
         </dict>
         <dict>
             <key>CFBundleTypeName</key>
-            <string>可圈office 扩展</string>
+            <string>可圈办公 扩展</string>
             <key>CFBundleTypeRole</key>
             <string>Editor</string>
             <key>LSHandlerRank</key>
@@ -1951,7 +1951,9 @@
     <key>CFBundleInfoDictionaryVersion</key>
     <string>6.0</string>
     <key>CFBundleName</key>
-    <string>可圈office</string>
+    <string>可圈办公</string>
+    <key>CFBundleDisplayName</key>
+    <string>KQOffice</string>
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleSignature</key>

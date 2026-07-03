@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # V2 office-suite document-processing smoke.
 #
-# Proves the installed 可圈office.app can process real documents across the
+# Proves the installed 可圈办公.app can process real documents across the
 # main Office/WPS-equivalent surfaces: Writer, Calc, and Impress. This is still
 # not a visible GUI click-through.
 set -euo pipefail
@@ -11,7 +11,7 @@ cd "$repo_root"
 
 mkdir -p tmp
 
-app="${KDOFFICE_APP_BUNDLE:-$repo_root/instdir/可圈office.app}"
+app="${KDOFFICE_APP_BUNDLE:-$repo_root/instdir/可圈办公.app}"
 report="${V2_SUITE_DOCUMENT_REPORT:-tmp/v2-suite-document-smoke.md}"
 static_log="${V2_SUITE_DOCUMENT_STATIC_LOG:-tmp/v2-suite-document-static.log}"
 writer_log="${V2_SUITE_WRITER_LOG:-tmp/v2-suite-writer-document-smoke.log}"
@@ -88,7 +88,7 @@ work="$(mktemp -d /tmp/kqoffice-suite-smoke.XXXXXX)"
 mkdir -p "$work/writer-out" "$work/calc-out" "$work/impress-pdf-out" "$work/impress-pptx-out"
 
 writer_input="$work/writer-input.txt"
-writer_expected="可圈office Writer smoke"
+writer_expected="可圈办公 Writer smoke"
 printf '%s\nAI suite baseline\n' "$writer_expected" >"$writer_input"
 
 calc_input="$work/calc-input.csv"

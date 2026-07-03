@@ -10,13 +10,13 @@ else
     src_root="$(cd -P "$repo_root" && pwd)"
 fi
 app_candidates=(
-    "$repo_root/instdir/可圈office.app"
-    "$repo_root/test-install/可圈office.app"
+    "$repo_root/instdir/可圈办公.app"
+    "$repo_root/test-install/可圈办公.app"
 )
 if [[ "$src_root" != "$repo_root" ]]; then
     app_candidates+=(
-        "$src_root/test-install/可圈office.app"
-        "$src_root/instdir/可圈office.app"
+        "$src_root/test-install/可圈办公.app"
+        "$src_root/instdir/可圈办公.app"
     )
 fi
 if [[ -n "${KDOFFICE_APP_BUNDLE:-}" ]]; then
@@ -43,7 +43,7 @@ Usage:
   gui-smoke-timing.sh [options]
 
 Options:
-  --app <path>          App bundle path. Defaults to instdir/可圈office.app.
+  --app <path>          App bundle path. Defaults to instdir/可圈办公.app.
   --mode <startcenter|writer|calc|impress>
   --wait <seconds>     Seconds the process must remain alive. Default: 12.
   --max-elapsed <sec>  Optional wall-clock budget for the full smoke run.

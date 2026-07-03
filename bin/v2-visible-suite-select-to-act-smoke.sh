@@ -19,7 +19,7 @@ from ctypes import byref, c_bool, c_int, c_uint32, c_uint64, c_void_p
 from pathlib import Path
 
 ROOT = Path.cwd()
-APP = Path(os.environ.get("KDOFFICE_APP_BUNDLE", str(ROOT / "instdir/可圈office.app")))
+APP = Path(os.environ.get("KDOFFICE_APP_BUNDLE", str(ROOT / "instdir/可圈办公.app")))
 REPORT = Path(os.environ.get(
     "V2_VISIBLE_SUITE_SELECT_REPORT",
     str(ROOT / "tmp/v2-visible-suite-select-to-act-smoke.md")))

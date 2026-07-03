@@ -19,7 +19,7 @@ usage() {
 Usage:
   v2-upgrade-dashboard.sh [output-file]
 
-Generates a V2 upgrade dashboard for the current 可圈office tree.
+Generates a V2 upgrade dashboard for the current 可圈办公 tree.
 If no output file is provided, the report is written to:
   tmp/v2-upgrade-dashboard.md
 EOF
@@ -252,13 +252,13 @@ def representative_for(suffix: str, limit: int = 3) -> list[str]:
     return selected
 
 app_candidates = [
-    repo_root / "instdir/可圈office.app",
-    repo_root / "test-install/可圈office.app",
+    repo_root / "instdir/可圈办公.app",
+    repo_root / "test-install/可圈办公.app",
 ]
 if src_root != repo_root:
     app_candidates.extend([
-        src_root / "test-install/可圈office.app",
-        src_root / "instdir/可圈office.app",
+        src_root / "test-install/可圈办公.app",
+        src_root / "instdir/可圈办公.app",
     ])
 app_bundle = next((path for path in app_candidates if (path / "Contents/MacOS/soffice").exists()), app_candidates[0])
 app_bin = app_bundle / "Contents/MacOS/soffice"
@@ -311,7 +311,7 @@ beta_blockers = [
 ]
 
 lines = []
-lines.append("# 可圈office V2 Upgrade Dashboard")
+lines.append("# 可圈办公 V2 Upgrade Dashboard")
 lines.append("")
 lines.append(f"Generated at: {created_at}")
 lines.append(f"Branch: {branch_name}")
@@ -323,7 +323,7 @@ lines.append(f"Source root: {src_root} ({state(src_root)})")
 lines.append("")
 lines.append("## V2 control objective")
 lines.append("")
-lines.append("Turn 可圈office into a task-first, compatibility-trustworthy, AI-assisted office product while preserving reliable desktop editing and offline usability.")
+lines.append("Turn 可圈办公 into a task-first, compatibility-trustworthy, AI-assisted office product while preserving reliable desktop editing and offline usability.")
 lines.append("")
 lines.append("## Planning and operating sources")
 lines.append("")

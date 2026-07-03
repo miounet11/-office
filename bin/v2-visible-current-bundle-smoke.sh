@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# V2 strict current-bundle GUI attribution smoke for 可圈office.app.
+# V2 strict current-bundle GUI attribution smoke for 可圈办公.app.
 #
 # Starts the current builddir instdir app bundle's soffice executable with an
 # isolated profile, then uses native Accessibility AX-by-PID only if it exposes the
@@ -13,7 +13,7 @@ cd "$repo_root"
 
 mkdir -p tmp
 
-app="${KDOFFICE_APP_BUNDLE:-$repo_root/instdir/可圈office.app}"
+app="${KDOFFICE_APP_BUNDLE:-$repo_root/instdir/可圈办公.app}"
 report="${V2_VISIBLE_CURRENT_REPORT:-tmp/v2-visible-current-bundle-smoke.md}"
 log="${V2_VISIBLE_CURRENT_LOG:-tmp/v2-visible-current-bundle-smoke.log}"
 profile=""

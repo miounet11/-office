@@ -55,8 +55,8 @@ done
 
 app=""
 for candidate in \
-  "$repo_root/instdir/可圈office.app" \
-  "$repo_root/test-install/可圈office.app"; do
+  "$repo_root/instdir/可圈办公.app" \
+  "$repo_root/test-install/可圈办公.app"; do
   if [[ -x "$candidate/Contents/MacOS/soffice" ]]; then
     app="$candidate"
     break
@@ -76,8 +76,8 @@ if ! bash bin/v2-w4-smoke-installdir.sh "${installdir_args[@]}"; then
 fi
 if [[ -z "$app" ]]; then
   for candidate in \
-    "$repo_root/instdir/可圈office.app" \
-    "$repo_root/test-install/可圈office.app"; do
+    "$repo_root/instdir/可圈办公.app" \
+    "$repo_root/test-install/可圈办公.app"; do
     if [[ -x "$candidate/Contents/MacOS/soffice" ]]; then
       app="$candidate"
       break
@@ -88,7 +88,7 @@ fi
 echo ""
 echo "=== Manual UI checklist (requires app bundle) ==="
 if [[ -z "$app" ]]; then
-  echo "SKIP: no 可圈office.app — run: make test-install"
+  echo "SKIP: no 可圈办公.app — run: make test-install"
 else
   echo "App: $app"
   echo "  1. Writer: select paragraph text → popover appears"

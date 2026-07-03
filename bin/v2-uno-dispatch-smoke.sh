@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# V2 UNO dispatch smoke for installed 可圈office.app.
+# V2 UNO dispatch smoke for installed 可圈办公.app.
 #
 # Starts the real app bundle with an isolated profile and a UNO accept socket,
 # connects with the bundled LibreOfficePython/pyuno runtime, opens a hidden
@@ -13,7 +13,7 @@ cd "$repo_root"
 
 mkdir -p tmp
 
-app="${KDOFFICE_APP_BUNDLE:-$repo_root/instdir/可圈office.app}"
+app="${KDOFFICE_APP_BUNDLE:-$repo_root/instdir/可圈办公.app}"
 report="${V2_UNO_DISPATCH_REPORT:-tmp/v2-uno-dispatch-smoke.md}"
 log="${V2_UNO_DISPATCH_LOG:-tmp/v2-uno-dispatch-smoke.log}"
 keep_profile="${V2_UNO_DISPATCH_KEEP_PROFILE:-0}"

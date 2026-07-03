@@ -16,13 +16,13 @@ cp "$script_under_test" "$fake_repo/bin/compatibility-roundtrip.sh"
 
 mkdir -p "$fake_repo/libreoffice-core/sw/qa/import"
 : > "$fake_repo/libreoffice-core/sw/qa/import/sample.docx"
-mkdir -p "$fake_repo/instdir/可圈office.app/Contents/MacOS"
-cat > "$fake_repo/instdir/可圈office.app/Contents/MacOS/soffice" <<'SOFFICE'
+mkdir -p "$fake_repo/instdir/可圈办公.app/Contents/MacOS"
+cat > "$fake_repo/instdir/可圈办公.app/Contents/MacOS/soffice" <<'SOFFICE'
 #!/usr/bin/env bash
 printf 'simulated conversion failure\n' >&2
 exit 1
 SOFFICE
-chmod +x "$fake_repo/instdir/可圈office.app/Contents/MacOS/soffice"
+chmod +x "$fake_repo/instdir/可圈办公.app/Contents/MacOS/soffice"
 
 run_name="conversion-failure"
 report_path="$fake_repo/tmp/report.md"
@@ -114,7 +114,7 @@ PY
     exit 1
 fi
 
-app_bundle_override="$tmp_root/override-app/可圈office.app"
+app_bundle_override="$tmp_root/override-app/可圈办公.app"
 app_bundle_report_path="$fake_repo/tmp/app-bundle-report.md"
 mkdir -p "$app_bundle_override/Contents/MacOS" "$(dirname "$app_bundle_report_path")"
 cp "$override_soffice_bin" "$app_bundle_override/Contents/MacOS/soffice"
@@ -141,10 +141,10 @@ fi
 
 fallback_repo="$tmp_root/fallback-repo"
 fallback_report_path="$fallback_repo/tmp/fallback-report.md"
-mkdir -p "$fallback_repo/bin" "$fallback_repo/libreoffice-core/sw/qa/import" "$fallback_repo/test-install/可圈office.app/Contents/MacOS" "$(dirname "$fallback_report_path")"
+mkdir -p "$fallback_repo/bin" "$fallback_repo/libreoffice-core/sw/qa/import" "$fallback_repo/test-install/可圈办公.app/Contents/MacOS" "$(dirname "$fallback_report_path")"
 cp "$script_under_test" "$fallback_repo/bin/compatibility-roundtrip.sh"
 : > "$fallback_repo/libreoffice-core/sw/qa/import/fallback.docx"
-cat > "$fallback_repo/test-install/可圈office.app/Contents/MacOS/soffice" <<'SOFFICE'
+cat > "$fallback_repo/test-install/可圈办公.app/Contents/MacOS/soffice" <<'SOFFICE'
 #!/usr/bin/env bash
 set -euo pipefail
 outdir=""
@@ -174,7 +174,7 @@ stem="$(basename "$input")"
 stem="${stem%.*}"
 : > "$outdir/$stem.$target"
 SOFFICE
-chmod +x "$fallback_repo/test-install/可圈office.app/Contents/MacOS/soffice"
+chmod +x "$fallback_repo/test-install/可圈办公.app/Contents/MacOS/soffice"
 
 "$fallback_repo/bin/compatibility-roundtrip.sh" --format docx --limit 1 --run-name "test-install-fallback" --report "$fallback_report_path" > "$tmp_root/fallback-stdout.log" 2> "$tmp_root/fallback-stderr.log"
 
@@ -197,10 +197,10 @@ fi
 
 strict_gap_repo="$tmp_root/strict-gap-repo"
 strict_gap_report_path="$strict_gap_repo/tmp/strict-gap-report.md"
-mkdir -p "$strict_gap_repo/bin" "$strict_gap_repo/libreoffice-core/sw/qa/import" "$strict_gap_repo/instdir/可圈office.app/Contents/MacOS" "$(dirname "$strict_gap_report_path")"
+mkdir -p "$strict_gap_repo/bin" "$strict_gap_repo/libreoffice-core/sw/qa/import" "$strict_gap_repo/instdir/可圈办公.app/Contents/MacOS" "$(dirname "$strict_gap_report_path")"
 cp "$script_under_test" "$strict_gap_repo/bin/compatibility-roundtrip.sh"
 : > "$strict_gap_repo/libreoffice-core/sw/qa/import/strict-gap.docx"
-cat > "$strict_gap_repo/instdir/可圈office.app/Contents/MacOS/soffice" <<'SOFFICE'
+cat > "$strict_gap_repo/instdir/可圈办公.app/Contents/MacOS/soffice" <<'SOFFICE'
 #!/usr/bin/env bash
 set -euo pipefail
 outdir=""
@@ -230,7 +230,7 @@ stem="$(basename "$input")"
 stem="${stem%.*}"
 : > "$outdir/$stem.$target"
 SOFFICE
-chmod +x "$strict_gap_repo/instdir/可圈office.app/Contents/MacOS/soffice"
+chmod +x "$strict_gap_repo/instdir/可圈办公.app/Contents/MacOS/soffice"
 cat > "$strict_gap_repo/bin/odfvalidator.sh" <<'VALIDATOR'
 #!/usr/bin/env bash
 exit 0
