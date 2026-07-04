@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
- -jar /Users/lu/kdoffice-src/external/tarballs/ "$@"
+java -jar /Users/lu/kdoffice-src/external/tarballs/officeotron-0.8.8.jar "$@"
