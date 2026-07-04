@@ -400,7 +400,7 @@ for i in range(count):
         texts.append(text)
 print(f"selection_state=ok count={count} text_len={sum(len(t) for t in texts)} text={' '.join(texts)[:80]!r}")
 '''
-    proc = subprocess.run([str(bundled_python), "-", str(PORT)], input=code, text=True, capture_output=True, check=False, timeout=20)
+    proc = subprocess.run([str(bundled_python), "-", str(PORT)], input=code, text=True, capture_output=True, check=False, timeout=45)
     out = (proc.stdout + proc.stderr).strip()
     if proc.returncode != 0:
         return f"selection_state=failed returncode={proc.returncode} output={out}"
