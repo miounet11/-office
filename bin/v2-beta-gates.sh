@@ -236,7 +236,7 @@ default_actions = {
     "gui-smoke-timing-startcenter": "Inspect the gui-smoke-timing report and referenced soffice log for survival, timeout, and timing-budget classification.",
     "compatibility-layout-evidence": "Inspect tmp/compatibility-layout-evidence.md; do not treat layout-proxy evidence as pixel-fidelity proof.",
     "compatibility-manifest-audit-beta-matrix": "Inspect tmp/compatibility-manifest-audit-beta.md and fix beta Office manifest entries before expanding the matrix.",
-    "compatibility-roundtrip-beta-matrix": "Rerun strict beta Office matrix roundtrip (45 samples) and inspect tmp/compatibility-runs/<run-name>-beta-matrix/report.md.",
+    "compatibility-roundtrip-beta-matrix": "Rerun strict beta Office matrix roundtrip (90 samples) and inspect tmp/compatibility-runs/<run-name>-beta-matrix/report.md.",
     "compatibility-roundtrip-beta-odf": "Rerun strict native ODF control roundtrip and inspect tmp/compatibility-runs/<run-name>-beta-odf/report.md.",
     "compatibility-roundtrip-beta-pdf-import": "Rerun advisory PDF import roundtrip (no strict validators) and inspect tmp/compatibility-runs/<run-name>-beta-pdf-import/report.md.",
     "compatibility-visual-evidence-beta": "Inspect tmp/compatibility-visual-evidence/<run-name>-beta-matrix/report.md; rendered PDF/PNG evidence is advisory, not pixel diff.",
