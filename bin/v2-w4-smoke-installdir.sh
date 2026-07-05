@@ -3,7 +3,7 @@
 #
 # Avoids a headless soffice launch + SAL_INFO scrape (too heavy for CI). Instead
 # verifies that test-install/instdir contains:
-#   - kqoffice_ai shipped library (libkqoffice_ailo.dylib)
+#   - kqoffice_ai runtime (standalone lib or merged into libmergedlo.dylib)
 #   - services.rdb registration for com.sun.star.ai.Provider
 #   - registry / GenericCommands wiring for .uno:CommandPalette (W2)
 #
@@ -25,7 +25,7 @@
 # Exit codes:
 #   0  all checks passed
 #   1  bundle missing after install attempt
-#   2  kqoffice_ai library / component artifact missing
+#   2  kqoffice_ai runtime / component artifact missing
 #   3  com.sun.star.ai.Provider not found in services.rdb (provider registration)
 #   4  .uno:CommandPalette not found in installed registry
 #
@@ -61,7 +61,7 @@ Options:
   -h, --help
 
 Static checks (no soffice launch):
-  - libkqoffice_ailo.dylib present under Contents/Frameworks
+  - kqoffice_ai runtime present (libkqoffice_ailo.dylib or libmergedlo.dylib)
   - services.rdb contains com.sun.star.ai.Provider (+ kqoffice marker)
   - registry contains .uno:CommandPalette (main.xcd / GenericCommands merge)
 EOF
@@ -181,7 +181,7 @@ registry_contains() {
         | xargs -0 grep -aqF "$needle" 2>/dev/null
 }
 
-# --- kqoffice_ai library -------------------------------------------------------
+# --- kqoffice_ai runtime -------------------------------------------------------
 kq_lib=""
 for candidate in \
     "$frameworks_dir/libkqoffice_ailo.dylib" \
@@ -193,9 +193,15 @@ for candidate in \
 done
 
 if [[ -n "$kq_lib" ]]; then
-    record_pass "kqoffice_ai library present ($(basename "$kq_lib"))"
+    record_pass "kqoffice_ai runtime present ($(basename "$kq_lib"))"
 else
-    record_fail 2 "kqoffice_ai library missing under Contents/Frameworks"
+    merged_lib="$frameworks_dir/libmergedlo.dylib"
+    if [[ -f "$merged_lib" ]] \
+        && grep -q 'kqoffice_ai_Provider_get_implementation' < <(nm -gU "$merged_lib" 2>/dev/null); then
+        record_pass "kqoffice_ai runtime present in libmergedlo.dylib"
+    else
+        record_fail 2 "kqoffice_ai runtime missing under Contents/Frameworks"
+    fi
 fi
 
 # --- services.rdb: com.sun.star.ai.Provider ----------------------------------
