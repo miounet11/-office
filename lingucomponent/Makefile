@@ -1,2 +1,2 @@
-module_directory:=/Users/lu/kdoffice-src/lingucomponent/
+module_directory:=/Volumes/MobileDrive/devpc/kdoffice-src/lingucomponent/
 include $(module_directory)/../solenv/gbuild/partial_build.mk

@@ -10,12 +10,12 @@
 	"folders": [
 		{
 			"name": "srcdir",
-			"path": "/Users/lu/kdoffice-src"
+			"path": "/Volumes/MobileDrive/devpc/kdoffice-src"
 		},
 		{
 			// BUILDDIR may be configured separate from SRCDIR
 			"name": "builddir",
-			"path": "/Users/lu/可点office"
+			"path": "/Volumes/MobileDrive/devpc/可点office"
 		}
 	],
 	"settings": {
@@ -36,11 +36,11 @@
 			"*.patch.[0-9]": "diff",
 			"autogen.sh": "perl"
 		},
-		"C_Cpp.default.compileCommands": "/Users/lu/可点office/compile_commands.json",
+		"C_Cpp.default.compileCommands": "/Volumes/MobileDrive/devpc/可点office/compile_commands.json",
 		// only used if the file doesn't match anything in the compile_commands.json - aka externals
 		// libxml includes just added as example/for reference
 		"C_Cpp.default.includePath": [
-			"/Users/lu/可点office/workdir/UnpackedTarball/**",
+			"/Volumes/MobileDrive/devpc/可点office/workdir/UnpackedTarball/**",
 			"/usr/include/libxml2/"
 		],
 		"C_Cpp.default.browse.limitSymbolsToIncludedHeaders": true,
@@ -179,7 +179,7 @@
 			}
 		],
 		"options": {
-			"cwd": "/Users/lu/可点office"
+			"cwd": "/Volumes/MobileDrive/devpc/可点office"
 		},
 		"tasks": [
 			{
@@ -219,7 +219,7 @@
 				"command": "rm",
 				"args": [
 					"-rf",
-					"/Users/lu/可点office/workdir/vs-code-temporary-user-profile"
+					"/Volumes/MobileDrive/devpc/可点office/workdir/vs-code-temporary-user-profile"
 				],
 				"group": "none",
 				"dependsOn": [
@@ -235,10 +235,10 @@
 				"name": "run in debugger after make",
 				"type": "cppdbg",
 				"request": "launch",
-				"program": "/Users/lu/可点office/instdir/可圈办公.app/Contents/program/soffice.bin",
+				"program": "/Volumes/MobileDrive/devpc/可点office/instdir/可圈办公.app/Contents/program/soffice.bin",
 				"args": [],
 				"stopAtEntry": false,
-				"cwd": "/Users/lu/可点office",
+				"cwd": "/Volumes/MobileDrive/devpc/可点office",
 				"environment": [
 					{
 						// added in disabled form for convenience/as an example
@@ -260,18 +260,18 @@
 						},
 						{
 							"description": "Mark pretty-printers (in solenv/gdb) safe",
-							"text": "add-auto-load-safe-path /Users/lu/kdoffice-src/solenv/gdb",
+							"text": "add-auto-load-safe-path /Volumes/MobileDrive/devpc/kdoffice-src/solenv/gdb",
 							"ignoreFailures": true
 						},
 						{
 							"description": "Mark pretty-printers bootstrap (in instdir/program) safe",
-							"text": "add-auto-load-safe-path /Users/lu/可点office/instdir/可圈办公.app/Contents",
+							"text": "add-auto-load-safe-path /Volumes/MobileDrive/devpc/可点office/instdir/可圈办公.app/Contents",
 							"ignoreFailures": true
 						}
 					]
 				},
 				"osx": {
-					"program": "/Users/lu/可点office/instdir/可圈办公.app/Contents/MacOS/soffice",
+					"program": "/Volumes/MobileDrive/devpc/可点office/instdir/可圈办公.app/Contents/MacOS/soffice",
 					"MIMode": "lldb",
 					"setupCommands": [
 						{
@@ -294,12 +294,12 @@
 				//	"preLaunchTask": "remove profile-dir",
 				"type": "cppdbg",
 				"request": "launch",
-				"program": "/Users/lu/可点office/instdir/可圈办公.app/Contents/program/soffice.bin",
+				"program": "/Volumes/MobileDrive/devpc/可点office/instdir/可圈办公.app/Contents/program/soffice.bin",
 				"args": [
-					"-env:UserInstallation=file:////Users/lu/可点office/workdir/vs-code-temporary-user-profile"
+					"-env:UserInstallation=file:////Volumes/MobileDrive/devpc/可点office/workdir/vs-code-temporary-user-profile"
 				],
 				"stopAtEntry": false,
-				"cwd": "/Users/lu/可点office",
+				"cwd": "/Volumes/MobileDrive/devpc/可点office",
 				"environment": [
 					{
 						"name": "SAL_LOG_DISABLED",
@@ -318,18 +318,18 @@
 						},
 						{
 							"description": "Mark pretty-printers (in solenv/gdb) safe",
-							"text": "add-auto-load-safe-path /Users/lu/kdoffice-src/solenv/gdb",
+							"text": "add-auto-load-safe-path /Volumes/MobileDrive/devpc/kdoffice-src/solenv/gdb",
 							"ignoreFailures": true
 						},
 						{
 							"description": "Mark pretty-printers bootstrap (in instdir/program) safe",
-							"text": "add-auto-load-safe-path /Users/lu/可点office/instdir/可圈办公.app/Contents",
+							"text": "add-auto-load-safe-path /Volumes/MobileDrive/devpc/可点office/instdir/可圈办公.app/Contents",
 							"ignoreFailures": true
 						}
 					]
 				},
 				"osx": {
-					"program": "/Users/lu/可点office/instdir/可圈办公.app/Contents/MacOS/soffice",
+					"program": "/Volumes/MobileDrive/devpc/可点office/instdir/可圈办公.app/Contents/MacOS/soffice",
 					"MIMode": "lldb",
 					"setupCommands": [
 						{

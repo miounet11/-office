@@ -1,2 +1,2 @@
-module_directory:=/Users/lu/kdoffice-src/xmlsecurity/
+module_directory:=/Volumes/MobileDrive/devpc/kdoffice-src/xmlsecurity/
 include $(module_directory)/../solenv/gbuild/partial_build.mk

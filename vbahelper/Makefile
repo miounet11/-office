@@ -1,2 +1,2 @@
-module_directory:=/Users/lu/kdoffice-src/vbahelper/
+module_directory:=/Volumes/MobileDrive/devpc/kdoffice-src/vbahelper/
 include $(module_directory)/../solenv/gbuild/partial_build.mk

@@ -1,2 +1,2 @@
-module_directory:=/Users/lu/kdoffice-src/external/libetonyek/
+module_directory:=/Volumes/MobileDrive/devpc/kdoffice-src/external/libetonyek/
 include $(module_directory)/../../solenv/gbuild/partial_build.mk

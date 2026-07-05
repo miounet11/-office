@@ -1,2 +1,2 @@
-module_directory:=/Users/lu/kdoffice-src/slideshow/
+module_directory:=/Volumes/MobileDrive/devpc/kdoffice-src/slideshow/
 include $(module_directory)/../solenv/gbuild/partial_build.mk

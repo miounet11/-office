@@ -16,8 +16,8 @@ build_goal:=$(if $(filter build uicheck,$(MAKECMDGOALS)),build)\
  $(if $(filter check,$(MAKECMDGOALS)),unitcheck slowcheck subsequentcheck $(if $(filter Linux, $(shell uname)), uicheck))\
  $(filter build-l10n-only build-non-l10n-only debugrun help showmodules translations $(gb_Top_MODULE_CHECK_TARGETS) check packageinfo gbuildtojson,$(MAKECMDGOALS))
 
-SRCDIR := /Users/lu/kdoffice-src
-BUILDDIR := /Users/lu/可点office
+SRCDIR := /Volumes/MobileDrive/devpc/kdoffice-src
+BUILDDIR := /Volumes/MobileDrive/devpc/可点office
 COMPILER_PLUGINS := 
 GIT_BUILD := $(if $(wildcard $(SRCDIR)/.git),T)
 
@@ -396,6 +396,11 @@ ifeq ($(OS),MACOSX)
 # Remove the python.o object file which is weird and interferes with app store uploading
 # And with it removed, presumably the other stuff in the Python lib/python3.3/config-3.3m probably does not make sense either.
 	rm -rf $(TESTINSTALLDIR)/$(PRODUCTNAME_WITHOUT_SPACES).app/Contents/Frameworks/LibreOfficePython.framework/Versions/[1-9]*/lib/python[1-9]*/config-[1-9]*
+	#
+	# kqoffice_ailo.dylib links comphelper which is merged into libmergedlo;
+	# redirect the install_name so dlopen at UNO component load time succeeds.
+		$(if $(filter MACOSX,$(OS)),install_name_tool -change @loader_path/libcomphelper.dylib @loader_path/libmergedlo.dylib $(TESTINSTALLDIR)/$(PRODUCTNAME_WITHOUT_SPACES).app/Contents/Frameworks/libkqoffice_ailo.dylib 2>/dev/null || true,)
+
 #
 ifneq ($(ENABLE_MACOSX_SANDBOX),)
 

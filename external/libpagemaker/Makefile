@@ -1,2 +1,2 @@
-module_directory:=/Users/lu/kdoffice-src/external/libpagemaker/
+module_directory:=/Volumes/MobileDrive/devpc/kdoffice-src/external/libpagemaker/
 include $(module_directory)/../../solenv/gbuild/partial_build.mk

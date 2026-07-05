@@ -76,16 +76,16 @@ validators = [
         "asset": "officeotron-0.8.8.jar",
         "wrapper": "bin/officeotron.sh",
         "scope": "ODF package best-practice checks",
-        "source": "not acquired",
-        "trust": "No trusted HTTPS release artifact for exact 0.8.8 filename was found locally or from project/vendor release sources in this round.",
+        "source": "https://dev-www.libreoffice.org/extern/officeotron-0.8.8.jar",
+        "trust": "LibreOffice upstream download.lst SHA-256; MPL 1.1 per upstream build metadata.",
     },
     {
         "name": "veraPDF",
         "asset": "verapdf-cli-1.29.0.jar",
         "wrapper": "bin/verapdf.sh",
         "scope": "PDF/PDF-A conformance checks",
-        "source": "not acquired",
-        "trust": "The vendor download page currently exposes installer archives, but no trusted exact verapdf-cli-1.29.0.jar artifact/checksum was found in this round.",
+        "source": "https://dev-www.libreoffice.org/extern/verapdf-cli-1.29.0.jar",
+        "trust": "LibreOffice upstream download.lst SHA-256; vendor CLI jar acquired via project extern mirror.",
     },
 ]
 

@@ -1,2 +1,2 @@
-module_directory:=/Users/lu/kdoffice-src/dictionaries/
+module_directory:=/Volumes/MobileDrive/devpc/kdoffice-src/dictionaries/
 include $(module_directory)/../solenv/gbuild/partial_build.mk

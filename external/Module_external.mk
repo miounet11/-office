@@ -1,1 +1,1 @@
-/Users/lu/kdoffice-src/external/Module_external.mk
+/Volumes/MobileDrive/devpc/kdoffice-src/external/Module_external.mk

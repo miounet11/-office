@@ -20,6 +20,9 @@
 __pycache__/
 *.pyc
 
+# Local translation build artifacts
+/messages.mo
+
 # Local build artifacts / backup dirs / accidental bare filenames
 /.acos/
 /.git.bak-*/

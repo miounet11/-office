@@ -1,2 +1,2 @@
-module_directory:=/Users/lu/kdoffice-src/external/lpsolve/
+module_directory:=/Volumes/MobileDrive/devpc/kdoffice-src/external/lpsolve/
 include $(module_directory)/../../solenv/gbuild/partial_build.mk

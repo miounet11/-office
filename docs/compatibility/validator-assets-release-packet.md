@@ -2,11 +2,11 @@
 
 Purpose: make strict validator-readiness auditable without faking readiness. Assets must live in `/Users/lu/kdoffice-src/external/tarballs` unless `KDOFFICE_TARBALLS_DIR` is explicitly set.
 
-## Outcome (2026-05-07)
+## Outcome (2026-07-05)
 
-Decision: **defer**.
+Decision: **ready**.
 
-Current strict readiness is an honest fail (1/3 validators ready). `officeotron-0.8.8.jar` and `verapdf-cli-1.29.0.jar` are still missing, so strict validator readiness and strict-validator compatibility roundtrip remain blocked.
+All three validator jars are present under `external/tarballs` with LibreOffice upstream SHA-256 checksums verified. Wrapper scripts `bin/odfvalidator.sh`, `bin/officeotron.sh`, and `bin/verapdf.sh` are executable, resolve `KDOFFICE_TARBALLS_DIR`, and pass strict wrapper smoke (`bin/validator-readiness.sh --strict`).
 
 ## Required assets snapshot
 

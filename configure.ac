@@ -1,1 +1,1 @@
-/Users/lu/kdoffice-src/configure.ac
+/Volumes/MobileDrive/devpc/kdoffice-src/configure.ac

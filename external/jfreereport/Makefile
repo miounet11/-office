@@ -1,2 +1,2 @@
-module_directory:=/Users/lu/kdoffice-src/external/jfreereport/
+module_directory:=/Volumes/MobileDrive/devpc/kdoffice-src/external/jfreereport/
 include $(module_directory)/../../solenv/gbuild/partial_build.mk

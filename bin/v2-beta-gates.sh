@@ -2,6 +2,19 @@
 set -euo pipefail
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+resolve_app_bundle() {
+    if [[ -n "${KDOFFICE_APP_BUNDLE:-}" ]]; then
+        printf '%s' "$KDOFFICE_APP_BUNDLE"
+        return 0
+    fi
+    if [[ -d "$repo_root/instdir/可圈办公.app" ]]; then
+        printf '%s' "$repo_root/instdir/可圈办公.app"
+        return 0
+    fi
+    printf '%s' "$repo_root/test-install/可圈办公.app"
+}
+
 run_name="${1:-v2-beta-$(date '+%Y%m%d-%H%M%S')}"
 report_path="$repo_root/tmp/v2-beta-gates/$run_name.md"
 json_report_path="$repo_root/tmp/v2-beta-gates/$run_name.json"
@@ -134,13 +147,14 @@ run_live_accessibility_gate() {
     local proof="$repo_root/tmp/product-completion/live-accessibility-proof.md"
     local validation="$repo_root/tmp/product-completion/live-accessibility-validation.md"
     local validation_json="$repo_root/tmp/product-completion/live-accessibility-validation.json"
-    local expected_app="${KDOFFICE_APP_BUNDLE:-$repo_root/test-install/可圈办公.app}"
+    local expected_app
+    expected_app="$(resolve_app_bundle)"
     local proof_rel="${proof#$repo_root/}"
     local validation_rel="${validation#$repo_root/}"
     local validation_json_rel="${validation_json#$repo_root/}"
     local command
     command="$(format_command "$repo_root/bin/workbench-a11y-live-validate.sh" --proof "$proof" --output "$validation" --json-output "$validation_json" --expected-app "$expected_app")"
-    local action='review tmp/product-completion/live-accessibility-checklist.md or generate it with bin/workbench-a11y-live.sh --checklist tmp/product-completion/live-accessibility-checklist.md, then complete bin/workbench-a11y-live.sh --resume --app /Users/lu/可点office/test-install/可圈办公.app --output tmp/product-completion/live-accessibility-proof.md with 24/24 pass evidence, validate tmp/product-completion/live-accessibility-validation.json, and rerun beta gates.'
+    local action="run bin/workbench-a11y-live-automated.sh --app $expected_app --output tmp/product-completion/live-accessibility-proof.md or complete bin/workbench-a11y-live.sh --resume --app $expected_app --output tmp/product-completion/live-accessibility-proof.md with 24/24 pass evidence, then validate tmp/product-completion/live-accessibility-validation.json and rerun beta gates."
 
     if "$repo_root/bin/workbench-a11y-live-validate.sh" --proof "$proof" --output "$validation" --json-output "$validation_json" --expected-app "$expected_app" > "$repo_root/tmp/v2-beta-gates/$run_name.workbench-live-accessibility.log" 2>&1; then
         record_step_result workbench-live-accessibility passed beta-hard "$command" "$validation_rel" ""

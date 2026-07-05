@@ -1,2 +1,2 @@
-module_directory:=/Users/lu/kdoffice-src/binaryurp/
+module_directory:=/Volumes/MobileDrive/devpc/kdoffice-src/binaryurp/
 include $(module_directory)/../solenv/gbuild/partial_build.mk
