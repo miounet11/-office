@@ -15,3 +15,18 @@ pptx	sd/qa/unit/data/pptx/tdf144092-tableHeight.pptx	Impress table height risk
 pptx	sd/qa/unit/data/pptx/pres-with-notes.pptx	Impress speaker notes risk
 pptx	sd/qa/unit/data/pptx/tdf148478_transitionMusic.pptx	Impress transition media risk
 pptx	sd/qa/unit/data/pptx/smartart-vertical-block-list.pptx	Impress SmartArt vertical block list risk
+pptx	sd/qa/unit/data/pptx/smartart-cycle.pptx	Impress SmartArt cycle risk
+pptx	sd/qa/unit/data/pptx/tdf104792-smart-art-animation.pptx	Impress SmartArt animation risk
+pptx	sd/qa/unit/data/pptx/tableBorderLineStyle.pptx	Impress table border line style risk
+pptx	sd/qa/unit/data/pptx/ShapePlusImage.pptx	Impress shape plus image risk
+pptx	sd/qa/unit/data/pptx/accent-color.pptx	Impress accent color theme risk
+pptx	sd/qa/unit/data/pptx/hyperlinktest.pptx	Impress hyperlink risk
+pptx	sd/qa/unit/data/pptx/group.pptx	Impress grouped shape risk
+pptx	sd/qa/unit/data/pptx/narration.pptx	Impress narration audio risk
+pptx	sd/qa/unit/data/pptx/multiplelayoutfooter.pptx	Impress multi-layout footer risk
+pptx	sd/qa/unit/data/pptx/tdf149551_SmartArt_Pie.pptx	Impress SmartArt pie risk
+pptx	sd/qa/unit/data/pptx/bulletColor.pptx	Impress bullet color risk
+pptx	sd/qa/unit/data/pptx/customxml.pptx	Impress custom XML risk
+pptx	sd/qa/unit/data/pptx/tdf142716.pptx	Impress regression deck risk
+pptx	sd/qa/unit/data/TextFittingComparisonWithMSO_2.pptx	Impress MSO text fitting comparison risk
+pptx	sd/qa/unit/data/pptx/tdf148966.pptx	Impress shape formatting regression risk

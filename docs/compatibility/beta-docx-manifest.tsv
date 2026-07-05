@@ -15,3 +15,18 @@ docx	sw/qa/extras/uiwriter/data/tdf108791_comments_with_tracked_changes.docx	Wri
 docx	sw/qa/core/exportdata/ooxml/pass/sdt-in-shape-with-textbox.docx	Writer shape textbox and SDT export risk
 docx	sw/qa/extras/ooxmlexport/data/tdf118812_tableStyles-comprehensive.docx	Writer comprehensive table style risk
 docx	sw/qa/core/layout/data/redline-table.docx	Writer redline table layout risk
+docx	sw/qa/core/data/ooxml/pass/fdo79131.docx	Writer OOXML pass sample
+docx	sw/qa/core/data/ooxml/pass/tdf108272.docx	Writer OOXML pass sample
+docx	sw/qa/core/data/ooxml/pass/liststyle-gridbefore.docx	Writer list style grid risk
+docx	sw/qa/extras/ooxmlexport/data/table-theme-preservation.docx	Writer table theme preservation risk
+docx	sw/qa/extras/ooxmlexport/data/comment-annotationref.docx	Writer comment annotation risk
+docx	sw/qa/core/layout/data/floattable-widow.docx	Writer floating table widow/orphan risk
+docx	sw/qa/core/layout/data/table-fly-overlap.docx	Writer table fly overlap layout risk
+docx	sw/qa/extras/ooxmlexport/data/section_break_after_table.docx	Writer section break after table risk
+docx	sw/qa/writerfilter/ooxml/data/table-wafter-row-height.docx	Writer table row height import risk
+docx	sw/qa/core/header_footer/data/first-header-footer.docx	Writer first-page header/footer risk
+docx	sw/qa/extras/ooxmlexport/data/image-comment-at-char.docx	Writer inline image comment risk
+docx	sw/qa/core/layout/data/ignore-top-margin-table.docx	Writer top-margin table layout risk
+docx	sw/qa/extras/ooxmlexport/data/tdf117297_tableStyle.docx	Writer table style export risk
+docx	sw/qa/core/data/ooxml/pass/tdf92157-1-minimized.docx	Writer minimized OOXML regression sample
+docx	sw/qa/core/data/ooxml/pass/fdo80514.docx	Writer OOXML pass sample

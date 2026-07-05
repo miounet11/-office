@@ -15,3 +15,18 @@ xlsx	sc/qa/unit/data/xlsx/pivot-table/pivotcompact.xlsx	Calc pivot compact layou
 xlsx	sc/qa/unit/data/xlsx/pivottable_date_field_filter.xlsx	Calc pivot date filter risk
 xlsx	sc/qa/unit/data/xlsx/pivot_dark1.xlsx	Calc pivot theme color risk
 xlsx	sc/qa/unit/data/xlsx/hyperlink_formula.xlsx	Calc hyperlink formula risk
+xlsx	sc/qa/unit/data/xlsx/Sparklines.xlsx	Calc sparkline risk
+xlsx	sc/qa/unit/data/xlsx/cond_format_formula_listener.xlsx	Calc conditional-format formula risk
+xlsx	sc/qa/unit/data/xlsx/CalcThemeTest.xlsx	Calc theme color risk
+xlsx	sc/qa/unit/data/xlsx/PivotTable_CachedDefinitionAndDataInSync.xlsx	Calc pivot cache sync risk
+xlsx	sc/qa/unit/data/xlsx/autofilter-colors.xlsx	Calc autofilter color risk
+xlsx	sc/qa/unit/data/xlsx/ProtecteSheet1234Pass.xlsx	Calc protected sheet risk
+xlsx	sc/qa/unit/data/xlsx/built-in_ranges.xlsx	Calc built-in named range risk
+xlsx	sc/qa/unit/data/xlsx/Test_ThemeColor_Text_Background_Border.xlsx	Calc theme text/background/border risk
+xlsx	sc/qa/unit/data/xlsx/pivot_table_first_header_row.xlsx	Calc pivot first-header-row risk
+xlsx	sc/qa/unit/data/xlsx/pivottable_bool_field_filter.xlsx	Calc pivot boolean filter risk
+xlsx	sc/qa/uitest/data/tdf141547.xlsx	Calc UI regression workbook risk
+xlsx	sc/qa/unit/data/xlsx/RowImportCellStyleIssue.xlsx	Calc row import cell style risk
+xlsx	sc/qa/unit/data/xlsx/autofilternamedrange.xlsx	Calc autofilter named range risk
+xlsx	sc/qa/unit/data/xlsx/pivottable_long_text.xlsx	Calc pivot long-text field risk
+xlsx	sc/qa/unit/data/xlsx/pivottable_double_field_filter.xlsx	Calc pivot double-field filter risk
