@@ -113,6 +113,7 @@ run_step service-policy-enforcement alpha-hard "$repo_root/bin/plugin-manifest-v
 run_step workbench-accessibility beta-blocker-advisory "$repo_root/bin/workbench-accessibility-check.sh" "$repo_root/tmp/workbench-accessibility-check.md"
 run_step gui-smoke-timing alpha-advisory "$repo_root/bin/gui-smoke-timing.sh" --mode startcenter --wait 12 --timeout 20 --max-elapsed 20 --run-name "$run_name-gui-budget"
 run_step compatibility-layout-evidence alpha-advisory "$repo_root/bin/compatibility-layout-evidence.sh" --run-dir "$repo_root/tmp/compatibility-runs/$run_name-compatibility-smoke" --report "$repo_root/tmp/compatibility-layout-evidence.md"
+run_step compatibility-visual-evidence alpha-advisory "$repo_root/bin/compatibility-visual-evidence.sh" --run-dir "$repo_root/tmp/compatibility-runs/$run_name-compatibility-smoke" --report "$repo_root/tmp/compatibility-visual-evidence/$run_name/report.md"
 run_step v2-dashboard alpha-hard "$repo_root/bin/v2-upgrade-dashboard.sh" "$repo_root/tmp/v2-upgrade-dashboard.md"
 
 {

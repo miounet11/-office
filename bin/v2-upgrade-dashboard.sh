@@ -116,6 +116,7 @@ script_files = [
     "bin/compatibility-lab.sh",
     "bin/compatibility-roundtrip.sh",
     "bin/compatibility-layout-evidence.sh",
+    "bin/compatibility-visual-evidence.sh",
     "bin/v2-p0-gates.sh",
     "bin/v2-beta-gates.sh",
     "bin/v2-upgrade-dashboard.sh",
@@ -366,6 +367,7 @@ coverage_checks = [
     ("Auto-discovered Office-format smoke", "bin/compatibility-roundtrip.sh", "bin/compatibility-roundtrip.sh --format smoke --limit <n> --run-name <name>"),
     ("Curated Office-format smoke manifest with fidelity heuristics", "docs/compatibility/smoke-manifest.tsv", "bin/compatibility-roundtrip.sh --manifest docs/compatibility/smoke-manifest.tsv --run-name <name>"),
     ("Compatibility visual/layout evidence seed", "bin/compatibility-layout-evidence.sh", "bin/compatibility-layout-evidence.sh --report tmp/compatibility-layout-evidence.md"),
+    ("Compatibility PDF/PNG visual evidence (P2-01)", "bin/compatibility-visual-evidence.sh", "bin/compatibility-visual-evidence.sh --run-dir tmp/compatibility-runs/<run-name>-compatibility-smoke"),
     ("Beta hard gate wrapper", "bin/v2-beta-gates.sh", "bin/v2-beta-gates.sh <run-name>"),
 ]
 for name, rel, command in coverage_checks:
