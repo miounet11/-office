@@ -1,0 +1,17 @@
+# Beta PPTX representative lane (Impress risks: media, fonts, text fitting, smart art).
+# Columns: format<TAB>source-relative-path<TAB>scenario note
+pptx	sd/qa/filter/eppt/data/custom-shape-bitmap-fill.pptx	Impress custom shape fill baseline
+pptx	sd/qa/filter/eppt/data/video-loop.pptx	Impress media loop risk
+pptx	sd/qa/uitest/data/embedded.pptx	Impress embedded object risk
+pptx	sd/qa/uitest/data/tdf144943.pptx	Impress UI regression sample
+pptx	sd/qa/unit/data/BoldonseFontEmbedded.pptx	Impress embedded font risk
+pptx	sd/qa/unit/data/TextDistancesInsets1.pptx	Impress text distance risk
+pptx	sd/qa/unit/data/TextDistancesInsets2.pptx	Impress text distance risk [alpha-known-defect: fo:padding-bottom serialization regex mismatch in odp roundtrip]
+pptx	sd/qa/unit/data/TextDistancesInsets3.pptx	Impress text distance risk
+pptx	sd/qa/unit/data/TextFittingComparisonWithMSO_1.pptx	Impress MSO text fitting risk
+pptx	sd/qa/unit/data/pptx/chart_pt_color_bg1.pptx	Impress chart point color risk
+pptx	sd/qa/unit/data/pptx/smartart-org-chart.pptx	Impress SmartArt org chart risk
+pptx	sd/qa/unit/data/pptx/tdf144092-tableHeight.pptx	Impress table height risk
+pptx	sd/qa/unit/data/pptx/pres-with-notes.pptx	Impress speaker notes risk
+pptx	sd/qa/unit/data/pptx/tdf148478_transitionMusic.pptx	Impress transition media risk
+pptx	sd/qa/unit/data/pptx/smartart-vertical-block-list.pptx	Impress SmartArt vertical block list risk

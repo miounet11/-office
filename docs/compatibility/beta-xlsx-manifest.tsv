@@ -1,0 +1,17 @@
+# Beta XLSX representative lane (Calc risks: filters, charts, pivot, formulas).
+# Columns: format<TAB>source-relative-path<TAB>scenario note
+xlsx	sc/qa/extras/testdocuments/forcepoint97.xlsx	Calc import/export baseline
+xlsx	sc/qa/uitest/data/autofilter/tdf116818.xlsx	Calc autofilter sample
+xlsx	sc/qa/uitest/data/autofilter/tdf137626.xlsx	Calc autofilter sample
+xlsx	sc/qa/uitest/data/autofilter/tdf140469.xlsx	Calc autofilter sample
+xlsx	sc/qa/uitest/data/autofilter/tdf140968.xlsx	Calc autofilter sample
+xlsx	sc/qa/uitest/data/autofilter/tdf142579.xlsx	Calc autofilter sample
+xlsx	sc/qa/uitest/data/autofilter/tdf142580.xlsx	Calc autofilter sample
+xlsx	sc/qa/uitest/data/autofilter/time_value.xlsx	Calc autofilter time value risk
+xlsx	sc/qa/uitest/data/hashIncompatible.xlsx	Calc hash compatibility risk
+xlsx	sc/qa/unit/data/xlsx/chart_hyperlink.xlsx	Calc chart hyperlink risk
+xlsx	sc/qa/unit/data/xlsx/pivottable_tabular_mode.xlsx	Calc pivot table tabular mode risk
+xlsx	sc/qa/unit/data/xlsx/pivot-table/pivotcompact.xlsx	Calc pivot compact layout risk
+xlsx	sc/qa/unit/data/xlsx/pivottable_date_field_filter.xlsx	Calc pivot date filter risk
+xlsx	sc/qa/unit/data/xlsx/pivot_dark1.xlsx	Calc pivot theme color risk
+xlsx	sc/qa/unit/data/xlsx/hyperlink_formula.xlsx	Calc hyperlink formula risk

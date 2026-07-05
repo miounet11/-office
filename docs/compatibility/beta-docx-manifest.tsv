@@ -1,0 +1,17 @@
+# Beta DOCX representative lane (Writer risks: tables, comments, layout, export).
+# Columns: format<TAB>source-relative-path<TAB>scenario note
+docx	sw/qa/core/attr/data/attr-set.docx	Writer attributes baseline
+docx	sw/qa/core/data/ooxml/pass/fdo63164-1.docx	Writer OOXML pass sample
+docx	sw/qa/core/data/ooxml/pass/fdo64256.docx	Writer OOXML pass sample
+docx	sw/qa/core/data/ooxml/pass/fdo73608-1.docx	Writer OOXML pass sample
+docx	sw/qa/core/data/ooxml/pass/fdo73608-2.docx	Writer OOXML pass sample
+docx	sw/qa/core/data/ooxml/pass/fdo78885.docx	Writer OOXML pass sample
+docx	sw/qa/core/data/ooxml/pass/fdo78904_fileHang.docx	Writer file-hang regression sample
+docx	sw/qa/core/data/ooxml/pass/fdo78906.docx	Writer OOXML pass sample
+docx	sw/qa/core/data/ooxml/pass/fdo79129.docx	Writer OOXML pass sample
+docx	sw/qa/extras/ooxmlexport/data/table-borders.docx	Writer table borders export risk
+docx	sw/qa/core/layout/data/floattable-header.docx	Writer floating table header/footer layout risk
+docx	sw/qa/extras/uiwriter/data/tdf108791_comments_with_tracked_changes.docx	Writer comments and tracked-change risk
+docx	sw/qa/core/exportdata/ooxml/pass/sdt-in-shape-with-textbox.docx	Writer shape textbox and SDT export risk
+docx	sw/qa/extras/ooxmlexport/data/tdf118812_tableStyles-comprehensive.docx	Writer comprehensive table style risk
+docx	sw/qa/core/layout/data/redline-table.docx	Writer redline table layout risk
