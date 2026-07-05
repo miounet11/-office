@@ -22,8 +22,10 @@ if not workdir.is_dir():
 replacements = [
     ("/Users/lu/可点office", str(repo)),
     ("/private/tmp/kdoffice-ascii", ascii_link),
-    (ascii_link, str(repo)),  # normalize ASCII alias back to canonical BUILDDIR
 ]
+
+# postprocess registry *.list must keep ASCII paths for xsltproc on macOS.
+registry_list_dir = workdir / "CustomTarget" / "postprocess" / "registry"
 
 skip_dirs = {
     "CxxObject", "ObjCxxObject", "LinkTarget", "Headers", "Dep",
@@ -46,6 +48,22 @@ for path in workdir.rglob("*"):
     if path.suffix not in text_suffixes and path.name not in {
         "buildid", "config.status", "repository.mk",
     }:
+        continue
+    if registry_list_dir in path.parents and path.suffix == ".list":
+        # Keep xsltproc-safe ASCII paths inside postprocess registry lists.
+        ascii_workdir = f"{ascii_link}/workdir"
+        try:
+            data = path.read_text(encoding="utf-8", errors="surrogateescape")
+        except OSError:
+            continue
+        new = data
+        for old in (str(repo / "workdir"), "/Users/lu/可点office/workdir"):
+            new = new.replace(old, ascii_workdir)
+        new = new.replace(f"{ascii_workdir}/workdir", ascii_workdir)
+        if new != data:
+            path.write_text(new, encoding="utf-8", errors="surrogateescape")
+            fixed_files += 1
+            fixed_hits += 1
         continue
     try:
         data = path.read_text(encoding="utf-8", errors="surrogateescape")
