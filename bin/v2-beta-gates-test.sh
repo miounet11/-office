@@ -18,6 +18,9 @@ chmod +x "$fake_repo/bin/v2-beta-gates.sh"
 chmod +x "$fake_repo/bin/workbench-a11y-live-validate.sh"
 
 touch "$fake_repo/docs/compatibility/smoke-manifest.tsv"
+touch "$fake_repo/docs/compatibility/beta-manifest.tsv"
+touch "$fake_repo/docs/compatibility/beta-odf-manifest.tsv"
+touch "$fake_repo/docs/compatibility/beta-pdf-import-manifest.tsv"
 touch "$fake_repo/docs/product/beta-blocker-remediation-protocol.md"
 cat > "$fake_repo/docs/accessibility/workbench-accessibility-evidence-m2-06.md" <<'EOF'
 # accessibility evidence
@@ -40,6 +43,7 @@ write_stub "$fake_repo/bin/compatibility-roundtrip.sh" 'printf "roundtrip strict
 write_stub "$fake_repo/bin/workbench-accessibility-check.sh" 'exit 0'
 write_stub "$fake_repo/bin/gui-smoke-timing.sh" 'exit 0'
 write_stub "$fake_repo/bin/compatibility-layout-evidence.sh" 'exit 0'
+write_stub "$fake_repo/bin/compatibility-visual-evidence.sh" 'exit 0'
 write_stub "$fake_repo/bin/source-hygiene-report.sh" 'printf "source hygiene failed\n" >&2; exit 1'
 write_stub "$fake_repo/bin/plugin-manifest-validator.sh" 'exit 0'
 
@@ -114,6 +118,9 @@ failed = [item["key"] for item in payload["failed_blockers"]]
 expected = [
     "validator-readiness-strict",
     "compatibility-roundtrip",
+    "compatibility-roundtrip-beta-matrix",
+    "compatibility-roundtrip-beta-odf",
+    "compatibility-roundtrip-beta-pdf-import",
     "source-hygiene-strict",
     "workbench-live-accessibility",
 ]
