@@ -1,0 +1,12 @@
+# Beta PDF import validation lane (advisory veraPDF; corpus PDFs are not PDF/A).
+# Run without --strict-validators. Strict veraPDF/PDF-A applies to export evidence, not import corpus.
+# Columns: format<TAB>source-relative-path<TAB>scenario note
+pdf	sw/qa/extras/pdf/data/PDFOnly.pdf	Writer PDF import baseline
+pdf	sw/qa/extras/pdf/data/Hybrid_AdditionalStreamsOnly.pdf	Writer PDF hybrid stream risk
+pdf	sw/qa/extras/uiwriter/data/hello-world.pdf	Writer PDF simple text risk
+pdf	sd/qa/unit/data/pdf/sample.pdf	Impress PDF import baseline
+pdf	sd/qa/unit/data/pdf/multipage.pdf	Impress PDF multipage risk
+pdf	sd/qa/unit/data/pdf/SampleSlideDeck.pdf	Impress PDF slide deck risk
+pdf	sd/qa/unit/data/pdf/BasicHindi.pdf	Impress PDF CJK glyph risk
+pdf	sd/qa/unit/data/pdf/differentfonts.pdf	Impress PDF mixed font risk
+pdf	sd/qa/unit/data/pdf/GrayscaleImageUnderInvisibleTest.pdf	Impress PDF image/grayscale risk

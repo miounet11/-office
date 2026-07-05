@@ -1,0 +1,17 @@
+# Beta native ODF control lane (strict roundtrip + ODF validators).
+# Columns: format<TAB>source-relative-path<TAB>scenario note
+odt	sw/qa/core/accessibilitycheck/data/AccessibilityTests1.odt	Writer native ODF accessibility baseline
+odt	sw/qa/core/accessibilitycheck/data/TableFormattingTest.odt	Writer native ODF table formatting risk
+odt	sw/qa/core/data/odt/pass/tdf112017.odt	Writer native ODF pass sample
+odt	sw/qa/core/data/odt/pass/tdf97879.odt	Writer native ODF pass sample
+odt	sw/qa/core/header_footer/data/SimpleLeftRight.odt	Writer native ODF header/footer risk
+ods	sc/qa/extras/testdocuments/BaseForHTMLExport.ods	Calc native ODF HTML export baseline
+ods	sc/qa/extras/testdocuments/ForEachInSelection.ods	Calc native ODF selection iteration risk
+ods	sc/qa/extras/testdocuments/cond_format_merge.ods	Calc native ODF conditional format merge risk
+ods	sc/qa/extras/testdocuments/scdatapilotfieldobj.ods	Calc native ODF data pilot field risk
+ods	sc/qa/extras/testdocuments/tdf161948_NaturalSort.ods	Calc native ODF natural sort risk
+odp	sd/qa/uitest/data/findReplace.odp	Impress native ODF find/replace baseline
+odp	sd/qa/uitest/data/tdf119246.odp	Impress native ODF UI regression sample
+odp	sd/qa/unit/data/odp/Table_with_Cell_Fill.odp	Impress native ODF table cell fill risk
+odp	sd/qa/unit/data/odp/slide-video-thumbnail.odp	Impress native ODF media thumbnail risk
+odp	sd/qa/unit/data/AllTransitions.odp	Impress native ODF transitions risk

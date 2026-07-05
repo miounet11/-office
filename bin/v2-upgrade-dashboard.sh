@@ -368,6 +368,8 @@ coverage_checks = [
     ("Curated Office-format smoke manifest with fidelity heuristics", "docs/compatibility/smoke-manifest.tsv", "bin/compatibility-roundtrip.sh --manifest docs/compatibility/smoke-manifest.tsv --run-name <name>"),
     ("Compatibility visual/layout evidence seed", "bin/compatibility-layout-evidence.sh", "bin/compatibility-layout-evidence.sh --report tmp/compatibility-layout-evidence.md"),
     ("Compatibility PDF/PNG visual evidence (P2-01)", "bin/compatibility-visual-evidence.sh", "bin/compatibility-visual-evidence.sh --run-dir tmp/compatibility-runs/<run-name>-compatibility-smoke"),
+    ("Beta native ODF control matrix", "docs/compatibility/beta-odf-manifest.tsv", "bin/compatibility-roundtrip.sh --manifest docs/compatibility/beta-odf-manifest.tsv --strict-validators --run-name <name>"),
+    ("Beta PDF import matrix (advisory veraPDF)", "docs/compatibility/beta-pdf-import-manifest.tsv", "bin/compatibility-roundtrip.sh --manifest docs/compatibility/beta-pdf-import-manifest.tsv --run-name <name>"),
     ("Beta hard gate wrapper", "bin/v2-beta-gates.sh", "bin/v2-beta-gates.sh <run-name>"),
 ]
 for name, rel, command in coverage_checks:
