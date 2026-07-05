@@ -5,7 +5,14 @@
 set -euo pipefail
 
 REPO="$(cd "$(dirname "$0")/.." && pwd)"
-SOFFICE="$REPO/test-install/可圈办公.app/Contents/MacOS/soffice"
+SRC_ROOT="${KDOFFICE_SRC_ROOT:-/Volumes/MobileDrive/devpc/kdoffice-src}"
+if [[ -x "$REPO/test-install/可圈办公.app/Contents/MacOS/soffice" ]]; then
+  SOFFICE="$REPO/test-install/可圈办公.app/Contents/MacOS/soffice"
+elif [[ -x "$REPO/instdir/可圈办公.app/Contents/MacOS/soffice" ]]; then
+  SOFFICE="$REPO/instdir/可圈办公.app/Contents/MacOS/soffice"
+else
+  SOFFICE="$REPO/test-install/可圈办公.app/Contents/MacOS/soffice"
+fi
 VERAPDF="$REPO/bin/verapdf.sh"
 RUN_NAME=""
 SAMPLES_ARG=""
@@ -28,7 +35,7 @@ REPORT="$RUN_DIR/report.md"
 
 # Default samples chosen for CJK likelihood (LO test corpus is mostly Latin;
 # we exercise the toolchain even if no CJK glyph appears).
-default_samples="docx:/Users/lu/kdoffice-src/sw/qa/core/exportdata/ooxml/pass/sdt-in-shape-with-textbox.docx,xlsx:/Users/lu/kdoffice-src/sc/qa/uitest/data/tdf141547.xlsx,pptx:/Users/lu/kdoffice-src/sd/qa/unit/data/tdf90403.pptx"
+default_samples="docx:${SRC_ROOT}/sw/qa/extras/ooxmlexport/data/cjklist31.docx,xlsx:${SRC_ROOT}/sc/qa/uitest/data/tdf141547.xlsx,pptx:${SRC_ROOT}/sd/qa/uitest/data/tdf144943.pptx"
 SAMPLES="${SAMPLES_ARG:-$default_samples}"
 
 # Inspect a PDF using stdlib + `strings`:
