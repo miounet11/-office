@@ -52,6 +52,7 @@ PY
 export PKG_CONFIG="${PKG_CONFIG:-/tmp/kqoffice-pkgconf-utf8}"
 export KQOFFICE_ASCII_WORKDIR="$ASCII_LINK/workdir"
 export KDOFFICE_SRC_ROOT="$SRC"
+export PYTHONUNBUFFERED=1
 
 bash "$REPO/bin/normalize-workdir-build-paths.sh" >/dev/null
 [[ -n "$TEST_NAME" ]] && export UITEST_TEST_NAME="$TEST_NAME"
