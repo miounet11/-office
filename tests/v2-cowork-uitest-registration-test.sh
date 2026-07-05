@@ -17,10 +17,10 @@ pass
 test -f "$src_root/cui/qa/uitest/cowork/test_cowork_dialog.py" || fail "missing test_cowork_dialog.py"
 pass
 
-grep -q 'test_cowork_dialog_controls_smoke' "$src_root/cui/qa/uitest/cowork/test_cowork_dialog.py" || fail "missing controls smoke"
+grep -q 'test_a_cowork_dialog_controls_smoke' "$src_root/cui/qa/uitest/cowork/test_cowork_dialog.py" || fail "missing controls smoke"
 pass
 
-grep -q 'test_cowork_accept_task_enabled_after_review' "$src_root/cui/qa/uitest/cowork/test_cowork_dialog.py" || fail "missing accept smoke"
+grep -q 'test_c_cowork_accept_task_enabled_after_review' "$src_root/cui/qa/uitest/cowork/test_cowork_dialog.py" || fail "missing accept smoke"
 pass
 
 test -x "$repo_root/bin/refresh-test-install-from-instdir.sh" || fail "missing refresh-test-install-from-instdir.sh"
