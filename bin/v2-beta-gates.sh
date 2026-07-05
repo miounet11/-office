@@ -235,6 +235,11 @@ default_actions = {
     "workbench-accessibility-static": "Inspect tmp/workbench-accessibility-check.md and keep static accessibility evidence separate from live manual accessibility evidence.",
     "gui-smoke-timing-startcenter": "Inspect the gui-smoke-timing report and referenced soffice log for survival, timeout, and timing-budget classification.",
     "compatibility-layout-evidence": "Inspect tmp/compatibility-layout-evidence.md; do not treat layout-proxy evidence as pixel-fidelity proof.",
+    "compatibility-manifest-audit-beta-matrix": "Inspect tmp/compatibility-manifest-audit-beta.md and fix beta Office manifest entries before expanding the matrix.",
+    "compatibility-roundtrip-beta-matrix": "Rerun strict beta Office matrix roundtrip (45 samples) and inspect tmp/compatibility-runs/<run-name>-beta-matrix/report.md.",
+    "compatibility-roundtrip-beta-odf": "Rerun strict native ODF control roundtrip and inspect tmp/compatibility-runs/<run-name>-beta-odf/report.md.",
+    "compatibility-roundtrip-beta-pdf-import": "Rerun advisory PDF import roundtrip (no strict validators) and inspect tmp/compatibility-runs/<run-name>-beta-pdf-import/report.md.",
+    "compatibility-visual-evidence-beta": "Inspect tmp/compatibility-visual-evidence/<run-name>-beta-matrix/report.md; rendered PDF/PNG evidence is advisory, not pixel diff.",
     "source-hygiene-strict": "Inspect tmp/source-hygiene-report-strict.md, tmp/source-hygiene-decision-summary.json, tmp/source-hygiene-decisions.tsv, tmp/source-hygiene-decisions.current-slice-filled.tsv, tmp/source-hygiene-current-dev-paths.txt, tmp/source-hygiene-decision-suggestions.json, tmp/source-hygiene-decision-suggestions.md, tmp/source-hygiene-decision-suggestions.tsv, tmp/source-hygiene-decision-current-slice-accepted.json, tmp/source-hygiene-decision-current-slice-accepted.md, tmp/source-hygiene-decision-current-slice-accepted.tsv, tmp/source-hygiene-decision-current-slice-merged.json, tmp/source-hygiene-decision-current-slice-merged-progress.json, tmp/source-hygiene-decision-current-slice-merged-progress.md, tmp/source-hygiene-decision-current-slice-progress.json, tmp/source-hygiene-decision-current-slice-progress.md, tmp/source-hygiene-decision-progress.md, tmp/source-hygiene-decision-progress.json, tmp/source-hygiene-decision-validation.md, tmp/source-hygiene-decision-plan.md, tmp/source-hygiene-decision-plan.json, tmp/source-hygiene-apply-plan-dry-run.md, tmp/source-hygiene-apply-plan-dry-run.json, tmp/source-hygiene-decision-packets/index.md, and docs/product/source-hygiene-release-packet.md before cleaning, ignoring, or staging any working-tree entries.",
     "service-policy-enforcement": "Inspect tmp/plugin-manifest-validator.md; runtime plugin/provider readiness remains blocked beyond manifest self-tests.",
     "workbench-live-accessibility": "Review tmp/product-completion/live-accessibility-checklist.md, then complete manual Tab/Shift+Tab, Enter/Space, VoiceOver, high-contrast, resize, and missing-template fallback review with proof and JSON validation evidence.",
@@ -334,6 +339,36 @@ run_step compatibility-roundtrip beta-hard \
     --strict-validators \
     --allow-extension-namespace \
     --run-name "$run_name-compatibility-smoke" || record_failure compatibility-roundtrip
+
+run_step compatibility-manifest-audit-beta-matrix beta-hard \
+    "$repo_root/bin/compatibility-manifest-audit.sh" \
+    --manifest "$repo_root/docs/compatibility/beta-manifest.tsv" \
+    --report "$repo_root/tmp/compatibility-manifest-audit-beta.md" || record_failure compatibility-manifest-audit-beta-matrix
+
+run_step compatibility-roundtrip-beta-matrix beta-hard \
+    "${compatibility_roundtrip_cmd[@]}" \
+    --manifest "$repo_root/docs/compatibility/beta-manifest.tsv" \
+    --strict-validators \
+    --allow-extension-namespace \
+    --run-name "$run_name-beta-matrix" || record_failure compatibility-roundtrip-beta-matrix
+
+run_step compatibility-roundtrip-beta-odf beta-hard \
+    "${compatibility_roundtrip_cmd[@]}" \
+    --manifest "$repo_root/docs/compatibility/beta-odf-manifest.tsv" \
+    --strict-validators \
+    --allow-extension-namespace \
+    --run-name "$run_name-beta-odf" || record_failure compatibility-roundtrip-beta-odf
+
+run_step compatibility-roundtrip-beta-pdf-import beta-hard \
+    "${compatibility_roundtrip_cmd[@]}" \
+    --manifest "$repo_root/docs/compatibility/beta-pdf-import-manifest.tsv" \
+    --allow-extension-namespace \
+    --run-name "$run_name-beta-pdf-import" || record_failure compatibility-roundtrip-beta-pdf-import
+
+run_step compatibility-visual-evidence-beta beta-hard \
+    "$repo_root/bin/compatibility-visual-evidence.sh" \
+    --run-dir "$repo_root/tmp/compatibility-runs/$run_name-beta-matrix" \
+    --report "$repo_root/tmp/compatibility-visual-evidence/$run_name-beta-matrix/report.md" || record_failure compatibility-visual-evidence-beta
 
 gui_smoke_cmd=()
 if [[ -n "${KDOFFICE_APP_BUNDLE:-}" ]]; then

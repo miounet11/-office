@@ -165,6 +165,9 @@ chmod +x "$pass_repo/bin/v2-beta-gates.sh"
 chmod +x "$pass_repo/bin/workbench-a11y-live-validate.sh"
 
 touch "$pass_repo/docs/compatibility/smoke-manifest.tsv"
+touch "$pass_repo/docs/compatibility/beta-manifest.tsv"
+touch "$pass_repo/docs/compatibility/beta-odf-manifest.tsv"
+touch "$pass_repo/docs/compatibility/beta-pdf-import-manifest.tsv"
 touch "$pass_repo/docs/product/beta-blocker-remediation-protocol.md"
 touch "$pass_repo/docs/accessibility/workbench-accessibility-evidence-m2-06.md"
 
@@ -174,6 +177,7 @@ write_stub "$pass_repo/bin/compatibility-roundtrip.sh" 'if [[ -z "${KDOFFICE_APP
 write_stub "$pass_repo/bin/workbench-accessibility-check.sh" 'exit 0'
 write_stub "$pass_repo/bin/gui-smoke-timing.sh" 'if [[ -z "${KDOFFICE_APP_BUNDLE:-}" ]]; then printf "missing GUI KDOFFICE_APP_BUNDLE\n" >&2; exit 1; fi; saw_app=0; while [[ $# -gt 0 ]]; do case "$1" in --app) [[ "$2" == "$KDOFFICE_APP_BUNDLE" ]] && saw_app=1; shift 2 ;; *) shift ;; esac; done; [[ "$saw_app" == 1 ]]'
 write_stub "$pass_repo/bin/compatibility-layout-evidence.sh" 'exit 0'
+write_stub "$pass_repo/bin/compatibility-visual-evidence.sh" 'exit 0'
 write_stub "$pass_repo/bin/source-hygiene-report.sh" 'exit 0'
 write_stub "$pass_repo/bin/plugin-manifest-validator.sh" 'exit 0'
 mkdir -p "$pass_repo/test-install/可圈办公.app/Contents/MacOS"
